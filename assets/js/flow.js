@@ -356,6 +356,7 @@
       (wantsMortgage ? '<p class="faint small" style="margin:-.25rem 0 1.25rem">Mortgage advisers usually start with a short call — adding a number speeds things up.</p>' : '') +
       '<label class="check"><input type="checkbox" name="consent"' + (c.consent ? ' checked' : '') + '><span>I agree to Properfy sharing my details with specialists for the services I’ve chosen, so they can contact me about them. See our <a class="inline" href="privacy.html" target="_blank" rel="noopener">privacy notice</a>.</span></label>' +
       '<label class="check"><input type="checkbox" name="updates"' + (c.updates ? ' checked' : '') + '><span>Send me occasional moving tips and Properfy updates. Unsubscribe anytime.</span></label>' +
+      '<div class="hp" aria-hidden="true"><label for="f-hp">Leave this empty</label><input type="text" id="f-hp" name="_honey" tabindex="-1" autocomplete="off"></div>' +
       '<div class="step-actions" style="margin-top:1.5rem"><button type="submit" class="btn btn-primary btn-lg">Send my plan' + icon('arrow') + '</button></div>' +
       '<ul class="reassure"><li>' + icon('check') + 'Free, no obligation</li><li>' + icon('check') + 'No credit check</li><li>' + icon('check') + 'Your data is never sold</li></ul>' +
       '</form>' +
@@ -380,6 +381,7 @@
       c.postcode = el.postcode.value.trim();
       c.consent = el.consent.checked;
       c.updates = el.updates.checked;
+      c.honey = el._honey.value;
 
       PF.$$('[aria-invalid]', form).forEach(function (x) { x.removeAttribute('aria-invalid'); });
       PF.$$('.field-error', form).forEach(function (x) { x.remove(); });
@@ -431,7 +433,8 @@
       notify: soon,
       contact: { name: c.name, email: c.email, phone: c.phone, postcode: c.postcode, preferred: c.pref },
       consent: { shareWithPartners: true, marketing: !!c.updates, at: new Date().toISOString() },
-      source: w.location.href
+      source: w.location.href,
+      _honey: c.honey
     };
 
     // Building screen: the brand mark morphs while we save.

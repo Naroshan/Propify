@@ -42,21 +42,73 @@
 
   PF.reduceMotion = reduceMotion;
 
-  // Sends a payload to the configured endpoint. Resolves { sent: false } in
-  // preview mode (no endpoint) so the UI can say so honestly.
+  // Turns a lead into labelled fields, so it arrives as a readable email
+  // (FormSubmit renders one row per field). "email" is used as the reply-to.
+  PF.leadFields = function (type, p) {
+    var f = { _template: 'table', _captcha: 'false' };
+    if (p._honey) f._honey = p._honey;
+    var serviceName = function (id) { var s = PF.service(id); return s ? (s.single || s.name) : id; };
+
+    if (type === 'plan') {
+      var goal = PF.goal(p.goal);
+      var c = p.contact || {};
+      f._subject = 'New Properfy plan: ' + (goal ? goal.short : p.goal) + ' - ' + c.name + ' (' + p.ref + ')';
+      f['Reference'] = p.ref;
+      f['Name'] = c.name;
+      f.email = c.email;
+      f['Phone'] = c.phone || 'Not given';
+      f['Best way to reach them'] = c.preferred === 'phone' ? 'Phone' : 'Email';
+      f['Property postcode or town'] = c.postcode || 'Not given';
+      f["What they're doing"] = goal ? goal.label : p.goal;
+      f['Services requested'] = p.services.map(function (s, i) {
+        return (i + 1) + '. ' + serviceName(s.id) + ' (' + s.when + ')';
+      }).join('; ');
+      f['Their answers'] = p.answers.map(function (a) { return a.question + ' ' + a.answer; }).join('; ') || 'None';
+      f['Tell them when live'] = (p.notify || []).map(serviceName).join(', ') || 'None';
+      f['Consent to share with specialists'] = 'Yes (' + new Date(p.consent.at).toLocaleString('en-GB') + ')';
+      f['Marketing emails'] = p.consent.marketing ? 'Yes' : 'No';
+      f['Sent from'] = p.source;
+    } else if (type === 'contact') {
+      var topic = PF.goal(p.topic);
+      f._subject = 'New Properfy enquiry from ' + p.name;
+      f['Name'] = p.name;
+      f.email = p.email;
+      f["What they're doing"] = topic ? topic.label : p.topic;
+      f['Message'] = p.message;
+    } else if (type === 'notify') {
+      f._subject = 'Properfy: notify me about ' + serviceName(p.service);
+      f.email = p.email;
+      f['Service'] = serviceName(p.service);
+    }
+    return f;
+  };
+
+  // Sends a lead to PF.config.leadEndpoint. Resolves { sent: false } in
+  // preview mode (no endpoint) so the UI can say so honestly, and rejects if
+  // the service reports a failure, so the form can ask the customer to retry.
   PF.send = function (type, payload) {
     var url = PF.config && PF.config.leadEndpoint;
+    var fields = PF.leadFields(type, payload);
     if (!url) {
-      if (w.console) console.info('[Properfy preview] ' + type + ' not sent — set PF.config.leadEndpoint', payload);
+      if (w.console) console.info('[Properfy preview] ' + type + ' not sent — set PF.config.leadEndpoint', fields);
       return Promise.resolve({ sent: false });
     }
+    var ctrl = w.AbortController ? new AbortController() : null;
+    var timer = ctrl ? w.setTimeout(function () { ctrl.abort(); }, 20000) : null;
     return fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: type, payload: payload, sentAt: new Date().toISOString() })
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(fields),
+      signal: ctrl ? ctrl.signal : undefined
     }).then(function (res) {
-      if (!res.ok) throw new Error('Request failed: ' + res.status);
-      return { sent: true };
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok || data.success === false || data.success === 'false') {
+          throw new Error(data.message || 'Request failed: ' + res.status);
+        }
+        return { sent: true };
+      });
+    }).finally(function () {
+      if (timer) w.clearTimeout(timer);
     });
   };
 
@@ -279,7 +331,8 @@
         name: name.value.trim(),
         email: email.value.trim(),
         topic: form.elements.topic ? form.elements.topic.value : '',
-        message: msg.value.trim()
+        message: msg.value.trim(),
+        _honey: form.elements._honey ? form.elements._honey.value : ''
       };
       PF.send('contact', payload).then(function (res) {
         form.innerHTML =

@@ -51,8 +51,8 @@ Motion respects `prefers-reduced-motion`.
 
 ## Going live: checklist
 
-- **Leads.** Set `PF.config.leadEndpoint` in `registry.js`. Plans, enquiries and notify-me requests are then POSTed there as JSON (`{ type, payload, sentAt }`). Until it's set, the site runs in *preview mode*: data stays on the device and the UI says so honestly.
-- **Contact details.** The email and phone are placeholders (`0808 157 0192` is an Ofcom drama number). Update them in `PF.config.contact` and in the footer and menu markup of each page.
+- **Leads.** Plans, enquiries and notify-me requests are emailed to the inbox in `PF.config.leadEndpoint` (currently via FormSubmit: `https://formsubmit.co/ajax/<your email>`). The **first** submission after going live sends an "Activate Form" email to that inbox instead. Click it once (check Junk), and every lead after that arrives as a formatted email with the customer's address as the reply-to. Set `leadEndpoint` to `null` for preview mode, or point it at your own backend.
+- **Contact details** live in `PF.config.contact` and in the footer and menu markup of each page.
 - **Reviews.** The homepage reviews are illustrative and labelled as such (`PF.config.sampleReviews`). Replace them with verified reviews (e.g. a Trustpilot or Feefo feed) before launch, and don't publish sample reviews as real ones.
 - **Guide prices and timescales** in `registry.js` are typical UK figures. Confirm them with your partners.
 - **Partners.** Add real partner firms to each service's `partners` array (name and regulator). They're then listed on the service page.

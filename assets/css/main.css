@@ -154,6 +154,9 @@ p { margin: 0 0 1.25em; }
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 
+/* Spam trap: off-screen field real visitors never see or fill */
+.hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+
 .skip-link {
   position: fixed; left: 16px; top: -60px; z-index: 1001;
   background: var(--coral); color: var(--ink-0); font-weight: 700;

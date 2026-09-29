@@ -187,10 +187,11 @@
       '<h1 class="hero-title">' + s.name + '.</h1>' +
       '<p class="lead hero-sub">' + s.short + ' We’re building it into Properfy so it slots straight into your plan.</p>' +
       (on
-        ? '<div class="form-success" role="status">' + icon('check') + '<p><strong>You’re on the list.</strong>We’ll let you know when ' + s.name.toLowerCase() + ' launches.</p></div>'
+        ? '<div class="form-success" role="status">' + icon('check') + '<p><strong>You’re on the list.</strong>We’ll let you know when it launches.</p></div>'
         : '<form class="notify-form" data-notify-form novalidate>' +
           '<label class="sr-only" for="n-email">Email address</label>' +
           '<input type="email" id="n-email" name="email" placeholder="you@example.com" autocomplete="email">' +
+          '<div class="hp" aria-hidden="true"><label for="n-hp">Leave this empty</label><input type="text" id="n-hp" name="_honey" tabindex="-1" autocomplete="off"></div>' +
           '<button class="btn btn-primary" type="submit">' + icon('bell') + 'Notify me</button>' +
           '</form>') +
       '</div></div>' +
@@ -218,9 +219,9 @@
       var list = PF.store.get(PF.config.notifyKey) || [];
       if (list.indexOf(s.id) === -1) list.push(s.id);
       PF.store.set(PF.config.notifyKey, list);
-      PF.send('notify', { service: s.id, email: input.value.trim() }).then(function (res) {
+      PF.send('notify', { service: s.id, email: input.value.trim(), _honey: form.elements._honey.value }).then(function (res) {
         form.outerHTML = '<div class="form-success" role="status">' + icon('check') + '<p><strong>You’re on the list.</strong>' +
-          (res.sent ? 'We’ll email you when ' + s.name.toLowerCase() + ' launches.' : 'Preview mode: saved on this device only.') + '</p></div>';
+          (res.sent ? 'We’ll email you when it launches.' : 'Preview mode: saved on this device only.') + '</p></div>';
       });
     });
   }
