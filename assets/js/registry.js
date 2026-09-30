@@ -36,6 +36,20 @@
     // Reviews on the homepage are illustrative until real, verified reviews
     // are connected. Keep this true until then.
     sampleReviews: true,
+    // Properfy only serves England and Wales. Every form asks for a postcode
+    // and refuses these postcode areas (see PF.checkPostcode in main.js).
+    serviceArea: {
+      name: 'England and Wales',
+      outside: {
+        'Scotland': ['AB', 'DD', 'DG', 'EH', 'FK', 'G', 'HS', 'IV', 'KA', 'KW', 'KY', 'ML', 'PA', 'PH', 'TD', 'ZE'],
+        'Northern Ireland': ['BT'],
+        'the Channel Islands': ['GY', 'JE'],
+        'the Isle of Man': ['IM']
+      },
+      // TD (Scottish Borders) districts that include English addresses,
+      // e.g. Berwick-upon-Tweed and Cornhill-on-Tweed.
+      allowDistricts: ['TD12', 'TD15']
+    },
     contact: {
       email: 'Mr.w.davey@hotmail.com',
       phone: '07746 448080',

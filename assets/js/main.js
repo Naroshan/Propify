@@ -58,7 +58,7 @@
       f.email = c.email;
       f['Phone'] = c.phone || 'Not given';
       f['Best way to reach them'] = c.preferred === 'phone' ? 'Phone' : 'Email';
-      f['Property postcode or town'] = c.postcode || 'Not given';
+      f['Postcode'] = c.postcode;
       f["What they're doing"] = goal ? goal.label : p.goal;
       f['Services requested'] = p.services.map(function (s, i) {
         return (i + 1) + '. ' + serviceName(s.id) + ' (' + s.when + ')';
@@ -73,11 +73,13 @@
       f._subject = 'New Properfy enquiry from ' + p.name;
       f['Name'] = p.name;
       f.email = p.email;
+      f['Postcode'] = p.postcode;
       f["What they're doing"] = topic ? topic.label : p.topic;
       f['Message'] = p.message;
     } else if (type === 'notify') {
       f._subject = 'Properfy: notify me about ' + serviceName(p.service);
       f.email = p.email;
+      f['Postcode'] = p.postcode;
       f['Service'] = serviceName(p.service);
     }
     return f;
@@ -113,6 +115,37 @@
   };
 
   PF.validEmail = function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v).trim()); };
+
+  /* ── Service area: England and Wales only ─────────────────────────────── */
+
+  // Checks a full UK postcode against PF.config.serviceArea.
+  // Returns { ok, postcode } or { ok: false, message } ready to show the customer.
+  PF.checkPostcode = function (raw) {
+    var area = PF.config.serviceArea;
+    var pc = String(raw || '').toUpperCase().replace(/\s+/g, '');
+    var m = pc.match(/^([A-Z]{1,2})(\d[A-Z\d]?)(\d[A-Z]{2})$/);
+    if (!m) return { ok: false, message: 'Please enter your full postcode, for example SW1A 1AA.' };
+    var letters = m[1];
+    var district = m[1] + m[2];
+    if (area.allowDistricts.indexOf(district) === -1) {
+      for (var region in area.outside) {
+        if (area.outside[region].indexOf(letters) !== -1) {
+          return {
+            ok: false,
+            outside: true,
+            message: 'Sorry, Properfy only serves ' + area.name + ', so we can’t help with ' + region + '.'
+          };
+        }
+      }
+    }
+    return { ok: true, postcode: district + ' ' + m[3] };
+  };
+
+  // UK numbers only: 07… / 01… / 02… or +44 / 0044.
+  PF.validUkPhone = function (v) {
+    var n = String(v || '').replace(/[\s().-]/g, '');
+    return /^(?:\+44|0044|0)[1-9]\d{8,9}$/.test(n);
+  };
 
   // <i data-icon="arrow"> is replaced by the icon; other elements get it inside.
   // <span data-mark> becomes the brand mark.
@@ -312,8 +345,9 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var name = form.elements.name, email = form.elements.email, msg = form.elements.message;
+      var postcode = form.elements.postcode;
       var ok = true;
-      [name, email, msg].forEach(function (el) { el.removeAttribute('aria-invalid'); });
+      [name, email, postcode, msg].forEach(function (el) { el.removeAttribute('aria-invalid'); });
       PF.$$('.field-error', form).forEach(function (el) { el.remove(); });
       function fail(el, text) {
         ok = false;
@@ -322,6 +356,8 @@
       }
       if (!name.value.trim()) fail(name, 'Please tell us your name.');
       if (!PF.validEmail(email.value)) fail(email, 'Please enter a valid email address.');
+      var area = PF.checkPostcode(postcode.value);
+      if (!area.ok) fail(postcode, area.message);
       if (!msg.value.trim()) fail(msg, 'Let us know how we can help.');
       if (!ok) { PF.$('[aria-invalid="true"]', form).focus(); return; }
 
@@ -330,6 +366,7 @@
       var payload = {
         name: name.value.trim(),
         email: email.value.trim(),
+        postcode: area.postcode,
         topic: form.elements.topic ? form.elements.topic.value : '',
         message: msg.value.trim(),
         _honey: form.elements._honey ? form.elements._honey.value : ''

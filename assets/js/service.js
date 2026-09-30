@@ -191,9 +191,12 @@
         : '<form class="notify-form" data-notify-form novalidate>' +
           '<label class="sr-only" for="n-email">Email address</label>' +
           '<input type="email" id="n-email" name="email" placeholder="you@example.com" autocomplete="email">' +
+          '<label class="sr-only" for="n-postcode">Your postcode</label>' +
+          '<input type="text" id="n-postcode" name="postcode" placeholder="Postcode" autocomplete="postal-code" autocapitalize="characters" class="notify-postcode">' +
           '<div class="hp" aria-hidden="true"><label for="n-hp">Leave this empty</label><input type="text" id="n-hp" name="_honey" tabindex="-1" autocomplete="off"></div>' +
           '<button class="btn btn-primary" type="submit">' + icon('bell') + 'Notify me</button>' +
-          '</form>') +
+          '</form>' +
+          '<p class="faint small" style="margin-top:.75rem">For customers in ' + PF.config.serviceArea.name + ' only.</p>') +
       '</div></div>' +
       '</section>' +
       '<div id="wrapper">' +
@@ -209,19 +212,28 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var input = form.elements.email;
+      var postcode = form.elements.postcode;
+      var btn = PF.$('button[type="submit"]', form);
       PF.$$('.field-error', form.parentNode).forEach(function (x) { x.remove(); });
-      if (!PF.validEmail(input.value)) {
-        input.setAttribute('aria-invalid', 'true');
-        form.insertAdjacentHTML('afterend', '<p class="field-error">Please enter a valid email address.</p>');
-        input.focus();
-        return;
+      [input, postcode].forEach(function (x) { x.removeAttribute('aria-invalid'); });
+      function fail(field, msg) {
+        field.setAttribute('aria-invalid', 'true');
+        form.insertAdjacentHTML('afterend', '<p class="field-error">' + msg + '</p>');
+        field.focus();
       }
-      var list = PF.store.get(PF.config.notifyKey) || [];
-      if (list.indexOf(s.id) === -1) list.push(s.id);
-      PF.store.set(PF.config.notifyKey, list);
-      PF.send('notify', { service: s.id, email: input.value.trim(), _honey: form.elements._honey.value }).then(function (res) {
+      if (!PF.validEmail(input.value)) { fail(input, 'Please enter a valid email address.'); return; }
+      var area = PF.checkPostcode(postcode.value);
+      if (!area.ok) { fail(postcode, area.message); return; }
+      btn.disabled = true;
+      PF.send('notify', { service: s.id, email: input.value.trim(), postcode: area.postcode, _honey: form.elements._honey.value }).then(function (res) {
+        var list = PF.store.get(PF.config.notifyKey) || [];
+        if (list.indexOf(s.id) === -1) list.push(s.id);
+        PF.store.set(PF.config.notifyKey, list);
         form.outerHTML = '<div class="form-success" role="status">' + icon('check') + '<p><strong>You’re on the list.</strong>' +
           (res.sent ? 'We’ll email you when it launches.' : 'Preview mode: saved on this device only.') + '</p></div>';
+      }).catch(function () {
+        btn.disabled = false;
+        form.insertAdjacentHTML('afterend', '<p class="field-error">We couldn’t save that just now. Please try again.</p>');
       });
     });
   }

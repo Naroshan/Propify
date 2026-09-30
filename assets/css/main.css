@@ -1487,8 +1487,9 @@ select option { color: #111; }
 .related.cols-5 strong { font-size: 1rem; }
 .related.cols-5 span { font-size: 0.86rem; }
 
-.notify-form { display: flex; gap: 0.6rem; max-width: 30rem; }
+.notify-form { display: flex; gap: 0.6rem; max-width: 34rem; }
 .notify-form input { flex: 1; }
+.notify-form .notify-postcode { flex: 0 0 8.5rem; }
 
 /* ── Simple page (privacy, 404) ─────────────────────────────────────────── */
 
@@ -1556,6 +1557,7 @@ select option { color: #111; }
   .price-table td:last-child { text-align: right; padding-top: 0.6rem; }
   .price-table td[data-label]::before { content: attr(data-label); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); text-align: left; }
   .notify-form { flex-direction: column; }
+  .notify-form .notify-postcode { flex: 1 1 auto; }
   .svc-toggle { grid-template-columns: auto minmax(0, 1fr) auto; padding: 1rem; gap: 0.3rem 0.8rem; }
   .svc-toggle .fi { width: 2.4rem; height: 2.4rem; }
   .svc-toggle .why, .svc-toggle .meta, .svc-toggle .risk { grid-column: 1 / -1; }
