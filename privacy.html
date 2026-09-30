@@ -1,166 +1,72 @@
 <!DOCTYPE html>
-<!--
-  Properfy — Property. Properly sorted.
-  Layout language adapted from "Solid State" by HTML5 UP (html5up.net | @ajlkn),
-  free for personal and commercial use under the CCA 3.0 license (html5up.net/license).
--->
 <html lang="en-GB">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Privacy notice — Properfy</title>
   <meta name="description" content="How Properfy collects, uses and shares your details.">
-  <meta name="theme-color" content="#1c1d26">
+  <meta name="theme-color" content="#161826">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/main.css">
-  <script>document.documentElement.classList.add('js');</script>
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/site.css">
   <script src="assets/js/icons.js" defer></script>
-  <script src="assets/js/registry.js" defer></script>
-  <script src="assets/js/main.js" defer></script>
-</head>
-<body class="is-preload page-privacy">
+  <script src="assets/js/data.js" defer></script>
+  <script src="assets/js/core.js" defer></script>
 
+</head>
+<body>
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <div id="page-wrapper">
+  <header class="wrap site-nav">
+    <a class="brand" href="index.html" aria-label="Properfy home"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">properfy</span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="index.html#how">How it works</a>
+      <a href="index.html#services">Services</a>
+      <a href="partners.html">For partners</a>
+    </nav>
+    <a class="btn btn-primary" href="start.html" data-move-cta>Start your move</a>
+  </header>
 
-    <!-- Header -->
-    <header id="header" class="alt" data-alt>
-      <a class="logo" href="index.html" aria-label="Properfy home">
-        <svg class="wordmark" viewBox="0 0 187 60" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="5"><path d="M2.5 16v41.5"/><circle cx="12" cy="28" r="9.5"/><path d="M29.5 16v24M29.5 28.5a10 10 0 0 1 10-10h2"/><circle cx="56" cy="28" r="9.5"/><path d="M73.5 16v41.5"/><circle cx="83" cy="28" r="9.5"/><path d="M100.5 28h19a9.5 9.5 0 1 0-2.78 6.72"/><path d="M127.5 16v24M127.5 28.5a10 10 0 0 1 10-10h2"/><path d="M165 16v12a9.5 9.5 0 0 0 19 0M184 16v29.5a9.5 9.5 0 0 1-9.5 9.5H170"/></g><g class="ft" fill="none" stroke-width="5"><path d="M143 18.5h16"/><path d="M150 13.5v17"/><path class="ft-f" pathLength="1" d="M150 14.5v-2a8 8 0 0 1 8-8h2"/><path class="ft-f" pathLength="1" d="M150 29.5V40"/><path class="ft-t" pathLength="1" d="M150 14.5V8"/><path class="ft-t" pathLength="1" d="M150 29.5a8 8 0 0 0 8 8h2"/></g></svg>
-      </a>
-      <nav aria-label="Primary">
-        <a class="nav-link" href="index.html#services">Services</a>
-        <a class="nav-link" href="index.html#how">How it works</a>
-        <a class="nav-link" href="index.html#pricing">Pricing</a>
-        <a class="nav-link" href="index.html#faq">Help</a>
-        <a class="nav-link nav-resume" href="start.html?view=plan" hidden>Your plan</a>
-        <a class="btn btn-primary btn-sm header-cta" href="start.html">Get started</a>
-        <a class="menu-toggle" href="#menu" aria-controls="menu" aria-expanded="false"><span>Menu</span><i data-icon="menu"></i></a>
-      </nav>
-    </header>
-
-    <main id="main">
-      <section id="banner" class="banner banner-service">
-        <div class="banner-bg" aria-hidden="true"><span class="glow g1"></span><span class="glow g2"></span><span class="grid-lines"></span></div>
-        <div class="inner"><div class="banner-copy" style="max-width:46rem">
-          <p class="pill"><i data-icon="lock"></i>Privacy notice</p>
-          <h1 class="hero-title">Your details, your say.</h1>
-          <p class="lead hero-sub">What we collect, why, and who sees it — in plain English.</p>
-        </div></div>
-      </section>
-      <div id="wrapper">
-        <section class="wrapper" id="notice">
-          <div class="inner prose">
-            <!-- Draft for review by a qualified adviser before launch. Replace company details, ICO registration and retention periods. -->
-            <h2>What we collect</h2>
-            <p>When you build a plan or contact us, we collect the details you give us: your name, email address, phone number (if you add one), the property location (if you add one), what you’re doing with your property and your answers to our questions.</p>
-            <h2>Why we collect it</h2>
-            <ul>
-              <li>To build your plan and show you relevant services and guide prices.</li>
-              <li>With your consent, to introduce you to the specialists for the services you choose, so they can contact you with quotes.</li>
-              <li>To reply when you contact us.</li>
-              <li>If you opt in, to send occasional tips and updates. You can unsubscribe at any time.</li>
-            </ul>
-            <h2>Who we share it with</h2>
-            <p>Only the specialists providing the services you’ve chosen — for example a conveyancer, an FCA-authorised mortgage adviser, a RICS-regulated surveyor, an auction house or a removals firm. We never sell your data.</p>
-            <h2>How your details reach us</h2>
-            <p>When you send a plan, an enquiry or a “notify me” request, it is delivered to our inbox by FormSubmit (formsubmit.co), an email-forwarding service. It is used only to pass your details to us.</p>
-            <h2>What’s stored on your device</h2>
-            <p>Your plan (its reference, the services you chose, your first name and email) is saved in your browser so you can come back to it. You can remove it at any time by starting a new plan or clearing your browser data.</p>
-            <h2>Your rights</h2>
-            <p>Under UK data protection law you can ask to see, correct or delete your data, object to how we use it, or withdraw consent. Email <a href="mailto:Mr.w.davey@hotmail.com">Mr.w.davey@hotmail.com</a>. You can also complain to the Information Commissioner’s Office (ico.org.uk).</p>
-          </div>
-        </section>
-      </div>
-    </main>
-
-    <!-- Footer -->
-    <footer id="footer">
-      <div class="inner" id="contact">
-        <div class="contact-grid">
-          <div>
-            <h2 class="major">Talk to a real person</h2>
-            <p class="muted">Not sure where to start? Tell us what’s going on and someone from the Properfy team will point you in the right direction. We serve customers in England and Wales only.</p>
-            <form data-contact novalidate>
-              <div class="hp" aria-hidden="true"><label for="c-hp">Leave this empty</label><input type="text" id="c-hp" name="_honey" tabindex="-1" autocomplete="off"></div>
-              <div class="fields">
-                <div class="field"><label for="c-name">Name</label><input type="text" id="c-name" name="name" autocomplete="name"></div>
-                <div class="field"><label for="c-email">Email</label><input type="email" id="c-email" name="email" autocomplete="email"></div>
-                <div class="field">
-                  <label for="c-postcode">Your postcode</label>
-                  <input type="text" id="c-postcode" name="postcode" autocomplete="postal-code" autocapitalize="characters">
-                </div>
-                <div class="field">
-                  <label for="c-topic">What are you doing?</label>
-                  <select id="c-topic" name="topic">
-                    <option value="buy">Buying a property</option>
-                    <option value="sell">Selling a property</option>
-                    <option value="move">Moving home</option>
-                    <option value="remortgage">Remortgaging</option>
-                    <option value="invest">Investing</option>
-                    <option value="other">Something else</option>
-                  </select>
-                </div>
-                <div class="field full"><label for="c-message">Message</label><textarea id="c-message" name="message" rows="4"></textarea></div>
-              </div>
-              <ul class="actions"><li><button class="btn btn-primary" type="submit">Send message <i data-icon="arrow"></i></button></li></ul>
-            </form>
-          </div>
-          <div>
-            <ul class="contact">
-              <li><span class="ci" data-icon="mail"></span><div><strong>Email</strong><a href="mailto:Mr.w.davey@hotmail.com">Mr.w.davey@hotmail.com</a></div></li>
-              <li><span class="ci" data-icon="phone"></span><div><strong>Phone</strong><a href="tel:+447746448080">07746 448080</a></div></li>
-              <li><span class="ci" data-icon="clock"></span><div><strong>Opening hours</strong>Mon–Fri 8am–8pm<br>Sat 9am–5pm</div></li>
-              <li><span class="ci" data-icon="shield"></span><div><strong>Our partners are regulated by</strong>SRA · CLC · FCA · RICS · members of BAR</div></li>
-            </ul>
-          </div>
-        </div>
-        <div class="legal">
-          <a class="logo" href="index.html" aria-label="Properfy home">
-            <svg class="wordmark" viewBox="0 0 187 60" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="5"><path d="M2.5 16v41.5"/><circle cx="12" cy="28" r="9.5"/><path d="M29.5 16v24M29.5 28.5a10 10 0 0 1 10-10h2"/><circle cx="56" cy="28" r="9.5"/><path d="M73.5 16v41.5"/><circle cx="83" cy="28" r="9.5"/><path d="M100.5 28h19a9.5 9.5 0 1 0-2.78 6.72"/><path d="M127.5 16v24M127.5 28.5a10 10 0 0 1 10-10h2"/><path d="M165 16v12a9.5 9.5 0 0 0 19 0M184 16v29.5a9.5 9.5 0 0 1-9.5 9.5H170"/></g><g class="ft" fill="none" stroke-width="5"><path d="M143 18.5h16"/><path d="M150 13.5v17"/><path class="ft-f" pathLength="1" d="M150 14.5v-2a8 8 0 0 1 8-8h2"/><path class="ft-f" pathLength="1" d="M150 29.5V40"/><path class="ft-t" pathLength="1" d="M150 14.5V8"/><path class="ft-t" pathLength="1" d="M150 29.5a8 8 0 0 0 8 8h2"/></g></svg>
-          </a>
-          <div>
-            <p>Properfy serves customers in England and Wales only. We introduce you to independent, regulated specialists. Your contract for each service is with the provider you choose, and you’ll see who they are before you commit. Mortgage advice is provided by FCA-authorised advisers.</p>
-            <p><strong>Your home may be repossessed if you do not keep up repayments on your mortgage.</strong></p>
-            <ul>
-              <li>&copy; <span data-year>2026</span> Properfy</li>
-              <li><a href="privacy.html">Privacy notice</a></li>
-              <li><a href="service.html">All services</a></li>
-              <li>Design based on <a href="https://html5up.net" rel="noopener">HTML5 UP</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </footer>
-
-  </div>
-
-  <!-- Menu (Solid State overlay) -->
-  <nav id="menu" aria-hidden="true" aria-label="Menu">
-    <div class="inner" role="dialog" aria-modal="true" aria-label="Menu">
-      <h2 class="major">Menu</h2>
-      <ul class="links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="start.html">Get started</a></li>
-        <li><a href="index.html#how">How it works</a></li>
-        <li><a href="index.html#pricing">Pricing</a></li>
-        <li><a href="index.html#faq">Help &amp; FAQs</a></li>
-        <li><a href="index.html#contact">Contact</a></li>
-      </ul>
-      <p class="menu-label">Services</p>
-      <ul class="menu-services" data-menu-services>
-        <li><a href="service.html?s=conveyancing">Conveyancing</a></li>
-        <li><a href="service.html?s=mortgage">Mortgages</a></li>
-        <li><a href="service.html?s=survey">Surveys</a></li>
-        <li><a href="service.html?s=auctions">Auctions</a></li>
-        <li><a href="service.html?s=removals">Removals</a></li>
-      </ul>
-      <a class="btn btn-light btn-block" href="start.html">Get started <i data-icon="arrow"></i></a>
-      <a href="#menu" class="close" aria-label="Close menu"><i data-icon="close"></i></a>
+  <main id="main">
+    <div class="wrap">
+      <article class="prose">
+        <span class="kicker">Privacy notice</span>
+        <h1>Your details, your say.</h1>
+        <p class="lead">What we collect, why, and who sees it, in plain English.</p>
+        <!-- Draft for review by a qualified adviser before launch. Add company number, ICO registration and retention periods. -->
+        <h2>What we collect</h2>
+        <p>When you start a move, we collect what you tell us: what you’re doing, the property’s address, postcode and price, whether you want us to introduce an estate agent, mortgage broker or solicitor, and your name, email and phone number. When you ask us to arrange a service, we note which one. If you’re a partner registering interest, we collect your name, firm, role, office postcode and contact details.</p>
+        <h2>Why we collect it</h2>
+        <ul>
+          <li>To set up your move and show you the steps involved.</li>
+          <li>With your consent, to introduce you to specialists and arrange the services you ask for.</li>
+          <li>To reply when you contact us.</li>
+        </ul>
+        <h2>Who we share it with</h2>
+        <p>Only the specialists you ask us to introduce or arrange, such as a solicitor or conveyancer, a mortgage adviser, a surveyor or an auction house. We never sell your data.</p>
+        <h2>How your details reach us</h2>
+        <p>Forms on this site are delivered to our inbox by FormSubmit (formsubmit.co), an email-forwarding service used only to pass your details to us.</p>
+        <h2>What’s stored on your device</h2>
+        <p>Your move tracker is saved in your browser so you can come back to it. You can remove it at any time from the “My move” page, or by clearing your browser data.</p>
+        <h2>Your rights</h2>
+        <p>Under UK data protection law you can ask to see, correct or delete your data, object to how we use it, or withdraw consent. Email <a href="mailto:Mr.w.davey@hotmail.com">Mr.w.davey@hotmail.com</a>. You can also complain to the Information Commissioner’s Office (ico.org.uk).</p>
+      </article>
     </div>
-  </nav>
+  </main>
 
+  <footer class="wrap site-footer">
+    <div class="footer-row footer-contact">
+      <span>Properfy covers homes in England and Wales only.</span>
+      <span><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M896 768h-768c-17.7 0-32-14.3-32-32v0-544c0-35.3 28.7-64 64-64v0h704c35.3 0 64 28.7 64 64v0 544c0 17.7-14.3 32-32 32v0zM813.7 704l-301.7-276.6-301.7 276.6zM864 192h-704v471.2l330.4-302.8c5.7-5.2 13.3-8.4 21.6-8.4s16 3.2 21.7 8.4l-0-0 330.4 302.8v-471.2z"/></svg> <a href="mailto:Mr.w.davey@hotmail.com">Mr.w.davey@hotmail.com</a></span>
+      <span><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M889.5 326.2l-189 84.7c-7.4 3.3-16.1 5.2-25.2 5.2-13.2 0-25.5-4-35.7-10.9l0.2 0.1c-1.1-0.8-2.1-1.5-3-2.3l0 0-97.4-83c-61.7 30-125.4 93.2-155.3 154l83.1 98.8c0.8 1 1.6 2 2.3 3.1 6.5 9.9 10.4 22 10.4 35 0 9.1-1.9 17.8-5.3 25.6l0.2-0.4v0.5l-84.7 188.8c-10.1 22.9-32.6 38.6-58.7 38.6-2.7 0-5.4-0.2-8.1-0.5l0.3 0c-111-15-195.7-109.2-195.7-223.1 0-0.1 0-0.3 0-0.4v0c0-317.6 258.4-576 576-576 0.1 0 0.3 0 0.4 0 113.9 0 208.1 84.7 223 194.5l0.1 1.2c0.3 2.3 0.5 5 0.5 7.8 0 26.1-15.7 48.6-38.1 58.5l-0.4 0.2zM704 128c-282.6 0.3-511.7 229.4-512 512v0c-0 0.2-0 0.4-0 0.6 0 81.3 60.3 148.5 138.6 159.3l0.8 0.1c-0-0.1-0-0.2-0-0.2s0-0.2 0-0.2l-0 0 84-188-82.7-99c-0.8-0.9-1.5-1.9-2.2-3l-0.1-0.1c-6.5-9.9-10.4-21.9-10.4-34.9 0-10.1 2.4-19.7 6.5-28.2l-0.2 0.4c36.2-74.1 110.9-148.2 185.8-184.4 8-3.9 17.5-6.2 27.5-6.2 13.2 0 25.5 4 35.7 10.9l-0.2-0.1c1.1 0.8 2.1 1.5 3 2.3l-0-0 97.2 83 188-84.2s0.3 0 0.4 0c-10.8-79.3-78-139.8-159.5-139.8-0.2 0-0.4 0-0.6 0h0z"/></svg> <a href="tel:+447746448080">07746 448080</a></span>
+    </div>
+    <p class="footer-row footer-legal">Properfy introduces you to independent, regulated specialists. Your contract for each service is with the provider you choose. Your home may be repossessed if you do not keep up repayments on your mortgage.</p>
+    <div class="footer-row">
+      <span>&copy; <span data-year>2026</span> Properfy Ltd</span>
+      <a href="privacy.html">Privacy</a>
+      <a href="complaints.html">Complaints</a>
+      <a href="partners.html">For partners</a>
+    </div>
+  </footer>
 </body>
 </html>
