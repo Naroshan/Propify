@@ -1,372 +1,135 @@
 <!DOCTYPE html>
-<!--
-  Properfy — Property. Properly sorted.
-  Layout language adapted from "Solid State" by HTML5 UP (html5up.net | @ajlkn),
-  free for personal and commercial use under the CCA 3.0 license (html5up.net/license).
--->
 <html lang="en-GB">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Properfy — Property. Properly sorted.</title>
-  <meta name="description" content="Everything you need to buy, sell, finance and move home. All in one place. Conveyancing, mortgages, surveys, auctions and removals — organised for you by Properfy.">
-  <meta name="theme-color" content="#1c1d26">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Properfy — Property. Properly sorted.">
-  <meta property="og:description" content="Everything you need to buy, sell, finance and move home. All in one place.">
+  <title>Properfy — Everything your move needs</title>
+  <meta name="description" content="Mortgage, solicitor, survey and auction help in one place, explained in plain English. For homes in England and Wales.">
+  <meta name="theme-color" content="#161826">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/main.css">
-  <script>
-    document.documentElement.classList.add('js');
-    try {
-      if (!sessionStorage.getItem('pf.intro') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        document.documentElement.classList.add('intro');
-      }
-    } catch (e) {}
-  </script>
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/site.css">
   <script src="assets/js/icons.js" defer></script>
-  <script src="assets/js/registry.js" defer></script>
-  <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/data.js" defer></script>
+  <script src="assets/js/core.js" defer></script>
   <script src="assets/js/home.js" defer></script>
 </head>
-<body class="is-preload page-home">
-
-  <!-- Intro: "property" becomes "properfy" (first visit per session) -->
-  <div class="loader" aria-hidden="true">
-    <div>
-      <svg class="wordmark is-t" viewBox="0 0 187 60" focusable="false"><g fill="none" stroke="currentColor" stroke-width="5"><path d="M2.5 16v41.5"/><circle cx="12" cy="28" r="9.5"/><path d="M29.5 16v24M29.5 28.5a10 10 0 0 1 10-10h2"/><circle cx="56" cy="28" r="9.5"/><path d="M73.5 16v41.5"/><circle cx="83" cy="28" r="9.5"/><path d="M100.5 28h19a9.5 9.5 0 1 0-2.78 6.72"/><path d="M127.5 16v24M127.5 28.5a10 10 0 0 1 10-10h2"/><path d="M165 16v12a9.5 9.5 0 0 0 19 0M184 16v29.5a9.5 9.5 0 0 1-9.5 9.5H170"/></g><g class="ft" fill="none" stroke-width="5"><path d="M143 18.5h16"/><path d="M150 13.5v17"/><path class="ft-f" pathLength="1" d="M150 14.5v-2a8 8 0 0 1 8-8h2"/><path class="ft-f" pathLength="1" d="M150 29.5V40"/><path class="ft-t" pathLength="1" d="M150 14.5V8"/><path class="ft-t" pathLength="1" d="M150 29.5a8 8 0 0 0 8 8h2"/></g></svg>
-      <p>Property, properly sorted</p>
-    </div>
-  </div>
-
+<body>
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <div id="page-wrapper">
+  <header class="wrap site-nav">
+    <a class="brand" href="index.html" aria-label="Properfy home"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">properfy</span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="index.html#how">How it works</a>
+      <a href="index.html#services">Services</a>
+      <a href="partners.html">For partners</a>
+    </nav>
+    <a class="btn btn-primary" href="start.html" data-move-cta>Start your move</a>
+  </header>
 
-    <!-- Header -->
-    <header id="header" class="alt" data-alt>
-      <a class="logo" href="index.html" aria-label="Properfy home">
-        <svg class="wordmark" viewBox="0 0 187 60" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="5"><path d="M2.5 16v41.5"/><circle cx="12" cy="28" r="9.5"/><path d="M29.5 16v24M29.5 28.5a10 10 0 0 1 10-10h2"/><circle cx="56" cy="28" r="9.5"/><path d="M73.5 16v41.5"/><circle cx="83" cy="28" r="9.5"/><path d="M100.5 28h19a9.5 9.5 0 1 0-2.78 6.72"/><path d="M127.5 16v24M127.5 28.5a10 10 0 0 1 10-10h2"/><path d="M165 16v12a9.5 9.5 0 0 0 19 0M184 16v29.5a9.5 9.5 0 0 1-9.5 9.5H170"/></g><g class="ft" fill="none" stroke-width="5"><path d="M143 18.5h16"/><path d="M150 13.5v17"/><path class="ft-f" pathLength="1" d="M150 14.5v-2a8 8 0 0 1 8-8h2"/><path class="ft-f" pathLength="1" d="M150 29.5V40"/><path class="ft-t" pathLength="1" d="M150 14.5V8"/><path class="ft-t" pathLength="1" d="M150 29.5a8 8 0 0 0 8 8h2"/></g></svg>
-      </a>
-      <nav aria-label="Primary">
-        <a class="nav-link" href="#services">Services</a>
-        <a class="nav-link" href="#how">How it works</a>
-        <a class="nav-link" href="#pricing">Pricing</a>
-        <a class="nav-link" href="#faq">Help</a>
-        <a class="nav-link nav-resume" href="start.html?view=plan" hidden>Your plan</a>
-        <a class="btn btn-primary btn-sm header-cta" href="start.html">Get started</a>
-        <a class="menu-toggle" href="#menu" aria-controls="menu" aria-expanded="false"><span>Menu</span><i data-icon="menu"></i></a>
-      </nav>
-    </header>
-
-    <main id="main">
-
-      <!-- Banner -->
-      <section id="banner" class="banner">
-        <div class="banner-bg" aria-hidden="true"><span class="glow g1"></span><span class="glow g2"></span><span class="grid-lines"></span></div>
-        <div class="inner">
-          <div class="banner-inner">
-            <div class="banner-copy">
-              <p class="pill"><span data-mark></span>Your property concierge</p>
-              <h1 class="hero-title">
-                <span class="line">Property.</span>
-                <span class="line">Properly <em>sorted.<svg viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2 8.5C22 3 55 2.5 98 6"/></svg></em></span>
-              </h1>
-              <p class="lead hero-sub">Everything you need to buy, sell, finance and move home. All in one place.</p>
-              <div class="actions">
-                <a class="btn btn-primary btn-lg" href="start.html">Get started <i data-icon="arrow"></i></a>
-                <a class="btn btn-lg" href="#services">Explore services</a>
-              </div>
-              <ul class="hero-proof">
-                <li><i data-icon="check"></i>Regulated specialists</li>
-                <li><i data-icon="check"></i>Fixed quotes, upfront</li>
-                <li><i data-icon="check"></i>Free to use</li>
-                <li><i data-icon="check"></i>England &amp; Wales only</li>
-              </ul>
-            </div>
-
-            <!-- The first interaction: what are you trying to do? -->
-            <div class="banner-card">
-              <div class="concierge" data-concierge>
-                <div class="concierge-head">
-                  <span data-mark></span>
-                  <div><strong>Properfy</strong><span class="status"><i></i>Here to help</span></div>
-                  <div class="step-dots" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
-                </div>
-                <div class="concierge-body">
-                  <div class="cq" data-step="ask">
-                    <p class="cq-title" id="cq-q">What are you doing with your property?</p>
-                    <div class="goal-grid" role="group" aria-labelledby="cq-q">
-                      <a class="goal" href="start.html?goal=buy" data-goal="buy"><span class="gi" data-icon="pin"></span>Buy a property</a>
-                      <a class="goal" href="start.html?goal=sell" data-goal="sell"><span class="gi" data-icon="tag"></span>Sell a property</a>
-                      <a class="goal" href="start.html?goal=move" data-goal="move"><span class="gi" data-icon="move"></span>Move home</a>
-                      <a class="goal" href="start.html?goal=remortgage" data-goal="remortgage"><span class="gi" data-icon="refresh"></span>Remortgage</a>
-                      <a class="goal" href="start.html?goal=invest" data-goal="invest"><span class="gi" data-icon="trend"></span>Invest</a>
-                      <a class="goal" href="start.html?goal=other" data-goal="other"><span class="gi" data-icon="chat"></span>I need something else</a>
-                    </div>
-                    <div class="cq-services" data-cq-services hidden>
-                      <p>Already know what you need?</p>
-                      <ul></ul>
-                    </div>
-                    <p class="cq-note"><i data-icon="lock"></i>Free, no obligation — and no credit check.</p>
-                  </div>
-                  <div class="cq" data-step="plan" hidden></div>
-                </div>
-              </div>
-            </div>
+  <main id="main">
+    <section class="hero">
+      <div class="wrap hero-inner">
+        <div class="hero-copy">
+          <span class="kicker">Buying · Selling · Remortgage · Transfer of equity · Auctions</span>
+          <h1>Everything your move needs. Under one roof.</h1>
+          <p class="hero-sub">Mortgage, solicitor, survey and auction help in one place, explained in plain English. Your agent, broker and solicitor all see the same progress, so you’re never chasing anyone.</p>
+          <div class="actions">
+            <a class="btn btn-primary btn-lg" href="start.html">Start your move<svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M886.6 425.4l-288-288c-5.8-5.8-13.8-9.4-22.6-9.4-17.7 0-32 14.3-32 32 0 8.8 3.6 16.8 9.4 22.6l233.4 233.4h-626.8c-17.7 0-32 14.3-32 32s14.3 32 32 32v0h626.8l-233.4 233.4c-5.8 5.8-9.4 13.8-9.4 22.6 0 17.7 14.3 32 32 32 8.8 0 16.8-3.6 22.6-9.4v0l288-288c5.8-5.8 9.4-13.8 9.4-22.6s-3.6-16.8-9.4-22.6v0z"/></svg></a>
+            <a class="btn btn-secondary btn-lg" href="#how">See how it works</a>
           </div>
+          <span class="hero-note"><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M512 704c-88.4 0-160-71.6-160-160s71.6-160 160-160c88.4 0 160 71.6 160 160v0c0 88.4-71.6 160-160 160v0zM512 448c-53 0-96 43-96 96s43 96 96 96c53 0 96-43 96-96v0c0-53-43-96-96-96v0zM512 896c-194.3-0.2-351.8-157.7-352-352v-0c0-125.6 58-258.7 168-385 49.4-56.9 103.8-107.2 163.1-151.3l2.7-1.9c5.1-3.6 11.5-5.8 18.4-5.8s13.2 2.2 18.5 5.9l-0.1-0.1c61.9 46 116.1 96.3 164.4 151.9l1.1 1.3c109.8 126.3 168 259.4 168 385-0.2 194.3-157.7 351.8-352 352h-0zM512 72c-66.1 52-288 243-288 472 0 159.1 128.9 288 288 288s288-128.9 288-288v0c0-228.9-221.9-420-288-472z"/></svg>For homes in England and Wales.</span>
+        </div>
 
-          <ul class="trust-strip">
-            <li><i data-icon="shield"></i><span>Regulated specialists only<small>SRA · CLC · FCA · RICS · BAR</small></span></li>
-            <li><i data-icon="tag"></i><span>Fixed quotes before you commit<small>Every fee itemised</small></span></li>
-            <li><i data-icon="lock"></i><span>Your details, your say<small>Shared only with who you choose</small></span></li>
-            <li><i data-icon="chat"></i><span>Real people, not call centres<small>Help at every step</small></span></li>
-          </ul>
+        <div class="track-card" role="img" aria-label="Example move tracker: step 5 of 8, booking a survey">
+          <div class="track-head">
+            <div><span class="kicker">Buying</span><span class="track-addr">14 Maple Terrace, E8</span></div>
+            <span class="tag tag-accent">Step 5 of 8</span>
+          </div>
+          <div class="bar"><span style="width:56%"></span></div>
+          <div class="track-rows">
+            <div class="track-row"><svg class="i done-icon" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M512 864c-229.8 0-416-186.2-416-416s186.2-416 416-416c229.8 0 416 186.2 416 416v0c-0.2 229.7-186.3 415.8-416 416h-0zM694.6 521.4l-224-224c-5.8-5.8-13.8-9.4-22.6-9.4s-16.8 3.6-22.6 9.4v0l-96 96c-5.8 5.8-9.4 13.8-9.4 22.6 0 17.7 14.3 32 32 32 8.8 0 16.8-3.6 22.6-9.4l73.4-73.4 201.4 201.4c5.8 5.8 13.8 9.4 22.6 9.4 17.7 0 32-14.3 32-32 0-8.8-3.6-16.8-9.4-22.6v0z"/></svg><span class="name">Mortgage offer issued</span><span class="meta">Aisha · Broker</span></div>
+            <div class="track-row"><svg class="i done-icon" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M512 864c-229.8 0-416-186.2-416-416s186.2-416 416-416c229.8 0 416 186.2 416 416v0c-0.2 229.7-186.3 415.8-416 416h-0zM694.6 521.4l-224-224c-5.8-5.8-13.8-9.4-22.6-9.4s-16.8 3.6-22.6 9.4v0l-96 96c-5.8 5.8-9.4 13.8-9.4 22.6 0 17.7 14.3 32 32 32 8.8 0 16.8-3.6 22.6-9.4l73.4-73.4 201.4 201.4c5.8 5.8 13.8 9.4 22.6 9.4 17.7 0 32-14.3 32-32 0-8.8-3.6-16.8-9.4-22.6v0z"/></svg><span class="name">Solicitor instructed</span><span class="meta">Daniel · Solicitor</span></div>
+            <div class="track-row current"><span class="ring current"></span><span class="name">Book your survey</span><span class="meta">You · this week</span></div>
+          </div>
+          <div class="track-quote"><span>Daniel: “Searches are back and all clear. Next up is your survey.”</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <section class="section" id="how" aria-labelledby="how-title">
+        <div class="section-head">
+          <span class="kicker">How it works</span>
+          <h2 id="how-title">Pick your move. We’ll show you every step.</h2>
+        </div>
+        <div class="tiles" role="group" aria-label="Choose a move" data-journey-tiles>
+          <button type="button" class="tile" data-journey="buy" aria-pressed="true"><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M960 128h-64v288l9.4-9.4c5.8-5.8 13.8-9.4 22.6-9.4 17.7 0 32 14.3 32 32 0 8.9-3.6 16.9-9.4 22.7v0l-393.4 393.3c-11.6 11.6-27.6 18.7-45.2 18.7s-33.7-7.2-45.2-18.7l-393.4-393.3c-5.8-5.8-9.4-13.8-9.4-22.6 0-17.7 14.3-32 32-32 8.8 0 16.8 3.6 22.6 9.4v0l9.4 9.2v-288h-64c-17.7 0-32-14.3-32-32s14.3-32 32-32v0h896c17.7 0 32 14.3 32 32s-14.3 32-32 32v0zM192 480l320 320 320-320v-352h-192v224c0 17.7-14.3 32-32 32v0h-192c-17.7 0-32-14.3-32-32v0-224h-192zM576 128h-128v192h128z"/></svg><span class="tile-label">Buying</span><span class="tile-blurb">From mortgage in principle to getting the keys.</span></button>
+          <button type="button" class="tile" data-journey="sell" aria-pressed="false"><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M480 96c0-17.7-14.3-32-32-32v0h-256c-17.7 0-32 14.3-32 32v0 704c0 17.7 14.3 32 32 32v0h256c17.7 0 32-14.3 32-32s-14.3-32-32-32v0h-224v-640h224c17.7 0 32-14.3 32-32v0zM918.6 470.6l-160 160c-5.8 5.8-13.8 9.4-22.6 9.4-17.7 0-32-14.3-32-32 0-8.8 3.6-16.8 9.4-22.6l105.4-105.4h-370.8c-17.7 0-32-14.3-32-32s14.3-32 32-32v0h370.8l-105.4-105.4c-5.8-5.8-9.4-13.8-9.4-22.6 0-17.7 14.3-32 32-32 8.8 0 16.8 3.6 22.6 9.4l160 160c5.8 5.8 9.4 13.8 9.4 22.6s-3.6 16.8-9.4 22.6v0z"/></svg><span class="tile-label">Selling</span><span class="tile-blurb">From valuation to handing over the keys.</span></button>
+          <button type="button" class="tile" data-journey="remo" aria-pressed="false"><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M896 768v-192c0-17.7-14.3-32-32-32v0h-192c-17.7 0-32 14.3-32 32s14.3 32 32 32v0h114.8l-58.5 58.5c-57.4 57.7-136.8 93.4-224.5 93.7h-1.9c-0.2 0-0.5 0-0.7 0-86.8 0-165.5-34.8-222.9-91.1l0 0c-5.7-5.3-13.4-8.6-21.8-8.6-17.7 0-32 14.3-32 32 0 8.7 3.5 16.6 9.1 22.4l-0-0c69.2 67.6 163.9 109.4 268.4 109.4 106.1 0 202.1-43 271.6-112.5l0-0 58.4-58.5v114.8c0 17.7 14.3 32 32 32s32-14.3 32-32v0zM745.6 226.8c-57.6-56.3-136.6-91.1-223.6-91.1-88.4 0-168.4 35.8-226.3 93.7l-58.5 58.5h114.8c17.7 0 32 14.3 32 32s-14.3 32-32 32v0h-192c-17.7 0-32-14.3-32-32v0-192c0-17.7 14.3-32 32-32s32 14.3 32 32v0 114.8l58.5-58.5c68.9-69.2 164.1-112.2 269.4-112.5h2.2c0.3-0 0.6-0 1-0 104.1 0 198.5 41.7 267.4 109.4l-0.1-0.1c5.6 5.8 9.1 13.7 9.1 22.4 0 17.7-14.3 32-32 32-8.4 0-16.1-3.3-21.9-8.6l0 0z"/></svg><span class="tile-label">Remortgage</span><span class="tile-blurb">Switch to a better deal before yours ends.</span></button>
+          <button type="button" class="tile" data-journey="toe" aria-pressed="false"><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M979.2 358.4c-5.3-4-12-6.4-19.2-6.4-10.4 0-19.7 5-25.5 12.7l-0.1 0.1c-38 50.7-98 83.2-165.6 83.2-0.3 0-0.6-0-0.8-0h0c-13.2 0-24.5 8-29.4 19.4l-0.1 0.2c-1.6 3.7-2.5 7.9-2.5 12.4s0.9 8.8 2.6 12.6l-0.1-0.2c5 11.6 16.3 19.6 29.5 19.6v0c53 0 96 43 96 96 0 53-43 96-96 96-44.5 0-81.9-30.3-92.8-71.3l-0.2-0.7c-3.7-13.9-16.2-24-31-24-17.7 0-32 14.3-32 32 0 2.8 0.4 5.6 1.1 8.2l-0.1-0.2c18.4 69.5 80.8 120 154.9 120 88.4 0 160-71.6 160-160 0-46.7-20-88.7-51.8-117.9l-0.1-0.1c44.5-19.6 81.4-49.1 109.2-86l0.5-0.7c4-5.3 6.4-11.9 6.4-19.2 0-10.5-5-19.8-12.8-25.6l-0.1-0.1zM763.7 112c3.1-4.9 5-10.8 5-17.2 0-17.7-14.3-32-32-32-12.2 0-22.9 6.9-28.3 17l-0.1 0.2c-40.4 67.5-113.2 112.1-196.3 112.1s-155.9-44.5-195.7-111l-0.6-1c-5.5-10.3-16.1-17.2-28.4-17.2-17.7 0-32 14.3-32 32 0 6.4 1.9 12.3 5.1 17.3l-0.1-0.1c31.3 53.1 77.6 94.5 133.1 119l1.8 0.7c-46 35.4-75.3 90.5-75.3 152.4 0 106 86 192 192 192s192-86 192-192c0-61.9-29.3-117-74.8-152.1l-0.4-0.3c57.3-25.1 103.6-66.5 134.2-118.3l0.7-1.3zM512 256c70.7 0 128 57.3 128 128s-57.3 128-128 128c-70.7 0-128-57.3-128-128v0c0-70.7 57.3-128 128-128v0zM288 480c0 17.7-14.3 32-32 32v0c-53 0-96 43-96 96 0 53 43 96 96 96 44.5 0 81.9-30.3 92.8-71.3l0.2-0.7c3.7-13.9 16.2-24 31-24 17.7 0 32 14.3 32 32 0 2.8-0.4 5.6-1.1 8.2l0.1-0.2c-18.4 69.5-80.8 120-154.9 120-88.4 0-160-71.6-160-160 0-46.7 20-88.7 51.8-117.9l0.1-0.1c-44.4-19.6-81.3-49.2-109.1-86l-0.5-0.7c-4-5.3-6.4-12-6.4-19.2 0-17.7 14.3-32 32-32 10.4 0 19.7 5 25.5 12.7l0.1 0.1c38 50.7 98 83.2 165.6 83.2 0.3 0 0.6-0 0.8-0h-0c17.7 0 32 14.3 32 32v0z"/></svg><span class="tile-label">Transfer of equity</span><span class="tile-blurb">Add or remove someone from the ownership.</span></button>
+          <button type="button" class="tile" data-journey="auc" aria-pressed="false"><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M973.3 493.2l-64 64c-11.6 11.6-27.6 18.7-45.2 18.7-14.4 0-27.6-4.7-38.3-12.7l0.2 0.1-198.6 198.6c7.9 10.5 12.6 23.8 12.6 38.2 0 17.6-7.1 33.6-18.7 45.2l-64 64c-11.6 11.6-27.6 18.8-45.3 18.8s-33.7-7.2-45.3-18.8l-256-256c-11.6-11.6-18.8-27.6-18.8-45.3s7.2-33.7 18.8-45.3l64-64c11.6-11.5 27.5-18.7 45.2-18.7 14.4 0 27.6 4.7 38.3 12.7l-0.2-0.1 28.7-28.7-261.5-261.5c-16.2-17.7-26.2-41.4-26.2-67.5 0-55.2 44.8-100 100-100 26 0 49.8 10 67.6 26.3l-0.1-0.1 261.5 261.5 28.7-28.6c-7.9-10.5-12.6-23.8-12.6-38.2 0-17.6 7.1-33.6 18.7-45.2l64-64c11.6-11.6 27.6-18.8 45.3-18.8s33.7 7.2 45.3 18.8l256 256c11.6 11.6 18.8 27.6 18.8 45.3s-7.2 33.7-18.8 45.3v0zM320 544l-64 64 256 256 64-64zM221.3 106.5c-6.5-6.5-15.5-10.5-25.4-10.5s-18.9 4-25.4 10.5l0-0c-6.5 6.5-10.4 15.5-10.4 25.4s4 18.9 10.5 25.4l261.5 261.5 50.8-50.7zM404 537.4l178.6 178.6 197.4-197.4-178.6-178.6zM672 192l-64 64 256 256 64-64z"/></svg><span class="tile-label">Auction</span><span class="tile-blurb">Buy or sell under the hammer, done safely.</span></button>
+        </div>
+        <ol class="steps" data-journey-steps aria-live="polite">
+          <li class="step-row"><span class="step-num">01</span><div class="step-main"><div class="step-text"><span class="step-title">Get a mortgage in principle</span><span class="step-desc">A quick check of how much a lender is likely to lend you. Agents take your offer more seriously with one.</span></div><div class="step-meta"><span class="step-time">1 day</span><span class="tag tag-outline">We arrange: Mortgage</span></div></div></li>
+          <li class="step-row"><span class="step-num">02</span><div class="step-main"><div class="step-text"><span class="step-title">View homes</span><span class="step-desc">Book viewings with the agent. Take photos and ask about the bills, the neighbours and why they’re selling.</span></div><div class="step-meta"><span class="step-time">Your pace</span></div></div></li>
+          <li class="step-row"><span class="step-num">03</span><div class="step-main"><div class="step-text"><span class="step-title">Make an offer</span><span class="step-desc">Once it’s accepted, the agent tells everyone involved and the home should come off the market.</span></div><div class="step-meta"><span class="step-time">1–3 days</span></div></div></li>
+          <li class="step-row"><span class="step-num">04</span><div class="step-main"><div class="step-text"><span class="step-title">Instruct a solicitor</span><span class="step-desc">They do the legal checks and move the money safely. This is also called conveyancing.</span></div><div class="step-meta"><span class="step-time">8–12 weeks</span><span class="tag tag-outline">We arrange: Conveyancing</span></div></div></li>
+          <li class="step-row"><span class="step-num">05</span><div class="step-main"><div class="step-text"><span class="step-title">Get a survey</span><span class="step-desc">An expert checks the condition of the home, so you know about problems before you commit.</span></div><div class="step-meta"><span class="step-time">1–2 weeks</span><span class="tag tag-outline">We arrange: Survey</span></div></div></li>
+          <li class="step-row"><span class="step-num">06</span><div class="step-main"><div class="step-text"><span class="step-title">Renegotiate if needed</span><span class="step-desc">If the survey finds issues, you can ask for a lower price or for repairs. We’ll help you word it.</span></div><div class="step-meta"><span class="step-time">If needed</span></div></div></li>
+          <li class="step-row"><span class="step-num">07</span><div class="step-main"><div class="step-text"><span class="step-title">Exchange contracts</span><span class="step-desc">The deal becomes legally binding and you pay your deposit. The moving date is now fixed.</span></div><div class="step-meta"><span class="step-time">1 day</span></div></div></li>
+          <li class="step-row"><span class="step-num">08</span><div class="step-main"><div class="step-text"><span class="step-title">Complete and get the keys</span><span class="step-desc">The money moves, the home is yours, and the agent hands over the keys.</span></div><div class="step-meta"><span class="step-time">Moving day</span></div></div></li>
+        </ol>
+        <div class="actions"><a class="btn btn-primary btn-md" href="start.html?journey=buy" data-journey-start>Start buying with Properfy<svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M886.6 425.4l-288-288c-5.8-5.8-13.8-9.4-22.6-9.4-17.7 0-32 14.3-32 32 0 8.8 3.6 16.8 9.4 22.6l233.4 233.4h-626.8c-17.7 0-32 14.3-32 32s14.3 32 32 32v0h626.8l-233.4 233.4c-5.8 5.8-9.4 13.8-9.4 22.6 0 17.7 14.3 32 32 32 8.8 0 16.8-3.6 22.6-9.4v0l288-288c5.8-5.8 9.4-13.8 9.4-22.6s-3.6-16.8-9.4-22.6v0z"/></svg></a></div>
+      </section>
+
+      <section class="section" id="services" aria-labelledby="services-title">
+        <div class="section-head">
+          <span class="kicker">Services</span>
+          <h2 id="services-title">Four services. One login.</h2>
+        </div>
+        <div class="services-grid">
+          <div class="card elev-sm service-card"><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M96 544h96v-256h-64c-17.7 0-32-14.3-32-32s14.3-32 32-32v0h768c17.7 0 32 14.3 32 32s-14.3 32-32 32v0h-64v256h96c17.7 0 32 14.3 32 32 0 11.5-6 21.5-15.1 27.2l-0.1 0.1-416 256c-4.8 3-10.6 4.7-16.8 4.7s-12-1.8-16.9-4.8l0.1 0.1-416-256c-9.2-5.7-15.2-15.8-15.2-27.2 0-17.7 14.3-32 32-32h0zM256 544h128v-256h-128zM576 544v-256h-128v256zM768 288h-128v256h128zM512 794.4l303-186.4h-605.9zM992 128c0-17.7-14.3-32-32-32v0h-896c-17.7 0-32 14.3-32 32s14.3 32 32 32v0h896c17.7 0 32-14.3 32-32v0z"/></svg><span class="card-title">Mortgages</span><p class="card-body">Mortgage in principle, purchase, remortgage and bridging, from an adviser who compares the market.</p><span class="card-meta">Buying · Remortgage · Auction · Transfer</span></div>
+          <div class="card elev-sm service-card"><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M957.7 428l-128 320c-4.8 11.9-16.3 20.1-29.7 20.1-2.5 0-4.8-0.3-7.1-0.8l0.2 0-249.1-55.4v88c0 17.7-14.3 32-32 32s-32-14.3-32-32v0-102.3l-263-58.4c-10.4-2.4-18.8-9.5-22.7-19l-0.1-0.2v-0.2l-128-319.8c-1.4-3.5-2.3-7.5-2.3-11.8 0-0.1 0-0.1 0-0.2v0c0-93.2 98.2-128 160-128s160 34.8 160 128c0 0.1 0 0.1 0 0.2 0 4.3-0.8 8.3-2.4 12l0.1-0.2-114 284.9 212.3 47.1v-504h-64c-17.7 0-32-14.3-32-32s14.3-32 32-32v0h192c17.7 0 32 14.3 32 32s-14.3 32-32 32v0h-64v518.3l204 45.3-105.7-263.6c-1.4-3.5-2.3-7.5-2.3-11.8 0-0.1 0-0.1 0-0.2v0c0-93.2 98.2-128 160-128s160 34.8 160 128c0 0.1 0 0.1 0 0.2 0 4.3-0.8 8.3-2.4 12l0.1-0.2zM224 224c-30.1 0-91 14.4-95.7 58.6l95.7 239.3 95.7-239.3c-4.7-44.1-65.6-58.6-95.7-58.6zM800 352c-30.1 0-91 14.4-95.7 58.6l95.7 239.3 95.7-239.3c-4.7-44.1-65.6-58.6-95.7-58.6z"/></svg><span class="card-title">Conveyancing</span><p class="card-body">Regulated solicitors with fixed quotes and updates posted straight to your tracker.</p><span class="card-meta">All journeys</span></div>
+          <div class="card elev-sm service-card"><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M918.6 86.6l-200.3 200.2c50.8 60.6 81.6 139.5 81.6 225.6 0 194.6-157.8 352.4-352.4 352.4s-352.4-157.8-352.4-352.4c0-194.6 157.8-352.4 352.4-352.4 86.1 0 164.9 30.8 226.1 82.1l-0.6-0.5 200.2-200.3c5.8-5.8 13.8-9.4 22.6-9.4 17.7 0 32 14.3 32 32 0 8.8-3.6 16.8-9.4 22.6v0zM160 512c0 159.1 128.9 288 288 288s288-128.9 288-288c0-159.1-128.9-288-288-288v0c-159 0.2-287.8 129-288 288v0z"/></svg><span class="card-title">Surveys</span><p class="card-body">Level 1 to 3 surveys, with the findings explained. If they turn up problems, we help you renegotiate.</p><span class="card-meta">Buying · Auction</span></div>
+          <div class="card elev-sm service-card"><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M973.3 493.2l-64 64c-11.6 11.6-27.6 18.7-45.2 18.7-14.4 0-27.6-4.7-38.3-12.7l0.2 0.1-198.6 198.6c7.9 10.5 12.6 23.8 12.6 38.2 0 17.6-7.1 33.6-18.7 45.2l-64 64c-11.6 11.6-27.6 18.8-45.3 18.8s-33.7-7.2-45.3-18.8l-256-256c-11.6-11.6-18.8-27.6-18.8-45.3s7.2-33.7 18.8-45.3l64-64c11.6-11.5 27.5-18.7 45.2-18.7 14.4 0 27.6 4.7 38.3 12.7l-0.2-0.1 28.7-28.7-261.5-261.5c-16.2-17.7-26.2-41.4-26.2-67.5 0-55.2 44.8-100 100-100 26 0 49.8 10 67.6 26.3l-0.1-0.1 261.5 261.5 28.7-28.6c-7.9-10.5-12.6-23.8-12.6-38.2 0-17.6 7.1-33.6 18.7-45.2l64-64c11.6-11.6 27.6-18.8 45.3-18.8s33.7 7.2 45.3 18.8l256 256c11.6 11.6 18.8 27.6 18.8 45.3s-7.2 33.7-18.8 45.3v0zM320 544l-64 64 256 256 64-64zM221.3 106.5c-6.5-6.5-15.5-10.5-25.4-10.5s-18.9 4-25.4 10.5l0-0c-6.5 6.5-10.4 15.5-10.4 25.4s4 18.9 10.5 25.4l261.5 261.5 50.8-50.7zM404 537.4l178.6 178.6 197.4-197.4-178.6-178.6zM672 192l-64 64 256 256 64-64z"/></svg><span class="card-title">Auctions</span><p class="card-body">Legal pack review, finance lined up in time and a plan for completing within 28 days.</p><span class="card-meta">Buying or selling at auction</span></div>
+        </div>
+        <p class="risk-note">Your home may be repossessed if you do not keep up repayments on your mortgage.</p>
+      </section>
+
+      <section class="band" aria-labelledby="band-title">
+        <div class="band-copy">
+          <h2 id="band-title">One tracker. Everyone on the same page.</h2>
+          <p>When your solicitor ticks off a step, your agent and broker see it too. No more “any update?” emails.</p>
+        </div>
+        <div class="band-roles">
+          <div class="band-role"><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M923.7 112c-60.9 105.3-154.8 180.8-264.4 216.6 84.8 51.1 140.7 142.8 140.7 247.5 0 159.1-128.9 288-288 288s-288-128.9-288-288c0-104.7 55.9-196.3 139.4-246.7l1.3-0.7c-109.6-35.8-203.4-111.3-264.4-216.6-3-4.8-4.7-10.5-4.7-16.7 0-17.7 14.3-32 32-32 12.1 0 22.6 6.7 28 16.6l0.1 0.2c75.4 130.2 208.6 208 356.3 208s280.9-77.8 356.3-208c5.5-10 16-16.7 28.1-16.7 17.7 0 32 14.3 32 32 0 6.2-1.8 12-4.8 16.9l0.1-0.1zM288 576c0 123.7 100.3 224 224 224s224-100.3 224-224c0-123.7-100.3-224-224-224v0c-123.7 0.1-223.9 100.3-224 224v0z"/></svg><span>You</span></div>
+          <div class="band-role"><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M928 576c0 0.1 0 0.1 0 0.2 0 3.1-0.4 6-1.3 8.8l0.1-0.2-57.4 200.8c-8 26.9-32.4 46.2-61.4 46.4h-592c-29-0.2-53.4-19.5-61.3-45.9l-0.1-0.5-57.4-200.8c-0.8-2.6-1.2-5.6-1.2-8.8 0-0 0-0 0-0v0-64c0-52.2 25-98.5 63.6-127.7l0.4-0.3v-288c0-17.7 14.3-32 32-32v0h640c17.7 0 32 14.3 32 32v0 288c39 29.5 64 75.8 64 128v0 64zM216 768h592l45.7-160h-683.2zM416 544h192v-32c0-53-43-96-96-96s-96 43-96 96v0zM352 544v-32c-0-53-43-96-96-96-16.3 0-31.6 4-45 11.2l0.5-0.3c-2.1 1.6-4.5 3.1-7.1 4.2l-0.2 0.1c-26.8 17.3-44.2 47-44.2 80.8v32zM800 128h-576v227.2c9.6-2 20.7-3.2 32-3.2h0c52.2 0 98.5 25 127.7 63.6l0.3 0.4c29.5-39 75.8-64 128-64s98.5 25 127.7 63.6l0.3 0.4c29.5-39 75.8-64 128-64v0c11.3 0 22.4 1.2 33.1 3.4l-1.1-0.2zM819.7 431.2c-2.7-1.2-5.1-2.6-7.3-4.3l0.1 0.1c-12.9-6.9-28.2-10.9-44.5-10.9-53 0-96 43-96 95.9v32h192v-32c-0-33.8-17.5-63.5-43.9-80.6l-0.4-0.2z"/></svg><span>Estate agent</span></div>
+          <div class="band-role"><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M96 544h96v-256h-64c-17.7 0-32-14.3-32-32s14.3-32 32-32v0h768c17.7 0 32 14.3 32 32s-14.3 32-32 32v0h-64v256h96c17.7 0 32 14.3 32 32 0 11.5-6 21.5-15.1 27.2l-0.1 0.1-416 256c-4.8 3-10.6 4.7-16.8 4.7s-12-1.8-16.9-4.8l0.1 0.1-416-256c-9.2-5.7-15.2-15.8-15.2-27.2 0-17.7 14.3-32 32-32h0zM256 544h128v-256h-128zM576 544v-256h-128v256zM768 288h-128v256h128zM512 794.4l303-186.4h-605.9zM992 128c0-17.7-14.3-32-32-32v0h-896c-17.7 0-32 14.3-32 32s14.3 32 32 32v0h896c17.7 0 32-14.3 32-32v0z"/></svg><span>Mortgage broker</span></div>
+          <div class="band-role"><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M957.7 428l-128 320c-4.8 11.9-16.3 20.1-29.7 20.1-2.5 0-4.8-0.3-7.1-0.8l0.2 0-249.1-55.4v88c0 17.7-14.3 32-32 32s-32-14.3-32-32v0-102.3l-263-58.4c-10.4-2.4-18.8-9.5-22.7-19l-0.1-0.2v-0.2l-128-319.8c-1.4-3.5-2.3-7.5-2.3-11.8 0-0.1 0-0.1 0-0.2v0c0-93.2 98.2-128 160-128s160 34.8 160 128c0 0.1 0 0.1 0 0.2 0 4.3-0.8 8.3-2.4 12l0.1-0.2-114 284.9 212.3 47.1v-504h-64c-17.7 0-32-14.3-32-32s14.3-32 32-32v0h192c17.7 0 32 14.3 32 32s-14.3 32-32 32v0h-64v518.3l204 45.3-105.7-263.6c-1.4-3.5-2.3-7.5-2.3-11.8 0-0.1 0-0.1 0-0.2v0c0-93.2 98.2-128 160-128s160 34.8 160 128c0 0.1 0 0.1 0 0.2 0 4.3-0.8 8.3-2.4 12l0.1-0.2zM224 224c-30.1 0-91 14.4-95.7 58.6l95.7 239.3 95.7-239.3c-4.7-44.1-65.6-58.6-95.7-58.6zM800 352c-30.1 0-91 14.4-95.7 58.6l95.7 239.3 95.7-239.3c-4.7-44.1-65.6-58.6-95.7-58.6z"/></svg><span>Solicitor</span></div>
         </div>
       </section>
 
-      <!-- Wrapper -->
-      <div id="wrapper">
-
-        <!-- Services intro. Service spotlights are rendered from the registry after this section. -->
-        <section class="wrapper" id="services" data-services-intro>
-          <div class="inner">
-            <div class="section-head" data-reveal>
-              <p class="eyebrow">Everything in one place</p>
-              <h2><span data-live-count>Five</span> essentials today. One plan for all of them.</h2>
-              <p class="lead">The services behind every move, in one place — explained simply, priced transparently and handled by regulated specialists.</p>
-              <ul class="chip-nav" data-chip-nav></ul>
-              <noscript>
-                <ul class="chip-nav">
-                  <li><a href="service.html?s=conveyancing">Conveyancing</a></li>
-                  <li><a href="service.html?s=mortgage">Mortgages</a></li>
-                  <li><a href="service.html?s=survey">Property Surveys</a></li>
-                  <li><a href="service.html?s=auctions">Property Auctions</a></li>
-                  <li><a href="service.html?s=removals">Removals</a></li>
-                </ul>
-              </noscript>
-            </div>
-          </div>
-        </section>
-
-        <!-- Coming soon -->
-        <section class="wrapper" id="coming-soon">
-          <div class="inner">
-            <div class="section-head" data-reveal>
-              <p class="eyebrow">Coming to Properfy</p>
-              <h2>Built to grow with your home.</h2>
-              <p class="lead">We’re adding everything around your property, so the next thing you need is already here. Tap any service to hear first.</p>
-            </div>
-            <ul class="features" data-soon></ul>
-          </div>
-        </section>
-
-        <!-- How it works -->
-        <section class="wrapper alt style2" id="how">
-          <div class="inner">
-            <div class="section-head" data-reveal>
-              <p class="eyebrow">How Properfy works</p>
-              <h2>You tell us the goal. We sort the rest.</h2>
-              <p class="lead">No need to understand the property industry first. Start with what you’re trying to do.</p>
-            </div>
-            <ol class="steps">
-              <li style="--i:0"><span class="n">01</span><h3>Tell us what you’re doing</h3><p>Buying, selling, moving, remortgaging or investing. A few quick questions — only the ones that matter to you.</p></li>
-              <li style="--i:1"><span class="n">02</span><h3>Get your plan</h3><p>What you need, in what order, and what it typically costs — before you speak to anyone.</p></li>
-              <li style="--i:2"><span class="n">03</span><h3>Meet your specialists</h3><p>Regulated, checked partners send fixed quotes. You see exactly who they are, then choose.</p></li>
-              <li style="--i:3"><span class="n">04</span><h3>Track it in one place</h3><p>One plan for the whole journey, with a clear next step at every stage. No chasing.</p></li>
-            </ol>
-          </div>
-        </section>
-
-        <!-- Pricing -->
-        <section class="wrapper" id="pricing">
-          <div class="inner">
-            <div class="section-head split" data-reveal>
-              <div>
-                <p class="eyebrow">Transparent by default</p>
-                <h2>What things typically cost.</h2>
-                <p class="lead">Guide prices, in plain sight. Your quote is fixed and in writing before you commit to anything.</p>
-              </div>
-              <div class="actions"><a class="btn" href="start.html">Get your tailored plan <i data-icon="arrow"></i></a></div>
-            </div>
-            <table class="price-table" data-reveal>
-              <thead><tr><th scope="col">Service</th><th scope="col">Guide price</th><th scope="col">Timescale</th><th scope="col">Who you’ll work with</th><th scope="col"><span class="sr-only">Next step</span></th></tr></thead>
-              <tbody data-pricing></tbody>
-            </table>
-            <div class="price-promise" data-reveal>
-              <div><i data-icon="check"></i><p><strong>Free to use</strong>Properfy costs you nothing. You only pay for the services you choose, at the price you were quoted.</p></div>
-              <div><i data-icon="check"></i><p><strong>Fixed quotes, in writing</strong>No hourly rates or surprise extras. Third-party costs are listed separately, at cost.</p></div>
-              <div><i data-icon="check"></i><p><strong>No obligation</strong>Get quotes, ask questions, change your mind. You only commit when you instruct.</p></div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Reviews -->
-        <section class="wrapper alt spot2" id="reviews">
-          <div class="inner">
-            <div class="section-head" data-reveal>
-              <p class="eyebrow">What customers say</p>
-              <h2>One plan. Far fewer phone calls.</h2>
-            </div>
-            <!-- Illustrative reviews: replace with verified reviews (e.g. a Trustpilot or Feefo feed) before launch. -->
-            <div class="reviews">
-              <figure class="review" data-reveal>
-                <div class="stars" aria-label="5 out of 5 stars"><i data-icon="star"></i><i data-icon="star"></i><i data-icon="star"></i><i data-icon="star"></i><i data-icon="star"></i></div>
-                <blockquote>“First flat, zero idea what a ‘Level 2 survey’ was. Properfy explained it in one line and I had fixed quotes the same day.”</blockquote>
-                <div class="svc-tags"><span>Survey</span><span>Conveyancing</span></div>
-                <figcaption><span class="avatar" aria-hidden="true">AK</span><span><strong>Aisha K.</strong>First-time buyer · Leeds</span></figcaption>
-              </figure>
-              <figure class="review" data-reveal style="--d:.1s">
-                <div class="stars" aria-label="5 out of 5 stars"><i data-icon="star"></i><i data-icon="star"></i><i data-icon="star"></i><i data-icon="star"></i><i data-icon="star"></i></div>
-                <blockquote>“Selling and buying used to mean six different phone numbers. This time it was one plan, and we always knew what happened next.”</blockquote>
-                <div class="svc-tags"><span>Conveyancing</span><span>Mortgage</span><span>Removals</span></div>
-                <figcaption><span class="avatar" aria-hidden="true">TP</span><span><strong>Tom &amp; Priya</strong>Moving home · Bristol</span></figcaption>
-              </figure>
-              <figure class="review" data-reveal style="--d:.2s">
-                <div class="stars" aria-label="5 out of 5 stars"><i data-icon="star"></i><i data-icon="star"></i><i data-icon="star"></i><i data-icon="star"></i><i data-icon="star"></i></div>
-                <blockquote>“My fixed rate was about to end and I’d left it late. An adviser called the next morning and I switched before the standard rate kicked in.”</blockquote>
-                <div class="svc-tags"><span>Remortgage</span></div>
-                <figcaption><span class="avatar" aria-hidden="true">DR</span><span><strong>Daniel R.</strong>Remortgaging · Manchester</span></figcaption>
-              </figure>
-            </div>
-            <p class="sample-note" data-sample-note><i data-icon="info"></i>Illustrative reviews, shown while verified customer reviews are connected.</p>
-          </div>
-        </section>
-
-        <!-- FAQ -->
-        <section class="wrapper style2" id="faq">
-          <div class="inner">
-            <div class="section-head" data-reveal>
-              <p class="eyebrow">Help, without the jargon</p>
-              <h2>Questions, answered.</h2>
-            </div>
-            <div class="faq-grid">
-              <div data-reveal>
-                <h3>About Properfy</h3>
-                <details class="qa"><summary>What is Properfy?<span class="pm" data-icon="plus"></span></summary><div class="qa-body"><p>One place for everything around your property. Tell us what you’re doing — buying, selling, moving, remortgaging or investing — and we’ll build your plan, connect you with regulated specialists and keep everything on track.</p></div></details>
-                <details class="qa"><summary>Who can use Properfy?<span class="pm" data-icon="plus"></span></summary><div class="qa-body"><p>Customers in England and Wales. Property law and the buying process are different in Scotland and Northern Ireland, so we don’t cover them, and we can’t take enquiries from outside England and Wales.</p></div></details>
-                <details class="qa"><summary>Is it free to use?<span class="pm" data-icon="plus"></span></summary><div class="qa-body"><p>Yes. Properfy is free for customers. You only pay for the services you choose, at the price you were quoted upfront.</p></div></details>
-                <details class="qa"><summary>Who will I actually be dealing with?<span class="pm" data-icon="plus"></span></summary><div class="qa-body"><p>Independent, regulated specialists — conveyancers, mortgage advisers, surveyors, auction houses and removals firms. You’ll see who they are, who regulates them and their price before you commit.</p></div></details>
-                <details class="qa"><summary>What happens to my details?<span class="pm" data-icon="plus"></span></summary><div class="qa-body"><p>We only share your details with the specialists you choose, for the services you ask for. We never sell your data. Read our <a class="inline" href="privacy.html">privacy notice</a>.</p></div></details>
-                <details class="qa"><summary>Do I have to use every service?<span class="pm" data-icon="plus"></span></summary><div class="qa-body"><p>Not at all. Your plan recommends what’s useful for your journey. Switch anything off, and add it back whenever you like.</p></div></details>
-              </div>
-              <div data-reveal style="--d:.1s">
-                <h3>Jargon buster</h3>
-                <details class="qa"><summary>Exchange of contracts<span class="pm" data-icon="plus"></span></summary><div class="qa-body"><p>The moment a sale becomes legally binding. The buyer usually pays a deposit and the completion date is fixed.</p></div></details>
-                <details class="qa"><summary>Completion<span class="pm" data-icon="plus"></span></summary><div class="qa-body"><p>Moving day, legally speaking. The money is transferred, ownership changes hands and you can move in.</p></div></details>
-                <details class="qa"><summary>Agreement in principle<span class="pm" data-icon="plus"></span></summary><div class="qa-body"><p>A lender’s estimate of how much they might lend you, usually based on a soft credit check. Also called a decision or mortgage in principle.</p></div></details>
-                <details class="qa"><summary>Searches<span class="pm" data-icon="plus"></span></summary><div class="qa-body"><p>Checks your conveyancer runs with the local council, water company and others — covering things like planning, flood risk and drainage.</p></div></details>
-                <details class="qa"><summary>Chain<span class="pm" data-icon="plus"></span></summary><div class="qa-body"><p>A line of linked sales and purchases that depend on each other. If one link is delayed, everyone waits.</p></div></details>
-                <details class="qa"><summary>Freehold vs. leasehold<span class="pm" data-icon="plus"></span></summary><div class="qa-body"><p>Freehold means you own the building and the land it stands on. Leasehold means you own it for a fixed number of years, and usually pay ground rent and service charges.</p></div></details>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- CTA -->
-        <section class="wrapper alt coral" id="cta">
-          <div class="inner" data-reveal>
-            <div class="cta-mark"><a class="logo" href="start.html" aria-label="Get started with Properfy">
-              <svg class="wordmark" viewBox="0 0 187 60" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="5"><path d="M2.5 16v41.5"/><circle cx="12" cy="28" r="9.5"/><path d="M29.5 16v24M29.5 28.5a10 10 0 0 1 10-10h2"/><circle cx="56" cy="28" r="9.5"/><path d="M73.5 16v41.5"/><circle cx="83" cy="28" r="9.5"/><path d="M100.5 28h19a9.5 9.5 0 1 0-2.78 6.72"/><path d="M127.5 16v24M127.5 28.5a10 10 0 0 1 10-10h2"/><path d="M165 16v12a9.5 9.5 0 0 0 19 0M184 16v29.5a9.5 9.5 0 0 1-9.5 9.5H170"/></g><g class="ft" fill="none" stroke-width="5"><path d="M143 18.5h16"/><path d="M150 13.5v17"/><path class="ft-f" pathLength="1" d="M150 14.5v-2a8 8 0 0 1 8-8h2"/><path class="ft-f" pathLength="1" d="M150 29.5V40"/><path class="ft-t" pathLength="1" d="M150 14.5V8"/><path class="ft-t" pathLength="1" d="M150 29.5a8 8 0 0 0 8 8h2"/></g></svg>
-            </a></div>
-            <h2>Don’t search ten companies.</h2>
-            <p class="lead">Tell us what you’re doing with your property. We’ll organise the rest — properly.</p>
-            <div class="actions">
-              <a class="btn btn-dark btn-lg" href="start.html">Get started <i data-icon="arrow"></i></a>
-              <a class="btn btn-lg" href="#contact">Talk to a person</a>
-            </div>
-          </div>
-        </section>
-
-      </div>
-    </main>
-
-    <!-- Footer -->
-    <footer id="footer">
-      <div class="inner" id="contact">
-        <div class="contact-grid">
-          <div>
-            <h2 class="major">Talk to a real person</h2>
-            <p class="muted">Not sure where to start? Tell us what’s going on and someone from the Properfy team will point you in the right direction. We serve customers in England and Wales only.</p>
-            <form data-contact novalidate>
-              <div class="hp" aria-hidden="true"><label for="c-hp">Leave this empty</label><input type="text" id="c-hp" name="_honey" tabindex="-1" autocomplete="off"></div>
-              <div class="fields">
-                <div class="field"><label for="c-name">Name</label><input type="text" id="c-name" name="name" autocomplete="name"></div>
-                <div class="field"><label for="c-email">Email</label><input type="email" id="c-email" name="email" autocomplete="email"></div>
-                <div class="field">
-                  <label for="c-postcode">Your postcode</label>
-                  <input type="text" id="c-postcode" name="postcode" autocomplete="postal-code" autocapitalize="characters">
-                </div>
-                <div class="field">
-                  <label for="c-topic">What are you doing?</label>
-                  <select id="c-topic" name="topic">
-                    <option value="buy">Buying a property</option>
-                    <option value="sell">Selling a property</option>
-                    <option value="move">Moving home</option>
-                    <option value="remortgage">Remortgaging</option>
-                    <option value="invest">Investing</option>
-                    <option value="other">Something else</option>
-                  </select>
-                </div>
-                <div class="field full"><label for="c-message">Message</label><textarea id="c-message" name="message" rows="4"></textarea></div>
-              </div>
-              <ul class="actions"><li><button class="btn btn-primary" type="submit">Send message <i data-icon="arrow"></i></button></li></ul>
-            </form>
-          </div>
-          <div>
-            <ul class="contact">
-              <li><span class="ci" data-icon="mail"></span><div><strong>Email</strong><a href="mailto:Mr.w.davey@hotmail.com">Mr.w.davey@hotmail.com</a></div></li>
-              <li><span class="ci" data-icon="phone"></span><div><strong>Phone</strong><a href="tel:+447746448080">07746 448080</a></div></li>
-              <li><span class="ci" data-icon="clock"></span><div><strong>Opening hours</strong>Mon–Fri 8am–8pm<br>Sat 9am–5pm</div></li>
-              <li><span class="ci" data-icon="shield"></span><div><strong>Our partners are regulated by</strong>SRA · CLC · FCA · RICS · members of BAR</div></li>
-            </ul>
-          </div>
-        </div>
-        <div class="legal">
-          <a class="logo" href="index.html" aria-label="Properfy home">
-            <svg class="wordmark" viewBox="0 0 187 60" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="5"><path d="M2.5 16v41.5"/><circle cx="12" cy="28" r="9.5"/><path d="M29.5 16v24M29.5 28.5a10 10 0 0 1 10-10h2"/><circle cx="56" cy="28" r="9.5"/><path d="M73.5 16v41.5"/><circle cx="83" cy="28" r="9.5"/><path d="M100.5 28h19a9.5 9.5 0 1 0-2.78 6.72"/><path d="M127.5 16v24M127.5 28.5a10 10 0 0 1 10-10h2"/><path d="M165 16v12a9.5 9.5 0 0 0 19 0M184 16v29.5a9.5 9.5 0 0 1-9.5 9.5H170"/></g><g class="ft" fill="none" stroke-width="5"><path d="M143 18.5h16"/><path d="M150 13.5v17"/><path class="ft-f" pathLength="1" d="M150 14.5v-2a8 8 0 0 1 8-8h2"/><path class="ft-f" pathLength="1" d="M150 29.5V40"/><path class="ft-t" pathLength="1" d="M150 14.5V8"/><path class="ft-t" pathLength="1" d="M150 29.5a8 8 0 0 0 8 8h2"/></g></svg>
-          </a>
-          <div>
-            <p>Properfy serves customers in England and Wales only. We introduce you to independent, regulated specialists. Your contract for each service is with the provider you choose, and you’ll see who they are before you commit. Mortgage advice is provided by FCA-authorised advisers.</p>
-            <p><strong>Your home may be repossessed if you do not keep up repayments on your mortgage.</strong></p>
-            <ul>
-              <li>&copy; <span data-year>2026</span> Properfy</li>
-              <li><a href="privacy.html">Privacy notice</a></li>
-              <li><a href="service.html">All services</a></li>
-              <li>Design based on <a href="https://html5up.net" rel="noopener">HTML5 UP</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </footer>
-
-  </div>
-
-  <!-- Menu (Solid State overlay) -->
-  <nav id="menu" aria-hidden="true" aria-label="Menu">
-    <div class="inner" role="dialog" aria-modal="true" aria-label="Menu">
-      <h2 class="major">Menu</h2>
-      <ul class="links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="start.html">Get started</a></li>
-        <li><a href="index.html#how">How it works</a></li>
-        <li><a href="index.html#pricing">Pricing</a></li>
-        <li><a href="index.html#faq">Help &amp; FAQs</a></li>
-        <li><a href="index.html#contact">Contact</a></li>
-      </ul>
-      <p class="menu-label">Services</p>
-      <ul class="menu-services" data-menu-services>
-        <li><a href="service.html?s=conveyancing">Conveyancing</a></li>
-        <li><a href="service.html?s=mortgage">Mortgages</a></li>
-        <li><a href="service.html?s=survey">Surveys</a></li>
-        <li><a href="service.html?s=auctions">Auctions</a></li>
-        <li><a href="service.html?s=removals">Removals</a></li>
-      </ul>
-      <a class="btn btn-light btn-block" href="start.html">Get started <i data-icon="arrow"></i></a>
-      <a href="#menu" class="close" aria-label="Close menu"><i data-icon="close"></i></a>
+      <section class="partner-cta" aria-label="For partners">
+        <div><strong>Estate agent, broker or solicitor?</strong><span>See every client’s move in one dashboard and post updates in seconds.</span></div>
+        <a class="btn btn-secondary btn-md" href="partners.html#login"><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M566.6 425.4l-160-160c-5.8-5.8-13.8-9.4-22.6-9.4-17.7 0-32 14.3-32 32 0 8.8 3.6 16.8 9.4 22.6l105.4 105.4h-370.8c-17.7 0-32 14.3-32 32s14.3 32 32 32v0h370.8l-105.4 105.4c-5.8 5.8-9.4 13.8-9.4 22.6 0 17.7 14.3 32 32 32 8.8 0 16.8-3.6 22.6-9.4l160-160c5.8-5.8 9.4-13.8 9.4-22.6s-3.6-16.8-9.4-22.6v0zM800 832h-256c-17.7 0-32-14.3-32-32s14.3-32 32-32v0h224v-640h-224c-17.7 0-32-14.3-32-32s14.3-32 32-32v0h256c17.7 0 32 14.3 32 32v0 704c0 17.7-14.3 32-32 32v0z"/></svg>Partner login</a>
+      </section>
     </div>
-  </nav>
+  </main>
 
+  <footer class="wrap site-footer">
+    <div class="footer-row footer-contact">
+      <span>Properfy covers homes in England and Wales only.</span>
+      <span><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M896 768h-768c-17.7 0-32-14.3-32-32v0-544c0-35.3 28.7-64 64-64v0h704c35.3 0 64 28.7 64 64v0 544c0 17.7-14.3 32-32 32v0zM813.7 704l-301.7-276.6-301.7 276.6zM864 192h-704v471.2l330.4-302.8c5.7-5.2 13.3-8.4 21.6-8.4s16 3.2 21.7 8.4l-0-0 330.4 302.8v-471.2z"/></svg> <a href="mailto:Mr.w.davey@hotmail.com">Mr.w.davey@hotmail.com</a></span>
+      <span><svg class="i" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="matrix(1 0 0 -1 0 960)" d="M889.5 326.2l-189 84.7c-7.4 3.3-16.1 5.2-25.2 5.2-13.2 0-25.5-4-35.7-10.9l0.2 0.1c-1.1-0.8-2.1-1.5-3-2.3l0 0-97.4-83c-61.7 30-125.4 93.2-155.3 154l83.1 98.8c0.8 1 1.6 2 2.3 3.1 6.5 9.9 10.4 22 10.4 35 0 9.1-1.9 17.8-5.3 25.6l0.2-0.4v0.5l-84.7 188.8c-10.1 22.9-32.6 38.6-58.7 38.6-2.7 0-5.4-0.2-8.1-0.5l0.3 0c-111-15-195.7-109.2-195.7-223.1 0-0.1 0-0.3 0-0.4v0c0-317.6 258.4-576 576-576 0.1 0 0.3 0 0.4 0 113.9 0 208.1 84.7 223 194.5l0.1 1.2c0.3 2.3 0.5 5 0.5 7.8 0 26.1-15.7 48.6-38.1 58.5l-0.4 0.2zM704 128c-282.6 0.3-511.7 229.4-512 512v0c-0 0.2-0 0.4-0 0.6 0 81.3 60.3 148.5 138.6 159.3l0.8 0.1c-0-0.1-0-0.2-0-0.2s0-0.2 0-0.2l-0 0 84-188-82.7-99c-0.8-0.9-1.5-1.9-2.2-3l-0.1-0.1c-6.5-9.9-10.4-21.9-10.4-34.9 0-10.1 2.4-19.7 6.5-28.2l-0.2 0.4c36.2-74.1 110.9-148.2 185.8-184.4 8-3.9 17.5-6.2 27.5-6.2 13.2 0 25.5 4 35.7 10.9l-0.2-0.1c1.1 0.8 2.1 1.5 3 2.3l-0-0 97.2 83 188-84.2s0.3 0 0.4 0c-10.8-79.3-78-139.8-159.5-139.8-0.2 0-0.4 0-0.6 0h0z"/></svg> <a href="tel:+447746448080">07746 448080</a></span>
+    </div>
+    <p class="footer-row footer-legal">Properfy introduces you to independent, regulated specialists. Your contract for each service is with the provider you choose. Your home may be repossessed if you do not keep up repayments on your mortgage.</p>
+    <div class="footer-row">
+      <span>&copy; <span data-year>2026</span> Properfy Ltd</span>
+      <a href="privacy.html">Privacy</a>
+      <a href="complaints.html">Complaints</a>
+      <a href="partners.html">For partners</a>
+    </div>
+  </footer>
 </body>
 </html>
