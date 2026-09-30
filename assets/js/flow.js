@@ -136,8 +136,8 @@
   function renderGoal() {
     var pinned = state.pinned && PF.service(state.pinned);
     var help = pinned
-      ? 'First, what are you doing? It helps us get your ' + (pinned.single || pinned.name).toLowerCase() + ' right.'
-      : 'We’ll only ask what’s relevant to you. No jargon, no credit check.';
+      ? 'First, what are you doing? It helps us get your ' + (pinned.single || pinned.name).toLowerCase() + ' right. We serve ' + PF.config.serviceArea.name + ' only.'
+      : 'We serve ' + PF.config.serviceArea.name + ' only. We’ll just ask what’s relevant to you: no jargon, no credit check.';
     stage.innerHTML =
       '<div class="step">' +
       stepHead('What are you doing with your property?', help, false) +
@@ -346,7 +346,7 @@
       '<div class="field full"><label for="f-name">Your name</label><input type="text" id="f-name" name="name" autocomplete="name" value="' + esc(c.name || '') + '"></div>' +
       '<div class="field"><label for="f-email">Email</label><input type="email" id="f-email" name="email" autocomplete="email" inputmode="email" value="' + esc(c.email || '') + '"></div>' +
       '<div class="field"><label for="f-phone">Phone <span class="opt">' + (c.pref === 'phone' ? '' : '(optional)') + '</span></label><input type="tel" id="f-phone" name="phone" autocomplete="tel" inputmode="tel" value="' + esc(c.phone || '') + '"></div>' +
-      '<div class="field"><label for="f-postcode">Property postcode or town <span class="opt">(optional)</span></label><input type="text" id="f-postcode" name="postcode" autocomplete="postal-code" value="' + esc(c.postcode || '') + '"></div>' +
+      '<div class="field"><label for="f-postcode">Your postcode <span class="opt">(' + PF.config.serviceArea.name + ' only)</span></label><input type="text" id="f-postcode" name="postcode" autocomplete="postal-code" autocapitalize="characters" value="' + esc(c.postcode || '') + '"></div>' +
       '<div class="field"><span class="label" id="pref-label">Best way to reach you</span>' +
       '<div class="segmented" role="group" aria-labelledby="pref-label">' +
       '<button type="button" data-pref="email" aria-pressed="' + (c.pref === 'email') + '">Email</button>' +
@@ -356,6 +356,7 @@
       (wantsMortgage ? '<p class="faint small" style="margin:-.25rem 0 1.25rem">Mortgage advisers usually start with a short call — adding a number speeds things up.</p>' : '') +
       '<label class="check"><input type="checkbox" name="consent"' + (c.consent ? ' checked' : '') + '><span>I agree to Properfy sharing my details with specialists for the services I’ve chosen, so they can contact me about them. See our <a class="inline" href="privacy.html" target="_blank" rel="noopener">privacy notice</a>.</span></label>' +
       '<label class="check"><input type="checkbox" name="updates"' + (c.updates ? ' checked' : '') + '><span>Send me occasional moving tips and Properfy updates. Unsubscribe anytime.</span></label>' +
+      '<div class="hp" aria-hidden="true"><label for="f-hp">Leave this empty</label><input type="text" id="f-hp" name="_honey" tabindex="-1" autocomplete="off"></div>' +
       '<div class="step-actions" style="margin-top:1.5rem"><button type="submit" class="btn btn-primary btn-lg">Send my plan' + icon('arrow') + '</button></div>' +
       '<ul class="reassure"><li>' + icon('check') + 'Free, no obligation</li><li>' + icon('check') + 'No credit check</li><li>' + icon('check') + 'Your data is never sold</li></ul>' +
       '</form>' +
@@ -380,6 +381,7 @@
       c.postcode = el.postcode.value.trim();
       c.consent = el.consent.checked;
       c.updates = el.updates.checked;
+      c.honey = el._honey.value;
 
       PF.$$('[aria-invalid]', form).forEach(function (x) { x.removeAttribute('aria-invalid'); });
       PF.$$('.field-error', form).forEach(function (x) { x.remove(); });
@@ -391,8 +393,11 @@
       }
       if (!c.name) fail(el.name, 'Please tell us your name.');
       if (!PF.validEmail(c.email)) fail(el.email, 'Please enter a valid email address.');
-      if (c.pref === 'phone' && c.phone.replace(/\D/g, '').length < 10) fail(el.phone, 'Please add a phone number we can call.');
-      else if (c.phone && c.phone.replace(/\D/g, '').length < 10) fail(el.phone, 'That number looks too short.');
+      if (c.pref === 'phone' && !c.phone) fail(el.phone, 'Please add a phone number we can call.');
+      else if (c.phone && !PF.validUkPhone(c.phone)) fail(el.phone, 'Please enter a UK phone number, for example 07700 900123.');
+      var area = PF.checkPostcode(c.postcode);
+      if (area.ok) c.postcode = area.postcode;
+      else fail(el.postcode, area.message);
       if (!c.consent) fail(el.consent, 'We need your OK to pass your details to the specialists.', el.consent.closest('.check'));
       if (!ok) {
         PF.$('[aria-invalid="true"]', form).focus();
@@ -431,7 +436,8 @@
       notify: soon,
       contact: { name: c.name, email: c.email, phone: c.phone, postcode: c.postcode, preferred: c.pref },
       consent: { shareWithPartners: true, marketing: !!c.updates, at: new Date().toISOString() },
-      source: w.location.href
+      source: w.location.href,
+      _honey: c.honey
     };
 
     // Building screen: the brand mark morphs while we save.

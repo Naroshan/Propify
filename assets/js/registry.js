@@ -25,18 +25,35 @@
 
   PF.config = {
     brand: 'Properfy',
-    // Where plans and enquiries are POSTed as JSON. Leave null to run in
-    // preview mode (data stays on the device and a notice is shown).
-    leadEndpoint: null,
+    // Where plans, enquiries and notify-me requests are sent. FormSubmit
+    // (formsubmit.co) emails each one to the inbox in this address. The very
+    // first submission sends an "Activate Form" email there instead — click it
+    // once and every lead after that arrives. Set to null for preview mode
+    // (nothing is sent and the site says so).
+    leadEndpoint: 'https://formsubmit.co/ajax/Mr.w.davey@hotmail.com',
     storageKey: 'properfy.plan.v1',
     notifyKey: 'properfy.notify.v1',
     // Reviews on the homepage are illustrative until real, verified reviews
     // are connected. Keep this true until then.
     sampleReviews: true,
+    // Properfy only serves England and Wales. Every form asks for a postcode
+    // and refuses these postcode areas (see PF.checkPostcode in main.js).
+    serviceArea: {
+      name: 'England and Wales',
+      outside: {
+        'Scotland': ['AB', 'DD', 'DG', 'EH', 'FK', 'G', 'HS', 'IV', 'KA', 'KW', 'KY', 'ML', 'PA', 'PH', 'TD', 'ZE'],
+        'Northern Ireland': ['BT'],
+        'the Channel Islands': ['GY', 'JE'],
+        'the Isle of Man': ['IM']
+      },
+      // TD (Scottish Borders) districts that include English addresses,
+      // e.g. Berwick-upon-Tweed and Cornhill-on-Tweed.
+      allowDistricts: ['TD12', 'TD15']
+    },
     contact: {
-      email: 'hello@properfy.co.uk',
-      phone: '0808 157 0192',
-      phoneHref: '+448081570192',
+      email: 'Mr.w.davey@hotmail.com',
+      phone: '07746 448080',
+      phoneHref: '+447746448080',
       hours: 'Mon–Fri 8am–8pm · Sat 9am–5pm'
     }
   };

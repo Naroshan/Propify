@@ -42,25 +42,110 @@
 
   PF.reduceMotion = reduceMotion;
 
-  // Sends a payload to the configured endpoint. Resolves { sent: false } in
-  // preview mode (no endpoint) so the UI can say so honestly.
+  // Turns a lead into labelled fields, so it arrives as a readable email
+  // (FormSubmit renders one row per field). "email" is used as the reply-to.
+  PF.leadFields = function (type, p) {
+    var f = { _template: 'table', _captcha: 'false' };
+    if (p._honey) f._honey = p._honey;
+    var serviceName = function (id) { var s = PF.service(id); return s ? (s.single || s.name) : id; };
+
+    if (type === 'plan') {
+      var goal = PF.goal(p.goal);
+      var c = p.contact || {};
+      f._subject = 'New Properfy plan: ' + (goal ? goal.short : p.goal) + ' - ' + c.name + ' (' + p.ref + ')';
+      f['Reference'] = p.ref;
+      f['Name'] = c.name;
+      f.email = c.email;
+      f['Phone'] = c.phone || 'Not given';
+      f['Best way to reach them'] = c.preferred === 'phone' ? 'Phone' : 'Email';
+      f['Postcode'] = c.postcode;
+      f["What they're doing"] = goal ? goal.label : p.goal;
+      f['Services requested'] = p.services.map(function (s, i) {
+        return (i + 1) + '. ' + serviceName(s.id) + ' (' + s.when + ')';
+      }).join('; ');
+      f['Their answers'] = p.answers.map(function (a) { return a.question + ' ' + a.answer; }).join('; ') || 'None';
+      f['Tell them when live'] = (p.notify || []).map(serviceName).join(', ') || 'None';
+      f['Consent to share with specialists'] = 'Yes (' + new Date(p.consent.at).toLocaleString('en-GB') + ')';
+      f['Marketing emails'] = p.consent.marketing ? 'Yes' : 'No';
+      f['Sent from'] = p.source;
+    } else if (type === 'contact') {
+      var topic = PF.goal(p.topic);
+      f._subject = 'New Properfy enquiry from ' + p.name;
+      f['Name'] = p.name;
+      f.email = p.email;
+      f['Postcode'] = p.postcode;
+      f["What they're doing"] = topic ? topic.label : p.topic;
+      f['Message'] = p.message;
+    } else if (type === 'notify') {
+      f._subject = 'Properfy: notify me about ' + serviceName(p.service);
+      f.email = p.email;
+      f['Postcode'] = p.postcode;
+      f['Service'] = serviceName(p.service);
+    }
+    return f;
+  };
+
+  // Sends a lead to PF.config.leadEndpoint. Resolves { sent: false } in
+  // preview mode (no endpoint) so the UI can say so honestly, and rejects if
+  // the service reports a failure, so the form can ask the customer to retry.
   PF.send = function (type, payload) {
     var url = PF.config && PF.config.leadEndpoint;
+    var fields = PF.leadFields(type, payload);
     if (!url) {
-      if (w.console) console.info('[Properfy preview] ' + type + ' not sent — set PF.config.leadEndpoint', payload);
+      if (w.console) console.info('[Properfy preview] ' + type + ' not sent — set PF.config.leadEndpoint', fields);
       return Promise.resolve({ sent: false });
     }
+    var ctrl = w.AbortController ? new AbortController() : null;
+    var timer = ctrl ? w.setTimeout(function () { ctrl.abort(); }, 20000) : null;
     return fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: type, payload: payload, sentAt: new Date().toISOString() })
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(fields),
+      signal: ctrl ? ctrl.signal : undefined
     }).then(function (res) {
-      if (!res.ok) throw new Error('Request failed: ' + res.status);
-      return { sent: true };
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok || data.success === false || data.success === 'false') {
+          throw new Error(data.message || 'Request failed: ' + res.status);
+        }
+        return { sent: true };
+      });
+    }).finally(function () {
+      if (timer) w.clearTimeout(timer);
     });
   };
 
   PF.validEmail = function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v).trim()); };
+
+  /* ── Service area: England and Wales only ─────────────────────────────── */
+
+  // Checks a full UK postcode against PF.config.serviceArea.
+  // Returns { ok, postcode } or { ok: false, message } ready to show the customer.
+  PF.checkPostcode = function (raw) {
+    var area = PF.config.serviceArea;
+    var pc = String(raw || '').toUpperCase().replace(/\s+/g, '');
+    var m = pc.match(/^([A-Z]{1,2})(\d[A-Z\d]?)(\d[A-Z]{2})$/);
+    if (!m) return { ok: false, message: 'Please enter your full postcode, for example SW1A 1AA.' };
+    var letters = m[1];
+    var district = m[1] + m[2];
+    if (area.allowDistricts.indexOf(district) === -1) {
+      for (var region in area.outside) {
+        if (area.outside[region].indexOf(letters) !== -1) {
+          return {
+            ok: false,
+            outside: true,
+            message: 'Sorry, Properfy only serves ' + area.name + ', so we can’t help with ' + region + '.'
+          };
+        }
+      }
+    }
+    return { ok: true, postcode: district + ' ' + m[3] };
+  };
+
+  // UK numbers only: 07… / 01… / 02… or +44 / 0044.
+  PF.validUkPhone = function (v) {
+    var n = String(v || '').replace(/[\s().-]/g, '');
+    return /^(?:\+44|0044|0)[1-9]\d{8,9}$/.test(n);
+  };
 
   // <i data-icon="arrow"> is replaced by the icon; other elements get it inside.
   // <span data-mark> becomes the brand mark.
@@ -260,8 +345,9 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var name = form.elements.name, email = form.elements.email, msg = form.elements.message;
+      var postcode = form.elements.postcode;
       var ok = true;
-      [name, email, msg].forEach(function (el) { el.removeAttribute('aria-invalid'); });
+      [name, email, postcode, msg].forEach(function (el) { el.removeAttribute('aria-invalid'); });
       PF.$$('.field-error', form).forEach(function (el) { el.remove(); });
       function fail(el, text) {
         ok = false;
@@ -270,6 +356,8 @@
       }
       if (!name.value.trim()) fail(name, 'Please tell us your name.');
       if (!PF.validEmail(email.value)) fail(email, 'Please enter a valid email address.');
+      var area = PF.checkPostcode(postcode.value);
+      if (!area.ok) fail(postcode, area.message);
       if (!msg.value.trim()) fail(msg, 'Let us know how we can help.');
       if (!ok) { PF.$('[aria-invalid="true"]', form).focus(); return; }
 
@@ -278,8 +366,10 @@
       var payload = {
         name: name.value.trim(),
         email: email.value.trim(),
+        postcode: area.postcode,
         topic: form.elements.topic ? form.elements.topic.value : '',
-        message: msg.value.trim()
+        message: msg.value.trim(),
+        _honey: form.elements._honey ? form.elements._honey.value : ''
       };
       PF.send('contact', payload).then(function (res) {
         form.innerHTML =
