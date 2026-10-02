@@ -395,7 +395,7 @@ window.PFY.config = {
   // here by FormSubmit (formsubmit.co). The very first submission sends an
   // "Activate Form" email instead: click it once and everything after
   // arrives. Set to null for preview mode (nothing is sent; the site says so).
-  leadEndpoint: "https://formsubmit.co/ajax/Mr.w.davey@hotmail.com",
+  leadEndpoint: "https://formsubmit.co/ajax/info@properfy.co.uk",
   contact: { email: "info@properfy.co.uk", phone: "07746 448080", phoneHref: "+447746448080" },
   site: "https://properfy.co.uk",
   // Who reviewed the guides. Shown on every guide as "Reviewed by …" once set.
