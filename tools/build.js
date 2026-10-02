@@ -209,6 +209,15 @@ const DEFAULT_DESC = 'Buying, selling or moving home? Properfy helps you underst
 const ORG_LD = { '@context': 'https://schema.org', '@type': 'Organization', name: 'Properfy', url: 'https://properfy.co.uk' };
 const faqLd = (list) => ({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: list.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) });
 
+// Search results show about 160 characters, so longer descriptions are cut
+// at the last full sentence, or failing that the last word.
+function metaDesc(s) {
+  if (s.length <= 160) return s;
+  const cut = s.slice(0, 160);
+  const end = cut.lastIndexOf('. ');
+  return end > 80 ? cut.slice(0, end + 1) : cut.slice(0, cut.lastIndexOf(' ')).replace(/[,;:]$/, '') + '…';
+}
+
 const built = [];
 function write(file, o) {
   base = o.base != null ? o.base : '../'.repeat(file.split('/').length - 1);
@@ -221,7 +230,7 @@ function write(file, o) {
   const bandHtml = o.band === false ? '' : band();
   const canonical = CFG.site + '/' + (o.canonical != null ? o.canonical : file === 'index.html' ? '' : file);
   const title = o.title || DEFAULT_TITLE;
-  const desc = o.desc || DEFAULT_DESC;
+  const desc = metaDesc(o.desc || DEFAULT_DESC);
   const body = { page: o.page };
   const html = `<!DOCTYPE html>
 <html lang="en-GB">
@@ -977,7 +986,7 @@ function notFoundBody() {
 
 /* ── Build ──────────────────────────────────────────────────────────────── */
 
-write('index.html', { page: 'home', body: homeBody, ld: ORG_LD });
+write('index.html', { page: 'home', body: homeBody, ld: ORG_LD, desc: 'Buying, selling or moving home in England or Wales? Tell Properfy what you’re trying to do and we’ll explain your next steps and introduce the right professionals.' });
 
 Object.keys(P.journeys).forEach((k) => {
   const j = P.journeys[k];
@@ -989,10 +998,12 @@ Object.keys(P.journeys).forEach((k) => {
   });
 });
 
+// Descriptions for services whose intro is too long for search results.
+const SVC_DESC = { mortgages: 'Explore your mortgage options through our broker network, whether you’re buying, remortgaging or your situation isn’t straightforward.' };
 function servicePage(file, k, landing) {
   const s = P.services[k];
   write(file, {
-    page: 'service', active: 'service', title: s.h1 + ' | Properfy', desc: s.intro, ld: faqLd(s.faqs),
+    page: 'service', active: 'service', title: s.h1 + ' | Properfy', desc: SVC_DESC[k] || s.intro, ld: faqLd(s.faqs),
     canonical: landing ? sFile(k) : null, landing,
     crumbs: [{ label: 'Services', svc: true }, { label: s.kicker }], ctx: { service: k, doing: s.doing }, body: () => serviceBody(k)
   });
@@ -1000,11 +1011,16 @@ function servicePage(file, k, landing) {
 SVC_KEYS.forEach((k) => servicePage(sFile(k), k, false));
 Object.keys(P.aliases).forEach((slug) => servicePage(slug + '.html', P.aliases[slug], true));
 
-write(FILE.specialist, { page: 'specialist', title: 'Specialist property transactions | Properfy', crumbs: [{ label: 'Specialist transactions' }], body: specialistBody });
+write(FILE.specialist, { page: 'specialist', title: 'Specialist property transactions | Properfy', desc: 'Auctions, leasehold, new builds, shared ownership, bridging, probate and more. Find the route for a property transaction that isn’t straightforward.', crumbs: [{ label: 'Specialist transactions' }], body: specialistBody });
 
 const hubTitle = 'Property questions answered | Properfy Property Hub';
-write(FILE.hub, { page: 'hub', active: 'hub', title: hubTitle, crumbs: [{ label: 'Property Hub' }], body: () => hubBody('buying') });
-Object.keys(HUB_PAGES).forEach((id) => write(HUB_PAGES[id], { page: 'hub', active: 'hub', title: hubTitle, crumbs: [{ label: 'Property Hub' }], body: () => hubBody(id) }));
+const HUB_SEO = {
+  leasehold: { title: 'Leasehold questions answered | Properfy Property Hub', desc: 'Leasehold vs freehold, how long a lease should be, and what an LPE1 management pack is. Plain-English answers for England and Wales.' },
+  exchange: { title: 'Exchange and completion explained | Properfy Property Hub', desc: 'What happens at exchange of contracts and on completion day, when you get the keys, and what to do if things are delayed.' },
+  ftb: { title: 'First-time buyer guides | Properfy Property Hub', desc: 'How buying a house works, what it costs, mortgages in principle, surveys, exchange and completion: every step explained for first-time buyers.' }
+};
+write(FILE.hub, { page: 'hub', active: 'hub', title: hubTitle, desc: 'Straight answers to the questions people ask when they buy, sell and move home in England and Wales, with what to do next.', crumbs: [{ label: 'Property Hub' }], body: () => hubBody('buying') });
+Object.keys(HUB_PAGES).forEach((id) => write(HUB_PAGES[id], { page: 'hub', active: 'hub', title: HUB_SEO[id].title, desc: HUB_SEO[id].desc, crumbs: [{ label: 'Property Hub' }], body: () => hubBody(id) }));
 
 Object.keys(P.guides).forEach((id) => {
   const g = P.guides[id];
@@ -1017,11 +1033,11 @@ Object.keys(P.guides).forEach((id) => {
   });
 });
 
-write(FILE.checklists, { page: 'checklists', title: 'Home moving checklists | Properfy', crumbs: [{ label: 'Property Hub', href: FILE.hub }, { label: 'Checklists' }], body: checklistsBody });
-write(FILE.glossary, { page: 'glossary', title: 'Property glossary: terms in plain English | Properfy', crumbs: [{ label: 'Property Hub', href: FILE.hub }, { label: 'Glossary' }], body: glossaryBody });
-write(FILE.about, { page: 'about', active: 'about', title: 'About Properfy | How we work', crumbs: [{ label: 'About' }], body: aboutBody });
+write(FILE.checklists, { page: 'checklists', title: 'Home moving checklists | Properfy', desc: 'Free checklists for buying, selling, first-time buyers, exchange, completion, moving day and change of address. Tick things off as you go.', crumbs: [{ label: 'Property Hub', href: FILE.hub }, { label: 'Checklists' }], body: checklistsBody });
+write(FILE.glossary, { page: 'glossary', title: 'Property glossary: terms in plain English | Properfy', desc: 'Property terms explained in one sentence each, from disbursements and searches to gazumping, gazundering and loan-to-value.', crumbs: [{ label: 'Property Hub', href: FILE.hub }, { label: 'Glossary' }], body: glossaryBody });
+write(FILE.about, { page: 'about', active: 'about', title: 'About Properfy | How we work', desc: 'Properfy is a property concierge for England and Wales. How we help, how enquiries are handled, and how our partners and guides work.', crumbs: [{ label: 'About' }], body: aboutBody });
 
-const quickSeo = { title: 'Sell your house fast: cash buyers, auction and fast-track sales | Properfy', desc: 'Need to sell quickly? Compare cash buyers, auction and fast-track agent sales honestly, and get your quick-sale options with no obligation.', ld: faqLd(P.quick.faqs) };
+const quickSeo = { title: 'Sell your house fast: cash buyers and auctions | Properfy', desc: 'Need to sell quickly? Compare cash buyers, auction and fast-track agent sales honestly, and get your quick-sale options with no obligation.', ld: faqLd(P.quick.faqs) };
 write(FILE.quick, { page: 'quick', active: 'quick', ...quickSeo, crumbs: [{ label: 'Sell your house fast' }], ctx: { doing: 'Quick sale' }, body: quickBody });
 write('quick-house-sale.html', { page: 'quick', active: 'quick', ...quickSeo, canonical: FILE.quick, landing: true, crumbs: [{ label: 'Sell your house fast' }], ctx: { doing: 'Quick sale' }, body: quickBody });
 
@@ -1032,7 +1048,7 @@ write('facing-repossession.html', { page: 'repo', active: 'repo', ...repoSeo, ca
 write(FILE.privacy, { page: 'privacy', title: 'Privacy notice | Properfy', desc: 'What Properfy collects, why, and who sees it.', crumbs: [{ label: 'Privacy' }], body: privacyBody });
 write(FILE.complaints, { page: 'complaints', title: 'Complaints | Properfy', desc: 'How to make a complaint to Properfy.', crumbs: [{ label: 'Complaints' }], body: complaintsBody });
 write(FILE.partners, { page: 'partners', title: 'For partners | Properfy', desc: 'Conveyancers, brokers, surveyors and other home services in England and Wales: register your interest in working with Properfy.', crumbs: [{ label: 'For partners' }], band: false, body: partnersBody });
-write('404.html', { page: 'notfound', title: 'Page not found | Properfy', base: '/', noindex: true, band: false, body: notFoundBody });
+write('404.html', { page: 'notfound', title: 'Page not found | Properfy', desc: 'This page isn’t here. It may have moved when we updated the site.', base: '/', noindex: true, band: false, body: notFoundBody });
 
 // sitemap.xml and robots.txt
 const urls = built.filter((b) => b.sitemap).map((b) => `  <url><loc>${b.canonical}</loc></url>`).join('\n');
