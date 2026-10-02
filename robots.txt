@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://properfy.co.uk/sitemap.xml
