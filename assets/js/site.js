@@ -143,9 +143,14 @@
         if (!res.ok || data.success === false || data.success === 'false') throw new Error(data.message || 'Request failed: ' + res.status);
         return { sent: true };
       });
+    }).catch(function (err) {
+      // FormSubmit explains failures here, e.g. "This form needs Activation"
+      // until the link in its first email to the inbox has been clicked.
+      if (w.console) console.warn('[Properfy] Enquiry not sent: ' + (err && err.message));
+      throw err;
     }).finally(function () { if (timer) w.clearTimeout(timer); });
   };
-  var SEND_FAIL = 'That didn’t send. Check your connection and try again.';
+  var SEND_FAIL = 'That didn’t send. Please try again, or call us on ' + (CFG.contact ? CFG.contact.phone : '') + '.';
   var previewNote = function (res) { return res && res.sent === false ? ' (preview: nothing was sent)' : ''; };
 
   /* ── Toast ────────────────────────────────────────────────────────────── */
