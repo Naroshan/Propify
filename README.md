@@ -1,12 +1,12 @@
 # Properfy
 
-**Property. Properly sorted.** One place to buy, sell, remortgage, transfer or auction a home in England and Wales. Customers keep the people they already use, or Properfy introduces trusted ones, and every step is tracked in order.
+**Everything you need to move home. In one place.** Properfy is a property concierge for England and Wales. People tell us what they're trying to do, we call them, work out what they need and introduce the right professionals.
 
-The design is the **Properfy Platform** ("Nocturne"): a dark, calm interface with a single violet accent, Inter type and Phosphor icons.
+The site follows the **Properfy Website** design: a deep-navy Nocturne theme with neon accents, Inter type, Phosphor icons and the animated Properfy ↔ Property wordmark.
 
 ## Run it
 
-It's a static site with no build step and no dependencies.
+The pages are plain HTML, so any static server works:
 
 ```bash
 python3 -m http.server 8000
@@ -15,70 +15,77 @@ python3 -m http.server 8000
 
 It's deployed to GitHub Pages from `main` (custom domain in `CNAME`). `404.html` is picked up automatically.
 
-## Pages
-
-| Page | What it does |
-| --- | --- |
-| `index.html` | Homepage. Pick what you're doing (buying, selling, remortgaging, transfer of equity, auction) to see its steps, then start. Also shows an example tracker, the four services, how it works and the partner call to action. |
-| `start.html` | Onboarding in four steps: what you're doing, the property (address, postcode and price), who's already helping you (keep your own agent, broker or solicitor, or ask for an introduction), and your details with consent. `?journey=buy` (or `sell`, `remo`, `toe`, `auc`) skips to step 2. |
-| `move.html` | "My move": the customer's tracker. It shows each step, who handles it and an "Arrange … with Properfy" button where Properfy can help, plus the team, updates and the move reference. It's saved on the customer's device. |
-| `partners.html` | For estate agents, brokers and solicitors: a preview of the partner portal (sample data) and a register-interest form. |
-| `privacy.html`, `complaints.html`, `404.html` | Supporting pages. Privacy and complaints are drafts. |
-
 ## Editing content
 
-Journeys, their steps, the partner roles and the service cards are in **`assets/js/data.js`**:
+Everything the site says is in **`assets/js/data.js`**: journeys and their steps, services, specialist transactions, Property Hub guides, checklists, the glossary, the quick-sale and repossession pages, and the settings. After editing it, rebuild the pages:
 
-- `PF.journeys`: each journey's label, icon, the wording on the property step, and its steps. Each step has a title (`t`), a description (`d`), a typical timescale, who owns it (`you`, `agent`, `broker` or `solicitor`) and, optionally, the `service` Properfy can arrange for it.
-- `PF.roles`: the three roles a customer can keep or ask to be introduced.
-- `PF.services`: the service cards.
-- `PF.config`: the lead inbox, contact details and service area.
+```bash
+node tools/build.js
+```
 
-The homepage's first view of the **Buying** steps is written into `index.html` so it shows before scripts run. If you change the buying steps in `data.js`, update that list too.
+The builder (`tools/build.js`, no dependencies) writes every page, plus `sitemap.xml` and `robots.txt`. Commit the regenerated files. Page layouts live in the builder; behaviour (the enquiry form, other forms, search, checklists, menus, the wordmark) is in `assets/js/site.js`.
 
-The shared header and footer are repeated in each page. Change them in every page.
+## Pages
+
+| Page | What it is |
+| --- | --- |
+| `index.html` | Home: "Where are you in your move?", quick-sale and repossession cards, the five journeys, services, how it works, specialist transactions and the Property Hub. |
+| `buying-a-property.html`, `selling-a-property.html`, `buying-and-selling.html`, `let-to-buy.html`, `transfer-of-equity.html` | Step-by-step journeys. |
+| `conveyancing.html`, `mortgages.html`, `property-surveys.html`, `removals.html`, `moving-house.html`, `auction-conveyancing.html`, `transfer-of-equity-quote.html`, `new-build-conveyancing.html`, `shared-ownership-conveyancing.html`, `specialist-finance.html` | Service pages, each with a quote form. |
+| `get-conveyancing-quote.html`, `mortgage-broker.html`, `property-survey.html`, `removal-quote.html`, `quick-house-sale.html`, `facing-repossession.html` | Ad landing pages: copies of a main page that point search engines at it and mark enquiries as coming from an ad landing page. |
+| `sell-my-house-fast.html` | Quick sale: options compared and a two-step form. Enquiries are marked high priority. |
+| `repossession-help.html` | Where you are, what to do now, free advice and a confidential callback form. Court and eviction stages are marked urgent. |
+| `specialist-property-transactions.html` | Routes for transactions that aren't straightforward. |
+| `property-hub.html`, `leasehold.html`, `exchange-and-completion.html`, `first-time-buyers.html` | Property Hub with search and topics. `?q=` searches and `?cat=` picks a topic. |
+| `<topic>/<guide>.html` | The 26 guides, for example `conveyancing/how-long-does-conveyancing-take.html`. |
+| `checklists.html`, `glossary.html`, `about.html` | Checklists (ticks are saved in the browser; `#address` opens one directly), glossary and about. |
+| `privacy.html`, `complaints.html`, `partners.html`, `404.html` | Supporting pages. `partners.html` is the "Partner login" link: a register-interest form. |
 
 ## Leads
 
-New moves, "Arrange … with Properfy" requests and partner enquiries are emailed to the inbox in `PF.config.leadEndpoint` using FormSubmit (`https://formsubmit.co/ajax/<your email>`).
+Every form is emailed to the inbox in `PFY.config.leadEndpoint` using FormSubmit (`https://formsubmit.co/ajax/<your email>`):
 
-- The **first** submission after going live sends an "Activate Form" email to that inbox instead of the lead. Click it once (check Junk). After that every lead arrives as a formatted email, with the customer's email address as the reply-to.
-- Each move has a reference (e.g. `PRF-7K2QXD`) that appears in the email and on the customer's tracker.
+- **Tell us about my move** and **Request a callback** (the pop-up on every page)
+- **Quote requests** on service pages
+- **Quick sale** (subject starts "HIGH PRIORITY") and **repossession callbacks** (subject starts "URGENT" for court, possession order or eviction stages)
+- **Checklist requests** and **partner enquiries**
+
+Each email has a reference (e.g. `PFY-48213`, also shown to the customer), the page it was sent from, and how the person found the site (UTM source, medium and campaign, or the referring site) with the first page they saw. The customer's email address, when given, is the reply-to.
+
+- The **first** submission after going live sends an "Activate Form" email to the inbox instead of the lead. Click it once (check Junk).
+- Checklist requests also ask FormSubmit to email the checklist to the customer (its auto-response feature). Test this after activation.
 - Set `leadEndpoint` to `null` for preview mode: nothing is sent and the site says so.
+- Events are also pushed to `window.dataLayer`, ready for Google Tag Manager if you add it.
 
 ## England and Wales only
 
-Properfy only serves homes in England and Wales.
-
-- **Forms:** onboarding and the partner form require a full postcode. Postcodes in Scotland, Northern Ireland, the Channel Islands and the Isle of Man are refused with a message saying why (TD12 and TD15 are in England and allowed). Phone numbers must be UK numbers. The areas are in `PF.config.serviceArea` in `data.js`; the checks are `PF.checkPostcode` and `PF.validUkPhone` in `core.js`.
-- **Limits:** these checks run in the visitor's browser. They stop genuine customers outside England and Wales from sending enquiries, but not a determined person or a bot posting straight to the form service, and not anyone calling or emailing the contact details on the site.
-- **Blocking visitors outright:** GitHub Pages can't block by location. To stop visitors outside the UK loading the site at all, put the domain behind Cloudflare (free plan) with a rule that blocks every country other than GB, exempting verified bots so search engines can still index the site. IP location can't reliably separate England and Wales from Scotland or Northern Ireland, so the postcode check stays the England-and-Wales gate.
+- **Forms:** every form asks for a full postcode. Postcodes in Scotland, Northern Ireland, the Channel Islands and the Isle of Man are refused with a message saying why (TD12 and TD15 are in England and allowed). Phone numbers must be UK numbers. The areas are in `PFY.config.serviceArea`; the checks are `PF.checkPostcode` and `PF.validUkPhone` in `site.js`.
+- **Limits:** these checks run in the visitor's browser. They stop genuine customers outside England and Wales from sending enquiries, but not a determined person or a bot posting straight to the form service, and not anyone calling or emailing the contact details in the footer.
+- **Blocking visitors outright:** GitHub Pages can't block by location. To stop visitors outside the UK loading the site, put the domain behind Cloudflare (free plan) with a rule that blocks every country other than GB, exempting verified bots so search engines can still index the site.
 
 ## Before launch
 
-- **What's built and what isn't.** The site collects moves and requests by email. The customer's tracker is saved on their own device only. It isn't shared with their agent, broker or solicitor, and it doesn't update by itself. The homepage copy "Four services. One login." and the shared-tracker wording describe the full platform, so build that or soften the copy before promoting it. The partner portal is a static preview with sample data.
-- **Compliance.** Have the mortgage wording, the introducer statement and repossession warning in the footer, `privacy.html` and `complaints.html` reviewed by a qualified adviser. Fill in the company details once Properfy Ltd is registered.
-- **Timescales** on each step are typical figures. Confirm them with your partners.
+- **Guide reviews.** The design shows "Reviewed by [Panel solicitor name]" on every guide. That line stays hidden until `PFY.config.reviewer` is set to a real reviewer. The About page says guides are reviewed by qualified professionals, so arrange that review.
+- **Compliance.** Have the mortgage and specialist-finance wording, the introducer statement in the footer, the repossession page, `privacy.html` and `complaints.html` reviewed by a qualified adviser. Fill in the company details once Properfy Ltd is registered.
+- **Figures** such as timescales, cash-buyer price ranges and lender rules of thumb are typical figures from the design. Confirm them with your partners.
 
 ## Structure
 
 ```
-index.html  start.html  move.html  partners.html
-privacy.html  complaints.html  404.html
+*.html, <topic>/*.html      generated pages
+sitemap.xml, robots.txt     generated
 assets/
-  css/site.css      Nocturne design tokens, components and page layouts
-  js/icons.js       Phosphor icons as inline SVG (PF.icon)
-  js/data.js        config, journeys, roles and services
-  js/core.js        helpers, postcode and phone checks, lead emails, nav
-  js/home.js        homepage journey picker
-  js/start.js       onboarding
-  js/move.js        "My move" tracker
-  js/partners.js    partner enquiry form
-  fonts/            Inter (self-hosted)
+  css/site.css              Nocturne tokens and components, plus the site layer
+  js/data.js                all content and settings
+  js/site.js                behaviour and lead sending
+  fonts/                    Inter and Sora (self-hosted)
   img/favicon.svg
+tools/
+  build.js                  page builder
+  icons.js                  Phosphor icon paths used by the builder
 ```
 
 ## Credits
 
-- **Inter** by Rasmus Andersson, licensed under the SIL Open Font License 1.1 (`assets/fonts/Inter-OFL.txt`).
-- Icons from **Phosphor Icons**, licensed under the MIT License (notice in `assets/js/icons.js`).
+- **Inter** by the Inter Project Authors and **Sora** by the Sora Project Authors, both under the SIL Open Font License 1.1 (`assets/fonts/Inter-OFL.txt`, `assets/fonts/Sora-OFL.txt`).
+- Icons from **Phosphor Icons**, MIT License (notice in `tools/icons.js`).
