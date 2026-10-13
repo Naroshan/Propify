@@ -12,7 +12,7 @@ const M = 56; // margin
 // Standard PDF fonts use WinAnsi encoding: swap or drop anything outside it.
 const clean = (s) => String(s == null ? '' : s)
   .replace(/[‘’]/g, '’').replace(/[“”]/g, '"')
-  .replace(/→/g, '->').replace(/[^\x09\x0A\x0D\x20-\x7E -ÿ–—’•€]/g, '');
+  .replace(/→/g, '->').replace(/[^\x09\x0A\x0D\x20-\x7E -ÿ–—’•€…]/g, '');
 
 export const formatPounds = (pence) => '£' + (pence / 100).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 export const ukTime = (iso) => new Date(iso).toLocaleString('en-GB', { timeZone: 'Europe/London', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' });
@@ -169,6 +169,24 @@ export async function buildAgreementPdf({ agreement, agreementSha256, rec, signa
   row('Browser', rec.signer_user_agent || 'Not recorded');
   row('Agreement version', agreement.version);
   row('Agreement fingerprint', `SHA-256 ${agreementSha256}`);
+
+  // Appendix (the cancellation form) on its own page, so it can be printed and posted.
+  if (agreement.appendix) {
+    newPage();
+    for (const b of agreement.appendix) {
+      const field = typeof b === 'string' && b.match(/^(.*?)\s*…{3,}$/);
+      if (field) { // a field to fill in: its label, then ruled lines to write on
+        text(field[1], { size: 10.5, gap: 0 });
+        for (let i = 0; i < (/address/i.test(field[1]) ? 2 : 1); i++) {
+          ensure(26);
+          y -= 22;
+          page.drawLine({ start: { x: M, y }, end: { x: A4[0] - M, y }, thickness: 0.6, color: GREY });
+        }
+        y -= 16;
+      } else if (typeof b === 'string') text(b, { size: 10.5, gap: 12 });
+      else block(b, 14);
+    }
+  }
 
   const pages = pdf.getPages();
   pages.forEach((p, i) => {

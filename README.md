@@ -83,7 +83,7 @@ The page needs a server for payments, signed PDFs, emails and private storage, s
 - **Guide reviews.** The design shows "Reviewed by [Panel solicitor name]" on every guide. That line stays hidden until `PFY.config.reviewer` is set to a real reviewer. The About page says guides are reviewed by qualified professionals, so arrange that review.
 - **Compliance.** Have the mortgage and specialist-finance wording, the introducer statement in the footer, the repossession page, `privacy.html` and `complaints.html` reviewed by a qualified adviser. Fill in the company details once Properfy Ltd is registered.
 - **Figures** such as timescales, cash-buyer price ranges and lender rules of thumb are typical figures from the design. Confirm them with your partners.
-- **Onboarding agreement.** `onboarding-api/agreement.json` holds the Properfy Welcome & Payment Agreement (version 2026-10-13). Have it checked by a solicitor, then follow the steps in `onboarding-api/README.md`.
+- **Onboarding agreement.** `onboarding-api/agreement.json` holds the Properfy Welcome & Payment Agreement and its cancellation form. The form still needs Properfy's postal address; sign-ups stay closed until it's filled in. Have the agreement checked by a solicitor, then follow the steps in `onboarding-api/README.md`.
 
 ## Structure
 

@@ -1031,7 +1031,7 @@ function agreementHtml(A) {
     if (b.table) { const [head, ...rows] = b.table; return `<table><thead><tr>${head.map((c) => `<th scope="col">${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((c) => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`; }
     return '';
   }).join('');
-  return `<h3>${esc(A.title)}</h3>${blocks(A.intro || [], 'h4')}${A.sections.map((sec) => `<h4>${esc(sec.heading)}</h4>${blocks(sec.blocks)}`).join('')}${A.closing ? `<hr>${blocks(A.closing, 'h4')}` : ''}`;
+  return `<h3>${esc(A.title)}</h3>${blocks(A.intro || [], 'h4')}${A.sections.map((sec) => `<h4>${esc(sec.heading)}</h4>${blocks(sec.blocks)}`).join('')}${A.closing ? `<hr>${blocks(A.closing, 'h4')}` : ''}${A.appendix ? `<hr>${blocks(A.appendix, 'h4')}` : ''}`;
 }
 
 function getStartedBody() {
@@ -1042,7 +1042,8 @@ function getStartedBody() {
         <div class="gs-step-head"><span class="gs-num" style="--c:${c}">${n}</span><div><h2 id="gs-h${n}" style="font-size:22px;letter-spacing:-0.02em">${title}</h2>${sub ? `<p style="margin:2px 0 0;font-size:14px;color:var(--color-neutral-400)">${sub}</p>` : ''}</div></div>
         <div class="gs-step-body">${inner}</div>
       </section>`;
-  const draft = A.status !== 'final' ? `<p class="gs-draft" role="note">${ic('warning-circle')}<span><strong>Draft agreement.</strong> This agreement is still being finalised, so online sign-up is closed for now. Please call us on ${CFG.contact.phone}.</span></p>` : '';
+  const blanks = /\[[^\]\n]+\]/.test([A.intro, ...A.sections.map((sec) => sec.blocks), A.closing, A.appendix].flat(2).filter((b) => typeof b === 'string').join('\n'));
+  const draft = A.status !== 'final' || blanks ? `<p class="gs-draft" role="note">${ic('warning-circle')}<span><strong>Draft agreement.</strong> This agreement is still being finalised, so online sign-up is closed for now. Please call us on ${CFG.contact.phone}.</span></p>` : '';
   return `<section style="background:${bg(NEON[0], NEON[2])}">
     <div style="max-width:1180px;margin:0 auto;padding:var(--page-hero-pad);box-sizing:border-box;display:flex;flex-direction:column;gap:16px">
       <span class="kicker">Get started with Properfy</span>

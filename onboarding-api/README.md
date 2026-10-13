@@ -50,7 +50,7 @@ You'll need three accounts:
 - **Stripe**
 - **Resend:** the free plan sends 3,000 emails a month.
 
-1. **Agreement.** It's in `agreement.json` (version `2026-10-13`). See "Changing the agreement" below if it needs changes.
+1. **Agreement.** It's in `agreement.json`. Fill in Properfy's postal address where the cancellation form says `[registered office address]`, and give the agreement a new `version`. See "Changing the agreement" below.
 2. **Bank details.** Fill in `BANK_ACCOUNT_NAME`, `BANK_SORT_CODE` and `BANK_ACCOUNT_NUMBER` in `wrangler.toml`.
 3. **Database and storage**, both kept in the EU:
    ```bash
@@ -96,7 +96,7 @@ Sign-ups stay closed until every secret and bank detail is set. The Worker logs 
 
 Everything the client signs is in `agreement.json`:
 
-- **Text:** `intro`, the numbered `sections` and `closing`. Each is a list of blocks. A block is either a paragraph (plain text) or one of these:
+- **Text:** `intro`, the numbered `sections`, `closing` and `appendix` (the cancellation form, which gets its own page in the PDF). Each is a list of blocks. A block is either a paragraph (plain text) or one of these:
   - `{ "h": … }`: a subheading
   - `{ "list": [ … ] }`: bullet points
   - `{ "table": [ … ] }`: a table whose first row is the header
@@ -110,7 +110,7 @@ When anything changes:
 3. Run `npm test`.
 4. Publish the website and run `npx wrangler deploy` together. A client who signs while one is newer than the other is asked to reload the page.
 
-Only an agreement with `"status": "final"` can be signed. Set it to `"draft"` to close sign-ups while you work on a new version.
+Only an agreement with `"status": "final"` and no blanks can be signed. A blank is anything in square brackets, such as `[registered office address]`. The page shows a notice and the Worker logs the blanks until they're filled in. Set the status to `"draft"` to close sign-ups while you work on a new version.
 
 ## Security
 

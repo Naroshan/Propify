@@ -117,6 +117,7 @@ function agreementStrings(A) {
   collect(A.intro || []);
   A.sections.forEach((sec) => { all.push(sec.heading); collect(sec.blocks); });
   collect(A.closing || []);
+  collect(A.appendix || []);
   return all;
 }
 
@@ -270,9 +271,17 @@ async function safetyTests() {
     if (failed) throw failed.reason;
     const signUp = (port) => fetch(`http://127.0.0.1:${port}/api/onboarding`, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: SITE }, body: JSON.stringify(validBody()) });
     let r = await signUp(PORT.draft);
-    // Live settings (no ALLOW_DRAFT_AGREEMENT): only a final agreement can be signed.
-    if (AGREEMENT.status === 'final') check('the final agreement can be signed with the live settings', r.status === 200, String(r.status));
-    else check('a draft agreement can’t be signed', r.status === 503 && /isn’t open yet/.test((await r.json()).error));
+    // Live settings (no ALLOW_DRAFT_AGREEMENT): only a final agreement with no blanks can be signed.
+    const ready = (await (await fetch(`http://127.0.0.1:${PORT.draft}/api/health`)).json()).agreementReady;
+    if (ready) check('the final agreement can be signed with the live settings', r.status === 200, String(r.status));
+    else {
+      check('an agreement that’s a draft or has blanks can’t be signed', r.status === 503 && /isn’t open yet/.test((await r.json()).error));
+      const blanks = agreementStrings(AGREEMENT).join('\n').match(/\[[^\]\n]+\]/g);
+      if (blanks) {
+        for (let i = 0; i < 10 && !/Agreement has blanks/.test(draft.log()); i++) await sleep(200);
+        check('the log names the blanks to fill in', draft.log().includes('Agreement has blanks to fill in: ' + blanks.join(', ')));
+      }
+    }
     r = await signUp(PORT.unset);
     check('sign-ups stay closed until the keys and bank details are set', r.status === 503 && /isn’t available/.test((await r.json()).error));
     const said = /Not configured: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY, BANK_ACCOUNT_NAME, BANK_SORT_CODE, BANK_ACCOUNT_NUMBER, ADMIN_SECRET/;

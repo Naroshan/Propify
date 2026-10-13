@@ -34,6 +34,12 @@ const nowIso = () => new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
 const first = (name) => String(name).trim().split(/\s+/)[0];
 
 const AGREEMENT_SHA = sha256(JSON.stringify(AGREEMENT));
+// Every piece of text in the agreement. A "[…]" in any of it is a blank still to fill in.
+const agreementText = (A) => [A.title, A.subtitle, A.acceptConsent, A.earlyStartConsent, ...[A.intro, ...A.sections.map((s) => [s.heading, ...s.blocks]), A.closing, A.appendix]
+  .flat().filter(Boolean).flatMap((b) => (typeof b === 'string' ? [b] : b.h ? [b.h] : b.list || (b.table ? b.table.flat() : [])))];
+const AGREEMENT_BLANKS = agreementText(AGREEMENT).join('\n').match(/\[[^\]\n]+\]/g) || [];
+// Only a final agreement with no blanks can be signed (ALLOW_DRAFT_AGREEMENT is for tests).
+const AGREEMENT_READY = AGREEMENT.status === 'final' && !AGREEMENT_BLANKS.length;
 const FEES = Object.fromEntries(AGREEMENT.fees.map((f) => [f.id, f]));
 
 // Reference shown to clients and Properfy, e.g. PFY-7K2QXD.
@@ -178,7 +184,10 @@ async function startCheckout(env, rec, token) {
 }
 
 async function createOnboarding(env, req) {
-  if (AGREEMENT.status !== 'final' && env.ALLOW_DRAFT_AGREEMENT !== 'true') return fail(env, req, 'Online onboarding isn’t open yet. Please call us on 07746 448080.', 503);
+  if (!AGREEMENT_READY && env.ALLOW_DRAFT_AGREEMENT !== 'true') {
+    if (AGREEMENT_BLANKS.length) console.error('Agreement has blanks to fill in: ' + AGREEMENT_BLANKS.join(', '));
+    return fail(env, req, 'Online onboarding isn’t open yet. Please call us on 07746 448080.', 503);
+  }
   const notSet = notConfigured(env);
   if (notSet.length) { console.error('Not configured: ' + notSet.join(', ')); return fail(env, req, 'Online onboarding isn’t available just now. Please call us on 07746 448080.', 503); }
   const len = Number(req.headers.get('Content-Length') || 0);
@@ -327,7 +336,7 @@ export default {
     env.API_ORIGIN = env.API_ORIGIN || url.origin;
     try {
       if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors(env, req) });
-      if (url.pathname === '/api/health') return json(env, req, { ok: true, agreementVersion: AGREEMENT.version, agreementStatus: AGREEMENT.status });
+      if (url.pathname === '/api/health') return json(env, req, { ok: true, agreementVersion: AGREEMENT.version, agreementStatus: AGREEMENT.status, agreementReady: AGREEMENT_READY });
       if (url.pathname === '/api/stripe/webhook' && req.method === 'POST') return await handleWebhook(env, req);
       if (url.pathname.startsWith('/admin/')) return await handleAdmin(env, req, url);
       if (url.pathname === '/api/onboarding' && req.method === 'POST') return await createOnboarding(env, req);
