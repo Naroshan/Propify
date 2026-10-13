@@ -59,22 +59,23 @@ function sprite() {
     '</defs></svg>';
 }
 
-// Page addresses. Guides live one folder down (e.g. conveyancing/…), so every
-// link is written relative to the page it appears on.
+// Page addresses. Every page is a folder with an index.html, so addresses
+// have no ".html" (e.g. /selling-a-property/ and
+// /conveyancing/how-long-does-conveyancing-take/). Links are written from the
+// site root.
 const FILE = {
-  home: 'index.html', hub: 'property-hub.html', specialist: 'specialist-property-transactions.html',
-  checklists: 'checklists.html', glossary: 'glossary.html', about: 'about.html',
-  quick: P.quick.slug + '.html', repo: P.repo.slug + '.html',
-  privacy: 'privacy.html', complaints: 'complaints.html', partners: 'partners.html'
+  home: '', hub: 'property-hub/', specialist: 'specialist-property-transactions/',
+  checklists: 'checklists/', glossary: 'glossary/', about: 'about/',
+  quick: P.quick.slug + '/', repo: P.repo.slug + '/',
+  privacy: 'privacy/', complaints: 'complaints/', partners: 'partners/'
 };
-const jFile = (k) => P.journeys[k].slug + '.html';
-const sFile = (k) => P.services[k].slug + '.html';
-const gFile = (id) => cat(P.guides[id].cat).root + '/' + P.guides[id].slug + '.html';
-const HUB_PAGES = { leasehold: 'leasehold.html', exchange: 'exchange-and-completion.html', ftb: 'first-time-buyers.html' };
-const hubFile = (catId) => HUB_PAGES[catId] || 'property-hub.html?cat=' + catId;
+const jFile = (k) => P.journeys[k].slug + '/';
+const sFile = (k) => P.services[k].slug + '/';
+const gFile = (id) => cat(P.guides[id].cat).root + '/' + P.guides[id].slug + '/';
+const HUB_PAGES = { leasehold: 'leasehold/', exchange: 'exchange-and-completion/', ftb: 'first-time-buyers/' };
+const hubFile = (catId) => HUB_PAGES[catId] || 'property-hub/?cat=' + catId;
 
-let base = ''; // '' at the root, '../' one folder down, '/' for the 404 page
-const u = (f) => base + f;
+const u = (f) => '/' + f;
 
 // "svc:auction", "journey:ltb", "guide:leasehold", "hub:ftb" or "lead".
 function linkAttrs(to) {
@@ -84,7 +85,7 @@ function linkAttrs(to) {
   if (t === 'journey') return `href="${u(jFile(id))}"`;
   if (t === 'hub') return `href="${u(hubFile(id))}"`;
   if (t === 'lead') return 'href="#tell-us" data-lead="move"';
-  return `href="${u(to + '.html')}"`;
+  return `href="${u(to + '/')}"`;
 }
 
 const svcMenu = SVC_KEYS.map((k) => ({
@@ -219,8 +220,8 @@ function metaDesc(s) {
 }
 
 const built = [];
-function write(file, o) {
-  base = o.base != null ? o.base : '../'.repeat(file.split('/').length - 1);
+function write(route, o) {
+  const file = route === '404.html' ? route : route + 'index.html';
   used = new Set(ALWAYS);
   const bodyHtml = o.body();
   const head = header(o.active);
@@ -228,7 +229,7 @@ function write(file, o) {
   const sticky = stickyCta();
   const crumb = crumbs(o.crumbs);
   const bandHtml = o.band === false ? '' : band();
-  const canonical = CFG.site + '/' + (o.canonical != null ? o.canonical : file === 'index.html' ? '' : file);
+  const canonical = CFG.site + '/' + (o.canonical != null ? o.canonical : route);
   const title = o.title || DEFAULT_TITLE;
   const desc = metaDesc(o.desc || DEFAULT_DESC);
   const body = { page: o.page };
@@ -274,7 +275,19 @@ ${sticky}
   const out = path.join(ROOT, file);
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, html);
-  built.push({ file, canonical, sitemap: o.sitemap !== false && !o.noindex && o.canonical == null });
+  built.push({ route, canonical, sitemap: o.sitemap !== false && !o.noindex && o.canonical == null });
+  // The site used to use addresses ending in .html. Keep those working by
+  // sending visitors (and search engines) on to the new address.
+  if (route && route !== '404.html') {
+    const target = '/' + route;
+    fs.writeFileSync(path.join(ROOT, route.replace(/\/$/, '') + '.html'), `<!DOCTYPE html>
+<html lang="en-GB"><head><meta charset="utf-8"><title>${esc(title)}</title>
+<link rel="canonical" href="${esc(canonical)}"><meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0; url=${target}">
+<script>location.replace('${target}' + location.search + location.hash)</script>
+</head><body><a href="${target}">Continue to Properfy</a></body></html>
+`);
+  }
 }
 
 /* ── Building blocks shared by several pages ────────────────────────────── */
@@ -986,7 +999,7 @@ function notFoundBody() {
 
 /* ── Build ──────────────────────────────────────────────────────────────── */
 
-write('index.html', { page: 'home', body: homeBody, ld: ORG_LD, desc: 'Buying, selling or moving home in England or Wales? Tell Properfy what you’re trying to do and we’ll explain your next steps and introduce the right professionals.' });
+write(FILE.home, { page: 'home', body: homeBody, ld: ORG_LD, desc: 'Buying, selling or moving home in England or Wales? Tell Properfy what you’re trying to do and we’ll explain your next steps and introduce the right professionals.' });
 
 Object.keys(P.journeys).forEach((k) => {
   const j = P.journeys[k];
@@ -1009,7 +1022,7 @@ function servicePage(file, k, landing) {
   });
 }
 SVC_KEYS.forEach((k) => servicePage(sFile(k), k, false));
-Object.keys(P.aliases).forEach((slug) => servicePage(slug + '.html', P.aliases[slug], true));
+Object.keys(P.aliases).forEach((slug) => servicePage(slug + '/', P.aliases[slug], true));
 
 write(FILE.specialist, { page: 'specialist', title: 'Specialist property transactions | Properfy', desc: 'Auctions, leasehold, new builds, shared ownership, bridging, probate and more. Find the route for a property transaction that isn’t straightforward.', crumbs: [{ label: 'Specialist transactions' }], body: specialistBody });
 
@@ -1039,16 +1052,16 @@ write(FILE.about, { page: 'about', active: 'about', title: 'About Properfy | How
 
 const quickSeo = { title: 'Sell your house fast: cash buyers and auctions | Properfy', desc: 'Need to sell quickly? Compare cash buyers, auction and fast-track agent sales honestly, and get your quick-sale options with no obligation.', ld: faqLd(P.quick.faqs) };
 write(FILE.quick, { page: 'quick', active: 'quick', ...quickSeo, crumbs: [{ label: 'Sell your house fast' }], ctx: { doing: 'Quick sale' }, body: quickBody });
-write('quick-house-sale.html', { page: 'quick', active: 'quick', ...quickSeo, canonical: FILE.quick, landing: true, crumbs: [{ label: 'Sell your house fast' }], ctx: { doing: 'Quick sale' }, body: quickBody });
+write('quick-house-sale/', { page: 'quick', active: 'quick', ...quickSeo, canonical: FILE.quick, landing: true, crumbs: [{ label: 'Sell your house fast' }], ctx: { doing: 'Quick sale' }, body: quickBody });
 
 const repoSeo = { title: 'Worried about repossession? Your options explained | Properfy', desc: 'Behind on your mortgage or facing repossession? Understand where you are, what to do now and where to get free advice, then request a confidential callback.', ld: faqLd(P.repo.faqs) };
 write(FILE.repo, { page: 'repo', active: 'repo', ...repoSeo, band: false, crumbs: [{ label: 'Repossession help' }], ctx: { doing: 'Facing repossession' }, body: repoBody });
-write('facing-repossession.html', { page: 'repo', active: 'repo', ...repoSeo, canonical: FILE.repo, landing: true, band: false, crumbs: [{ label: 'Repossession help' }], ctx: { doing: 'Facing repossession' }, body: repoBody });
+write('facing-repossession/', { page: 'repo', active: 'repo', ...repoSeo, canonical: FILE.repo, landing: true, band: false, crumbs: [{ label: 'Repossession help' }], ctx: { doing: 'Facing repossession' }, body: repoBody });
 
 write(FILE.privacy, { page: 'privacy', title: 'Privacy notice | Properfy', desc: 'What Properfy collects, why, and who sees it.', crumbs: [{ label: 'Privacy' }], body: privacyBody });
 write(FILE.complaints, { page: 'complaints', title: 'Complaints | Properfy', desc: 'How to make a complaint to Properfy.', crumbs: [{ label: 'Complaints' }], body: complaintsBody });
 write(FILE.partners, { page: 'partners', title: 'For partners | Properfy', desc: 'Conveyancers, brokers, surveyors and other home services in England and Wales: register your interest in working with Properfy.', crumbs: [{ label: 'For partners' }], band: false, body: partnersBody });
-write('404.html', { page: 'notfound', title: 'Page not found | Properfy', desc: 'This page isn’t here. It may have moved when we updated the site.', base: '/', noindex: true, band: false, body: notFoundBody });
+write('404.html', { page: 'notfound', title: 'Page not found | Properfy', desc: 'This page isn’t here. It may have moved when we updated the site.', noindex: true, band: false, body: notFoundBody });
 
 // sitemap.xml and robots.txt
 const urls = built.filter((b) => b.sitemap).map((b) => `  <url><loc>${b.canonical}</loc></url>`).join('\n');

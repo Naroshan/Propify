@@ -23,23 +23,23 @@ Everything the site says is in **`assets/js/data.js`**: journeys and their steps
 node tools/build.js
 ```
 
-The builder (`tools/build.js`, no dependencies) writes every page, plus `sitemap.xml` and `robots.txt`. Commit the regenerated files. Page layouts live in the builder; behaviour (the enquiry form, other forms, search, checklists, menus, the wordmark) is in `assets/js/site.js`.
+The builder (`tools/build.js`, no dependencies) writes every page, plus `sitemap.xml` and `robots.txt`. Each page is a folder with an `index.html` (e.g. `selling-a-property/index.html` is served at `/selling-a-property/`), so addresses have no `.html`. The builder also writes a small forwarding page at each old `.html` address, so earlier links keep working. Commit the regenerated files. Page layouts live in the builder; behaviour (the enquiry form, other forms, search, checklists, menus, the wordmark) is in `assets/js/site.js`.
 
 ## Pages
 
 | Page | What it is |
 | --- | --- |
-| `index.html` | Home: "Where are you in your move?", quick-sale and repossession cards, the five journeys, services, how it works, specialist transactions and the Property Hub. |
-| `buying-a-property.html`, `selling-a-property.html`, `buying-and-selling.html`, `let-to-buy.html`, `transfer-of-equity.html` | Step-by-step journeys. |
-| `conveyancing.html`, `mortgages.html`, `property-surveys.html`, `removals.html`, `moving-house.html`, `auction-conveyancing.html`, `transfer-of-equity-quote.html`, `new-build-conveyancing.html`, `shared-ownership-conveyancing.html`, `specialist-finance.html` | Service pages, each with a quote form. |
-| `get-conveyancing-quote.html`, `mortgage-broker.html`, `property-survey.html`, `removal-quote.html`, `quick-house-sale.html`, `facing-repossession.html` | Ad landing pages: copies of a main page that point search engines at it and mark enquiries as coming from an ad landing page. |
-| `sell-my-house-fast.html` | Quick sale: options compared and a two-step form. Enquiries are marked high priority. |
-| `repossession-help.html` | Where you are, what to do now, free advice and a confidential callback form. Court and eviction stages are marked urgent. |
-| `specialist-property-transactions.html` | Routes for transactions that aren't straightforward. |
-| `property-hub.html`, `leasehold.html`, `exchange-and-completion.html`, `first-time-buyers.html` | Property Hub with search and topics. `?q=` searches and `?cat=` picks a topic. |
-| `<topic>/<guide>.html` | The 26 guides, for example `conveyancing/how-long-does-conveyancing-take.html`. |
-| `checklists.html`, `glossary.html`, `about.html` | Checklists (ticks are saved in the browser; `#address` opens one directly), glossary and about. |
-| `privacy.html`, `complaints.html`, `partners.html`, `404.html` | Supporting pages. `partners.html` is the "Partner login" link: a register-interest form. |
+| `/` | Home: "Where are you in your move?", quick-sale and repossession cards, the five journeys, services, how it works, specialist transactions and the Property Hub. |
+| `/buying-a-property/`, `/selling-a-property/`, `/buying-and-selling/`, `/let-to-buy/`, `/transfer-of-equity/` | Step-by-step journeys. |
+| `/conveyancing/`, `/mortgages/`, `/property-surveys/`, `/removals/`, `/moving-house/`, `/auction-conveyancing/`, `/transfer-of-equity-quote/`, `/new-build-conveyancing/`, `/shared-ownership-conveyancing/`, `/specialist-finance/` | Service pages, each with a quote form. |
+| `/get-conveyancing-quote/`, `/mortgage-broker/`, `/property-survey/`, `/removal-quote/`, `/quick-house-sale/`, `/facing-repossession/` | Ad landing pages: copies of a main page that point search engines at it and mark enquiries as coming from an ad landing page. |
+| `/sell-my-house-fast/` | Quick sale: options compared and a two-step form. Enquiries are marked high priority. |
+| `/repossession-help/` | Where you are, what to do now, free advice and a confidential callback form. Court and eviction stages are marked urgent. |
+| `/specialist-property-transactions/` | Routes for transactions that aren't straightforward. |
+| `/property-hub/`, `/leasehold/`, `/exchange-and-completion/`, `/first-time-buyers/` | Property Hub with search and topics. `?q=` searches and `?cat=` picks a topic. |
+| `/<topic>/<guide>/` | The 26 guides, for example `/conveyancing/how-long-does-conveyancing-take/`. |
+| `/checklists/`, `/glossary/`, `/about/` | Checklists (ticks are saved in the browser; `#address` opens one directly), glossary and about. |
+| `/privacy/`, `/complaints/`, `/partners/`, `404.html` (GitHub Pages shows it for any missing address) | Supporting pages. `/partners/` is the "Partner login" link: a register-interest form. |
 
 ## Leads
 
@@ -72,7 +72,7 @@ Each email has a reference (e.g. `PFY-48213`, also shown to the customer), the p
 ## Structure
 
 ```
-*.html, <topic>/*.html      generated pages
+<page>/index.html           generated pages (plus <page>.html forwarding pages)
 sitemap.xml, robots.txt     generated
 assets/
   css/site.css              Nocturne tokens and components, plus the site layer
