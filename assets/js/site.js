@@ -27,6 +27,10 @@
   var icon = function (name, style) {
     return '<svg class="ph" aria-hidden="true"' + (style ? ' style="' + style + '"' : '') + '><use href="#i-' + name + '"/></svg>';
   };
+  // Show the homepage as properfy.co.uk/ rather than /index.html.
+  if (/\/index\.html$/.test(w.location.pathname) && w.history.replaceState) {
+    w.history.replaceState(null, '', w.location.pathname.replace(/index\.html$/, '') + w.location.search + w.location.hash);
+  }
   var params = new URLSearchParams(w.location.search);
   var first = function (name) { return String(name || '').trim().split(/\s+/)[0]; };
   var store = {
@@ -438,14 +442,14 @@
       $('span', cta).textContent = sit.cta;
       if (sit.id === 'moving') {
         cta.removeAttribute('data-lead');
-        cta.setAttribute('data-go', 'removal-quote.html');
+        cta.setAttribute('data-go', '/removal-quote/');
       } else {
         cta.removeAttribute('data-go');
         cta.setAttribute('data-lead', 'move');
         cta.setAttribute('data-lead-extra', JSON.stringify({ doing: sit.journey ? PFY.journeys[sit.journey].doing : '', stage: STAGE[sit.id] || '' }));
       }
       link.hidden = !sit.journey;
-      if (sit.journey) link.href = PFY.journeys[sit.journey].slug + '.html';
+      if (sit.journey) link.href = '/' + PFY.journeys[sit.journey].slug + '/';
     });
   })();
 
@@ -618,7 +622,7 @@
     UI.stop.split(' ').forEach(function (s) { STOP[s] = 1; });
     var gPath = function (id) {
       var g = PFY.guides[id];
-      return PFY.cats.filter(function (c) { return c.id === g.cat; })[0].root + '/' + g.slug + '.html';
+      return '/' + PFY.cats.filter(function (c) { return c.id === g.cat; })[0].root + '/' + g.slug + '/';
     };
 
     function search(q) {
@@ -633,11 +637,11 @@
       });
       Object.keys(PFY.services).forEach(function (k) {
         var s = PFY.services[k], sc = score(s.h1 + ' ' + s.kicker);
-        if (sc > 0) res.push({ kind: 'Service', title: s.h1, sub: s.intro.slice(0, 120), s: sc * 0.9, href: s.slug + '.html' });
+        if (sc > 0) res.push({ kind: 'Service', title: s.h1, sub: s.intro.slice(0, 120), s: sc * 0.9, href: '/' + s.slug + '/' });
       });
       PFY.glossary.forEach(function (g) {
         var sc = score(g.t);
-        if (sc > 0) res.push({ kind: 'Glossary', title: g.t, sub: g.d, s: sc * 0.8, href: 'glossary.html?q=' + encodeURIComponent(g.t) });
+        if (sc > 0) res.push({ kind: 'Glossary', title: g.t, sub: g.d, s: sc * 0.8, href: '/glossary/?q=' + encodeURIComponent(g.t) });
       });
       return res.sort(function (a, b) { return b.s - a.s; }).slice(0, 8);
     }
@@ -739,7 +743,7 @@
         ['Type', 'Checklist request'], ['Checklist', c.title], ['Postcode', area.postcode]
       ], {
         _autoresponse: 'Here’s your ' + c.title.toLowerCase() + ' from Properfy.\n\n' + c.items.map(function (t) { return '☐ ' + t; }).join('\n') +
-          '\n\nTick things off as you go at ' + CFG.site + '/checklists.html. If you’d like help with any of it, just reply to this email.'
+          '\n\nTick things off as you go at ' + CFG.site + '/checklists/. If you’d like help with any of it, just reply to this email.'
       }).then(function () {
         PF.track('checklist_download', false, { checklist: c.id });
         busy(btn, false);
