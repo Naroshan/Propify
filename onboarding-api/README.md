@@ -6,7 +6,7 @@ The backend for **properfy.co.uk/get-started**. The page itself is part of the w
 - emails the PDF to the client and to info@properfy.co.uk (through Resend)
 - opens Stripe Checkout for card payments, and marks them paid only when a **verified Stripe webhook** arrives
 - keeps bank transfers **pending** until Properfy confirms them
-- emails info@properfy.co.uk each morning when a client's cancellation period has ended, if they didn't ask for an early start
+- emails info@properfy.co.uk each morning when a client's cooling-off period has ended, if they didn't ask for an early start
 
 Nothing is publicly readable. Clients get their PDF by email. The download and confirm links in Properfy's emails are signed with `ADMIN_SECRET`.
 
@@ -18,7 +18,7 @@ Nothing is publicly readable. Clients get their PDF by email. The download and c
 4. **Bank transfer:** the client sees the Tide details, with their property postcode as the reference. Properfy's email has a "Mark the bank transfer as received" link. It opens a page with a button rather than confirming straight away, so email link scanners can't mark a payment as received.
 5. The page shows the thank-you message.
 
-**Start date.** The 14-day cancellation period ends 14 days after the UK date the client signs. Without an early-start request, work may begin the day after; the record holds this as `services_may_start`.
+**Start date.** The 14-day cooling-off period ends 14 days after the UK date the client signs. Without an early-start request, work may begin the day after; the record holds this as `services_may_start`.
 
 ## Addresses
 
@@ -50,7 +50,7 @@ You'll need three accounts:
 - **Stripe**
 - **Resend:** the free plan sends 3,000 emails a month.
 
-1. **Agreement.** Put the final wording in `agreement.json`, set `"status": "final"` and give it a new `version` (for example `"2026-11-01"`). Then rebuild the website from the repo root with `node tools/build.js`, so the page shows the same text. Every PDF records the version and fingerprint, so change the version whenever the wording or fees change. Until the status is `final`, the Worker refuses sign-ups.
+1. **Agreement.** It's in `agreement.json` (version `2026-10-13`). See "Changing the agreement" below if it needs changes.
 2. **Bank details.** Fill in `BANK_ACCOUNT_NAME`, `BANK_SORT_CODE` and `BANK_ACCOUNT_NUMBER` in `wrangler.toml`.
 3. **Database and storage**, both kept in the EU:
    ```bash
@@ -84,7 +84,7 @@ Sign-ups stay closed until every secret and bank detail is set. The Worker logs 
 - **Every sign-up** sends an email to info@properfy.co.uk. It has the PDF attached and shows the details, whether an early start was asked for and when work may begin. For bank transfers it also has the confirm link.
 - **When a bank transfer arrives in Tide**, open the link in that email, check the details and press "Yes, mark as paid". The client is emailed.
 - **Card payments** confirm themselves through Stripe.
-- **Each morning** (07:00 UTC, which is 08:00 in summer), you get "You can now start work for N clients" if anyone's cancellation period has ended.
+- **Each morning** (07:00 UTC, which is 08:00 in summer), you get "You can now start work for N clients" if anyone's cooling-off period has ended.
 - **To look up records:**
   ```bash
   npx wrangler d1 execute properfy-onboarding --remote --command "SELECT id, client_name, transaction_label, payment_status, services_may_start FROM onboardings ORDER BY created_at DESC LIMIT 20"
@@ -92,9 +92,29 @@ Sign-ups stay closed until every secret and bank detail is set. The Worker logs 
   Every step is also logged in the `events` table.
 - **Keeping records.** Records and PDFs are kept until you delete them. Decide how long to keep them and say so in the privacy policy.
 
+## Changing the agreement
+
+Everything the client signs is in `agreement.json`:
+
+- **Text:** `intro`, the numbered `sections` and `closing`. Each is a list of blocks. A block is either a paragraph (plain text) or one of these:
+  - `{ "h": … }`: a subheading
+  - `{ "list": [ … ] }`: bullet points
+  - `{ "table": [ … ] }`: a table whose first row is the header
+- **Tick boxes:** `acceptConsent` and `earlyStartConsent`.
+- **Amounts:** `fees` holds the amounts charged, in pence. The table in section 1 must show the same amounts; the website build stops if they differ.
+
+When anything changes:
+
+1. Give it a new `version`, for example `"2026-11-01"`. Every PDF records the version and a fingerprint of the exact text.
+2. Rebuild the website from the repo root with `node tools/build.js`.
+3. Run `npm test`.
+4. Publish the website and run `npx wrangler deploy` together. A client who signs while one is newer than the other is asked to reload the page.
+
+Only an agreement with `"status": "final"` can be signed. Set it to `"draft"` to close sign-ups while you work on a new version.
+
 ## Security
 
 - **Storage.** The PDFs and signature images are in a private bucket. Each client's private status token is stored only as a hash. On the page, it is kept in the browser tab's session rather than in the address bar or history.
-- **Stripe webhooks** must carry a valid signature less than 5 minutes old. Each event is handled once, and the amount and currency must match the fee.
+- **Stripe webhooks** must carry a valid signature less than 5 minutes old. Each event is handled once, and the amount and currency must match the initial payment.
 - **Limits.** Only the website's own address can call the API from a browser (`SITE_ORIGIN`, plus `EXTRA_ORIGINS` for a test copy). Each email address can sign up 5 times an hour and each connection 10 times.
 - **Checks on every sign-up:** postcodes outside England and Wales are refused, and there is a hidden spam-trap field.

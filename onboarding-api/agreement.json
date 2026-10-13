@@ -1,7 +1,8 @@
 {
-  "status": "draft",
-  "version": "draft-2026-10-13",
+  "status": "final",
+  "version": "2026-10-13",
   "title": "Properfy Welcome & Payment Agreement",
+  "subtitle": "Your Property Journey Starts Here",
   "coolingOffDays": 14,
   "fees": [
     { "id": "purchase", "label": "Purchase", "amountPence": 59500 },
@@ -9,16 +10,106 @@
     { "id": "remortgage", "label": "Remortgage", "amountPence": 29500 },
     { "id": "toe", "label": "Transfer of Equity", "amountPence": 29500 }
   ],
-  "earlyStartConsent": "I expressly ask Properfy to begin work during my 14-day cancellation period. I understand that if I cancel during this period, I may have to pay for work already carried out, as set out in this agreement.",
-  "acceptConsent": "I have read and accept the Properfy Welcome & Payment Agreement, including the cancellation rights, payment terms, solicitor introductions and privacy policy.",
+  "acceptConsent": "I have read and understood the Properfy Welcome & Payment Agreement, including the cancellation and refund terms, how my initial payment may be used, solicitor introductions and the Privacy Notice. I accept it and authorise Properfy to begin arranging my transaction in accordance with my selected start option.",
+  "earlyStartConsent": "I expressly request that Properfy begins work immediately, during my 14-day cooling-off period. I understand that if I cancel during this period, Properfy may charge a proportionate amount for services already supplied, and that I will lose my right to cancel once Properfy’s agreed services have been fully performed.",
+  "intro": [
+    { "h": "Welcome to Properfy!" },
+    "Thank you for choosing us to help with your property transaction.",
+    "Our aim is simple: to make your property journey as smooth, straightforward and stress-free as possible.",
+    "From getting your transaction underway to helping you reach completion, we’ll be here to guide you, keep you informed and support you every step of the way.",
+    "We’ll help coordinate your onboarding, introduce you to a suitable conveyancing law firm from our trusted partner network and assist with keeping everything on track.",
+    "Before we get started, please take a moment to review the information below and complete your online agreement."
+  ],
   "sections": [
-    { "heading": "1. Welcome to Properfy", "paragraphs": ["[Properfy to supply the final wording for this section.]"] },
-    { "heading": "2. Your transaction and our fee", "paragraphs": ["[Properfy to supply the final wording for this section.]"] },
-    { "heading": "3. Payment terms", "paragraphs": ["[Properfy to supply the final wording for this section.]"] },
-    { "heading": "4. Your right to cancel", "paragraphs": ["[Properfy to supply the final wording for this section, including the 14-day cancellation period and how to cancel.]"] },
-    { "heading": "5. Starting work during the cancellation period", "paragraphs": ["[Properfy to supply the final wording for this section.]"] },
-    { "heading": "6. Solicitor and other professional introductions", "paragraphs": ["[Properfy to supply the final wording for this section.]"] },
-    { "heading": "7. Privacy policy", "paragraphs": ["[Properfy to supply the final wording for this section.]"] },
-    { "heading": "8. Complaints", "paragraphs": ["[Properfy to supply the final wording for this section.]"] }
+    {
+      "heading": "1. Getting Started",
+      "blocks": [
+        "To begin your transaction, we request an initial payment on account.",
+        "Our standard amounts are:",
+        { "table": [
+          ["Transaction Type", "Initial Payment"],
+          ["Property Purchase", "£595"],
+          ["Property Sale", "£295"],
+          ["Remortgage", "£295"],
+          ["Transfer of Equity", "£295"]
+        ] },
+        "For certain transactions, including auctions, leasehold properties and more specialist matters, the amount may vary. We’ll always confirm this with you before requesting payment.",
+        "Your initial payment will be allocated towards the agreed costs of progressing your transaction. These may include payments to your appointed law firm, conveyancing searches, disbursements and any agreed Properfy service charges.",
+        "Your initial payment is not necessarily the full cost of your conveyancing. Your appointed law firm will work from the quotation you’ve accepted through Properfy, and any additional costs will be explained and agreed with you before they’re incurred, unless already authorised."
+      ]
+    },
+    {
+      "heading": "2. Your Conveyancing Solicitor",
+      "blocks": [
+        "Properfy works with a trusted network of independent conveyancing law firms.",
+        "We’ll introduce you to the firm best suited to your transaction, taking into account the type of legal work required, the firm’s expertise and its availability.",
+        "Your appointed solicitor will be responsible for carrying out the legal work and will provide their own terms of engagement.",
+        "By accepting this agreement, you authorise Properfy to share the information needed to arrange your introduction, coordinate your initial onboarding and transfer agreed funds on account to your appointed law firm.",
+        "These funds may be held by your solicitor towards searches, disbursements and other agreed conveyancing costs, in accordance with the firm’s terms and applicable rules.",
+        "We’re with you every step of the way. Although your solicitor will handle the legal work, our team will remain available throughout your transaction to assist with communication, answer questions about the process and help keep things moving towards completion."
+      ]
+    },
+    {
+      "heading": "3. Cancellations & Refunds",
+      "blocks": [
+        "We understand that plans can change, and we aim to keep our terms fair and straightforward.",
+        { "h": "Your 14-day cooling-off period" },
+        "Where applicable under consumer law, you have a 14-day cooling-off period from entering into this agreement, during which you may cancel your Properfy services.",
+        "If you’d like us to begin work straight away, you can authorise us to do so when completing your online agreement.",
+        { "h": "Once your transaction is underway" },
+        "Your initial payment may be used towards agreed services and costs incurred in progressing your transaction.",
+        "If you decide not to proceed, change solicitors or your transaction falls through, fees for services already provided and costs properly incurred or committed with your authorisation may be non-refundable, subject to your statutory rights.",
+        "If you cancel within your cooling-off period after expressly requesting an immediate start, we may charge a proportionate amount for services already supplied, where permitted by law.",
+        "If our agreed services have been fully performed during that period, your cancellation right may end where the required consent and acknowledgement have been given.",
+        "Any remaining funds will be refunded where required by your agreement or applicable law. Where funds have already been transferred to your appointed solicitor, we’ll help coordinate any refund due in accordance with the solicitor’s terms and applicable law.",
+        "To request cancellation, simply email info@properfy.co.uk.",
+        "Nothing in these terms affects your statutory consumer rights."
+      ]
+    },
+    {
+      "heading": "4. Keeping Your Transaction Moving",
+      "blocks": [
+        "To help us progress your transaction efficiently, we ask that you provide accurate information, complete any identification or source-of-funds checks requested by your solicitor and respond promptly to requests for documents or payments.",
+        "If additional services or costs are required, these will be explained to you before they’re agreed, unless already authorised.",
+        "While Properfy will help coordinate the process and keep you informed, property transactions can be affected by third parties and circumstances outside our control. Completion dates and outcomes cannot be guaranteed.",
+        "Our commitment is to be here to support you throughout your property journey, from instruction to completion."
+      ]
+    },
+    {
+      "heading": "5. Your Personal Information",
+      "blocks": [
+        "We’ll share relevant information with your appointed partner law firm and other necessary service providers to help arrange or progress your transaction, in accordance with our Privacy Notice.",
+        "You can read our Privacy Notice here:",
+        "https://properfy.co.uk/privacy/",
+        "If you have any questions or concerns about our service, please contact us at info@properfy.co.uk."
+      ]
+    },
+    {
+      "heading": "6. Your Online Agreement",
+      "blocks": [
+        "By accepting these terms electronically, you confirm that you’ve read and understood this agreement, understand how your initial payment may be used and authorise Properfy to begin arranging your transaction in accordance with your selected start option.",
+        "You’ll also be asked to confirm whether you’d like us to start work immediately during your 14-day cooling-off period.",
+        "Your acceptance and any early-start authorisation will be recorded electronically, and a copy of your agreement will be provided for your records."
+      ]
+    },
+    {
+      "heading": "7. Making Your Payment",
+      "blocks": [
+        "You’re almost ready to get started!",
+        "Once you’ve accepted the agreement, you’ll be able to make your initial payment securely through our website using your preferred payment option:",
+        { "list": [
+          "Debit or credit card: Pay securely through Stripe.",
+          "Bank transfer: Make a manual payment using the bank details and payment reference displayed on the payment page."
+        ] },
+        "Once we’ve received your agreement and confirmed your payment, we’ll be ready to progress your onboarding in accordance with your selected start option."
+      ]
+    }
+  ],
+  "closing": [
+    { "h": "Thank You for Choosing Properfy!" },
+    "We’re delighted to be part of your property journey.",
+    "From your first instruction to the day you complete, our team will be here to support you every step of the way.",
+    "Property moves, handled properly.",
+    "Properfy LTD\nwww.properfy.co.uk\ninfo@properfy.co.uk"
   ]
 }

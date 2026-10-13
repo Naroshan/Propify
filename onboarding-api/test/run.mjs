@@ -105,7 +105,29 @@ const validBody = (o = {}) => ({
   acceptAgreement: true, earlyStart: false, signature: { method: 'drawn', image: testPng() }, paymentMethod: 'bank', ...o
 });
 
+// Every string in the agreement: paragraphs (split at line breaks), headings, list items and table cells.
+function agreementStrings(A) {
+  const all = [];
+  const collect = (bs) => bs.forEach((b) => {
+    if (typeof b === 'string') all.push(...b.split('\n'));
+    else if (b.h) all.push(b.h);
+    else if (b.list) all.push(...b.list);
+    else if (b.table) all.push(...b.table.flat());
+  });
+  collect(A.intro || []);
+  A.sections.forEach((sec) => { all.push(sec.heading); collect(sec.blocks); });
+  collect(A.closing || []);
+  return all;
+}
+
 async function apiTests() {
+  section('Agreement');
+  const gbp = (p) => '£' + (p / 100).toLocaleString('en-GB', { minimumFractionDigits: p % 100 ? 2 : 0 });
+  const table = AGREEMENT.sections.flatMap((sec) => sec.blocks).find((b) => b.table).table.slice(1);
+  check('its table of amounts matches what’s charged', table.length === AGREEMENT.fees.length && table.every((r, i) => r[1] === gbp(AGREEMENT.fees[i].amountPence)));
+  const health = await (await fetch(`${API}/api/health`)).json();
+  check('the API has the same version as the page', health.agreementVersion === AGREEMENT.version && (await (await fetch(`${SITE}/get-started/`)).text()).includes(`data-agreement-version="${AGREEMENT.version}"`));
+
   section('API: validation');
   const cases = [
     ['refuses a Scottish postcode', { postcode: 'EH1 1YZ' }, 400, /Scotland/],
@@ -214,7 +236,7 @@ async function apiTests() {
     return [];
   };
   let reminders = await runCron(14);
-  check('no reminder while the cancellation period is running', reminders.length === 0, reminders.map((e) => e.subject).join(', '));
+  check('no reminder while the cooling-off period is running', reminders.length === 0, reminders.map((e) => e.subject).join(', '));
   reminders = await runCron(15);
   const reminder = reminders[0];
   check('the day it ends, info@properfy.co.uk is told work can start', reminders.length === 1 && reminder.to[0] === 'info@properfy.co.uk' && reminder.html.includes(bank.id));
@@ -248,7 +270,9 @@ async function safetyTests() {
     if (failed) throw failed.reason;
     const signUp = (port) => fetch(`http://127.0.0.1:${port}/api/onboarding`, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: SITE }, body: JSON.stringify(validBody()) });
     let r = await signUp(PORT.draft);
-    check('a draft agreement can’t be signed', r.status === 503 && /isn’t open yet/.test((await r.json()).error));
+    // Live settings (no ALLOW_DRAFT_AGREEMENT): only a final agreement can be signed.
+    if (AGREEMENT.status === 'final') check('the final agreement can be signed with the live settings', r.status === 200, String(r.status));
+    else check('a draft agreement can’t be signed', r.status === 503 && /isn’t open yet/.test((await r.json()).error));
     r = await signUp(PORT.unset);
     check('sign-ups stay closed until the keys and bank details are set', r.status === 503 && /isn’t available/.test((await r.json()).error));
     const said = /Not configured: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY, BANK_ACCOUNT_NAME, BANK_SORT_CODE, BANK_ACCOUNT_NUMBER, ADMIN_SECRET/;
@@ -279,6 +303,7 @@ async function uiTests() {
     return p;
   };
   const sign = async (p) => {
+    await p.locator('[data-sig-canvas]').scrollIntoViewIfNeeded();
     const box = await p.locator('[data-sig-canvas]').boundingBox();
     await p.mouse.move(box.x + 30, box.y + 100); await p.mouse.down();
     for (let i = 0; i <= 24; i++) await p.mouse.move(box.x + 30 + i * 10, box.y + 90 - Math.sin(i / 2.5) * 30, { steps: 2 });
@@ -306,7 +331,11 @@ async function uiTests() {
   await p.locator('input[name="accept"]').check();
   await p.click('[data-gs-submit]');
   check('requires a signature', /draw your signature/.test(await err(p)));
-  check('summary shows the fee', (await p.locator('[data-sum-fee]').textContent()) === '£595');
+  check('summary shows the initial payment', (await p.locator('[data-sum-fee]').textContent()) === '£595');
+  const boxText = await p.locator('.gs-agreement').textContent();
+  const missing = agreementStrings(AGREEMENT).filter((t) => !boxText.includes(t));
+  check('the page shows the complete agreement, word for word', missing.length === 0, missing.slice(0, 3).join(' | '));
+  check('the privacy notice link opens in a new tab', (await p.locator('.gs-agreement a[href="https://properfy.co.uk/privacy/"]').getAttribute('target')) === '_blank');
   check('button shows the amount', /Sign and pay £595 securely/.test(await p.locator('[data-gs-submit]').textContent()));
   await p.locator('input[name="earlyStart"]').check();
   check('early start updates the summary', (await p.locator('[data-sum-start]').textContent()) === 'Straight away');
@@ -322,14 +351,14 @@ async function uiTests() {
   check('goes to secure checkout for £595', (await p.locator('[data-amount]').textContent()) === '595.00 GBP');
   await Promise.all([p.waitForURL(/get-started\/\?/), p.click('#pay')]);
   await p.waitForSelector('[data-gs-done]:not([hidden])');
-  await p.waitForFunction(() => /received your payment/.test(document.querySelector('[data-done-lead]').textContent), null, { timeout: 15000 });
+  await p.waitForFunction(() => /received your initial payment/.test(document.querySelector('[data-done-lead]').textContent), null, { timeout: 15000 });
   check('thank-you confirms payment', (await p.locator('[data-done-title]').textContent()) === 'Thank you, Alex.');
   check('says Properfy will be in touch', await p.locator('text=Properfy will be in touch with the next steps.').isVisible());
   check('confirms the emailed copy', /emailed to alex@example.com/.test(await p.locator('[data-done-emailed]').textContent()));
   check('the private link is taken out of the address bar', p.url() === `${SITE}/get-started/?paid=1`, p.url());
   await p.screenshot({ path: path.join(OUT_DIR, 'ui-card-done.png'), fullPage: true });
   await p.reload();
-  await p.waitForFunction(() => /received your payment/.test(document.querySelector('[data-done-lead]').textContent), null, { timeout: 15000 });
+  await p.waitForFunction(() => /received your initial payment/.test(document.querySelector('[data-done-lead]').textContent), null, { timeout: 15000 });
   check('reloading keeps the thank-you', await p.locator('[data-gs-done]').isVisible() && await p.locator('[data-gs-form]').isHidden());
   await p.close();
   p = await newPage();

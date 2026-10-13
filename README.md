@@ -62,13 +62,13 @@ Each email has a reference (e.g. `PFY-48213`, also shown to the customer), the p
 
 One page where a client:
 
-1. chooses Purchase (£595), Sale, Remortgage or Transfer of Equity (£295 each)
+1. chooses Purchase (£595 initial payment), Sale, Remortgage or Transfer of Equity (£295 each)
 2. gives their name, email and property postcode
-3. reads and accepts the agreement, and can ask for work to begin during the 14-day cancellation period
+3. reads and accepts the agreement, and can ask for work to begin during the 14-day cooling-off period
 4. signs, by drawing or typing
 5. pays by card (Stripe Checkout) or gets the Tide bank details, with the postcode as the reference
 
-The page is built from `getStartedBody()` in the builder. Its behaviour is in `assets/js/get-started.js`. The agreement text and fees come from **`onboarding-api/agreement.json`**, so the page and the signed PDF always match.
+The page is built from `getStartedBody()` in the builder. Its behaviour is in `assets/js/get-started.js`. The agreement text and amounts come from **`onboarding-api/agreement.json`**, so the page and the signed PDF always match.
 
 The page needs a server for payments, signed PDFs, emails and private storage, so those run in a small Cloudflare Worker in **`onboarding-api/`**. That folder's README covers how it works, how to test it (`npm test`) and how to set it up. Until `onboardingApi` is set in `data.js`, the page shows but can't be submitted.
 
@@ -83,7 +83,7 @@ The page needs a server for payments, signed PDFs, emails and private storage, s
 - **Guide reviews.** The design shows "Reviewed by [Panel solicitor name]" on every guide. That line stays hidden until `PFY.config.reviewer` is set to a real reviewer. The About page says guides are reviewed by qualified professionals, so arrange that review.
 - **Compliance.** Have the mortgage and specialist-finance wording, the introducer statement in the footer, the repossession page, `privacy.html` and `complaints.html` reviewed by a qualified adviser. Fill in the company details once Properfy Ltd is registered.
 - **Figures** such as timescales, cash-buyer price ranges and lender rules of thumb are typical figures from the design. Confirm them with your partners.
-- **Onboarding agreement.** `onboarding-api/agreement.json` holds placeholder wording. Add the final agreement, have it checked, and follow the steps in `onboarding-api/README.md`.
+- **Onboarding agreement.** `onboarding-api/agreement.json` holds the Properfy Welcome & Payment Agreement (version 2026-10-13). Have it checked by a solicitor, then follow the steps in `onboarding-api/README.md`.
 
 ## Structure
 

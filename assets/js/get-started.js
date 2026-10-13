@@ -47,8 +47,8 @@
     var early = el.earlyStart.checked;
     $('[data-sum-start]').textContent = early ? 'Straight away' : 'From ' + startDate();
     $('[data-gs-start]').textContent = early
-      ? 'You’ve asked us to start straight away, during your 14-day cancellation period.'
-      : 'If you don’t tick the second box, we won’t start work until your 14-day cancellation period has ended, on ' + startDate() + '.';
+      ? 'You’ve asked us to start straight away, during your 14-day cooling-off period.'
+      : 'If you don’t tick the second box, we won’t start work until your 14-day cooling-off period has ended, on ' + startDate() + '.';
     var area = PF.checkPostcode ? PF.checkPostcode(el.postcode.value) : { ok: false };
     $('[data-gs-ref]').textContent = area.ok ? area.postcode + ' as the reference' : 'as the reference';
     $('[data-gs-bank-note]').hidden = !bank;
@@ -213,9 +213,9 @@
     var bank = s.paymentMethod === 'bank' && !paid;
     var title = 'Thank you, ' + s.firstName + '.';
     var lead;
-    if (paid) lead = 'We’ve received your payment of ' + s.amount + ' for your ' + s.transaction.toLowerCase() + '. Your property journey starts here.';
+    if (paid) lead = 'We’ve received your initial payment of ' + s.amount + ' for your ' + s.transaction.toLowerCase() + '. We’re delighted to be part of your property journey.';
     else if (state === 'confirming') lead = 'Your agreement is signed. We’re just confirming your card payment with Stripe. This usually takes a few seconds.';
-    else if (state === 'retry') lead = (note ? note + ' ' : '') + 'Your agreement is signed, but your payment of ' + s.amount + ' hasn’t been completed yet.';
+    else if (state === 'retry') lead = (note ? note + ' ' : '') + 'Your agreement is signed, but your initial payment of ' + s.amount + ' hasn’t been completed yet.';
     else if (bank) lead = 'Your agreement is signed. Please pay ' + s.amount + ' by bank transfer using the details below.';
     else lead = 'Your agreement is signed.';
     $('[data-done-title]').textContent = title;

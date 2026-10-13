@@ -14,7 +14,7 @@ export async function createCheckoutSession(env, rec, urls) {
     mode: 'payment',
     customer_email: rec.client_email,
     client_reference_id: rec.id,
-    line_items: { 0: { quantity: 1, price_data: { currency: 'gbp', unit_amount: rec.amount_pence, product_data: { name: `Properfy onboarding: ${rec.transaction_label}`, description: `Property postcode ${rec.property_postcode} · Reference ${rec.id}` } } } },
+    line_items: { 0: { quantity: 1, price_data: { currency: 'gbp', unit_amount: rec.amount_pence, product_data: { name: `Initial payment on account – ${rec.transaction_label}`, description: `Property postcode ${rec.property_postcode} · Reference ${rec.id}` } } } },
     metadata: { onboarding_id: rec.id, transaction: rec.transaction_type, postcode: rec.property_postcode },
     payment_intent_data: { description: `Properfy ${rec.transaction_label} · ${rec.id}`, metadata: { onboarding_id: rec.id } },
     success_url: urls.success,

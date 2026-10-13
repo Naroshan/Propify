@@ -31,7 +31,7 @@ export async function buildAgreementPdf({ agreement, agreementSha256, rec, signa
   const logo = await pdf.embedPng(logoPng);
   const sig = await pdf.embedPng(signaturePng);
 
-  let page, y;
+  let page, y, pageTop;
   const width = A4[0] - M * 2;
   const newPage = () => {
     page = pdf.addPage(A4);
@@ -43,6 +43,7 @@ export async function buildAgreementPdf({ agreement, agreementSha256, rec, signa
     y -= lh + 10;
     page.drawLine({ start: { x: M, y }, end: { x: A4[0] - M, y }, thickness: 1.2, color: LAV });
     y -= 22;
+    pageTop = y;
   };
   const ensure = (h) => { if (y - h < M + 30) newPage(); };
   const lines = (text, f, size, w = width) => {
@@ -77,6 +78,34 @@ export async function buildAgreementPdf({ agreement, agreementSha256, rec, signa
     }
     y -= gap;
   };
+  // Agreement blocks: paragraphs (strings), {h} subheadings, {list} and {table} (first row is the header).
+  const block = (b, hSize = 10.5) => {
+    if (typeof b === 'string') return text(b, { size: 10, gap: 6 });
+    if (b.h) { ensure(34); return text(b.h, { f: bold, size: hSize, color: NAVY, gap: 3 }); }
+    if (b.list) {
+      for (const li of b.list) {
+        const l = lines(li, font, 10, width - 14);
+        ensure(l.length * 14);
+        page.drawText('•', { x: M + 3, y: y - 10, size: 10, font, color: INK });
+        l.forEach((ln, i) => page.drawText(ln, { x: M + 14, y: y - 10 - i * 14, size: 10, font, color: INK }));
+        y -= l.length * 14 + 3;
+      }
+      y -= 4;
+    }
+    if (b.table) {
+      const tw = 300, rowH = 19;
+      ensure(rowH * b.table.length + 10);
+      b.table.forEach((r, i) => {
+        const f = i ? font : bold, size = i ? 10 : 8.5, color = i ? INK : GREY;
+        const [k, v] = r.map(clean);
+        page.drawText(k, { x: M, y: y - 12, size, font: f, color });
+        page.drawText(v, { x: M + tw - f.widthOfTextAtSize(v, size), y: y - 12, size, font: f, color });
+        y -= rowH;
+        page.drawLine({ start: { x: M, y: y + 3 }, end: { x: M + tw, y: y + 3 }, thickness: 0.5, color: LAV });
+      });
+      y -= 10;
+    }
+  };
   const row = (k, v) => {
     const kw = 150;
     const vl = lines(v, font, 9.5, width - kw);
@@ -88,6 +117,7 @@ export async function buildAgreementPdf({ agreement, agreementSha256, rec, signa
 
   newPage();
   text(agreement.title, { f: bold, size: 17, color: NAVY, gap: 2 });
+  if (agreement.subtitle) text(agreement.subtitle, { size: 11, color: NAVY, gap: 2 });
   text(`Reference ${rec.id} · Agreement version ${agreement.version}`, { size: 9, color: GREY, gap: 14 });
 
   text('Your details', { f: bold, size: 11.5, color: NAVY, gap: 4 });
@@ -95,15 +125,25 @@ export async function buildAgreementPdf({ agreement, agreementSha256, rec, signa
   row('Email', rec.client_email);
   row('Property postcode', rec.property_postcode);
   row('Transaction', rec.transaction_label);
-  row('Fee', formatPounds(rec.amount_pence));
+  row('Initial payment', formatPounds(rec.amount_pence));
   row('Payment method', rec.payment_method === 'card' ? 'Card (Stripe secure checkout)' : 'Bank transfer (reference: property postcode)');
   y -= 10;
 
+  for (const b of agreement.intro || []) block(b, 11.5);
+  y -= 4;
   for (const s of agreement.sections) {
     ensure(40);
     text(s.heading, { f: bold, size: 11.5, color: NAVY, gap: 3 });
-    for (const p of s.paragraphs) text(p, { size: 10, gap: 6 });
+    for (const b of s.blocks) block(b);
     y -= 4;
+  }
+  if (agreement.closing) {
+    ensure(60);
+    if (y < pageTop) { // no divider straight under the page header
+      page.drawLine({ start: { x: M, y }, end: { x: A4[0] - M, y }, thickness: 0.6, color: LAV });
+      y -= 14;
+    }
+    for (const b of agreement.closing) block(b, 11.5);
   }
 
   ensure(120);
@@ -112,8 +152,8 @@ export async function buildAgreementPdf({ agreement, agreementSha256, rec, signa
   text(`[x] ${agreement.acceptConsent}`, { size: 9.5, gap: 6 });
   text(`[${rec.early_start_requested ? 'x' : ' '}] ${agreement.earlyStartConsent}`, { size: 9.5, gap: 6 });
   text(rec.early_start_requested
-    ? `The client asked for work to begin during the cancellation period. The cancellation period ends on ${ukDate(rec.cancellation_period_ends)}.`
-    : `The client did not ask for an early start. Properfy will not begin work until the cancellation period has ended on ${ukDate(rec.cancellation_period_ends)}. Work may begin on ${ukDate(rec.services_may_start)}.`, { size: 9.5, color: NAVY, gap: 14 });
+    ? `The client asked for work to begin during the cooling-off period. The cooling-off period ends on ${ukDate(rec.cancellation_period_ends)}.`
+    : `The client did not ask for an early start. Properfy will not begin work until the cooling-off period has ended on ${ukDate(rec.cancellation_period_ends)}. Work may begin on ${ukDate(rec.services_may_start)}.`, { size: 9.5, color: NAVY, gap: 14 });
 
   ensure(170);
   text('Signature', { f: bold, size: 11.5, color: NAVY, gap: 6 });

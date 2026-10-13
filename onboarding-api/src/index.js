@@ -43,8 +43,9 @@ const newId = () => {
   return 'PFY-' + [...b].map((x) => chars[x % chars.length]).join('');
 };
 
-// The UK date a cancellation period ends (14 days after the day the contract
-// is made), and the first day work may begin without an early-start request.
+// The UK date the cooling-off (cancellation) period ends, 14 days after the
+// day the contract is made, and the first day work may begin without an
+// early-start request.
 function coolingOff(signedAt, days) {
   const ukDay = new Date(signedAt).toLocaleDateString('en-CA', { timeZone: 'Europe/London' }); // YYYY-MM-DD
   const d = new Date(ukDay + 'T12:00:00Z');
@@ -110,14 +111,14 @@ const publicStatus = (env, rec) => ({
 const wrapEmail = (inner) => `<div style="font-family:Arial,Helvetica,sans-serif;color:#222433;font-size:15px;line-height:1.55;max-width:560px">${inner}<p style="color:#6b6f80;font-size:12px;margin-top:28px">Properfy · info@properfy.co.uk · 07746 448080 · properfy.co.uk</p></div>`;
 const bankHtml = (b) => `<table style="border-collapse:collapse;margin:8px 0 14px">${[['Account name', b.accountName], ['Sort code', b.sortCode], ['Account number', b.accountNumber], ['Amount', b.amount], ['Reference', b.reference]].map(([k, v]) => `<tr><td style="padding:3px 16px 3px 0;color:#6b6f80">${k}</td><td style="padding:3px 0"><strong>${esc(v)}</strong></td></tr>`).join('')}</table>`;
 const startLine = (rec) => rec.early_start_requested
-  ? 'You asked us to start work during your 14-day cancellation period, so we can begin straight away.'
-  : `You didn’t ask us to start early, so we won’t begin work until your 14-day cancellation period ends on ${ukDate(rec.cancellation_period_ends)}.`;
+  ? 'You asked us to start work during your 14-day cooling-off period, so we can begin straight away.'
+  : `You didn’t ask us to start early, so we won’t begin work until your 14-day cooling-off period ends on ${ukDate(rec.cancellation_period_ends)}.`;
 
 async function emailAgreement(env, rec, pdfBytes) {
   const attachment = [{ filename: `Properfy-agreement-${rec.id}.pdf`, content: toBase64(pdfBytes) }];
   const payLine = rec.payment_method === 'bank'
-    ? `<p>To pay by bank transfer, please send <strong>${formatPounds(rec.amount_pence)}</strong> using your property’s postcode as the reference:</p>${bankHtml(bankDetails(env, rec))}<p>Your payment will show as pending until we’ve confirmed it.</p>`
-    : `<p>Your fee of <strong>${formatPounds(rec.amount_pence)}</strong> is being paid securely by card through Stripe. We’ll email you when it’s confirmed.</p>`;
+    ? `<p>To make your initial payment by bank transfer, please send <strong>${formatPounds(rec.amount_pence)}</strong> using your property’s postcode as the reference:</p>${bankHtml(bankDetails(env, rec))}<p>Your payment will show as pending until we’ve confirmed it.</p>`
+    : `<p>Your initial payment of <strong>${formatPounds(rec.amount_pence)}</strong> is being made securely by card through Stripe. We’ll email you when it’s confirmed.</p>`;
   await sendEmail(env, {
     to: rec.client_email, replyTo: env.OFFICE_EMAIL,
     subject: `Your signed Properfy agreement (${rec.id})`,
@@ -131,10 +132,10 @@ async function emailAgreement(env, rec, pdfBytes) {
     subject: `New signed agreement: ${rec.transaction_label} · ${rec.client_name} (${rec.property_postcode}) · ${rec.id}`,
     html: wrapEmail(`<p><strong>${esc(rec.client_name)}</strong> has signed the ${esc(AGREEMENT.title)} (version ${esc(rec.agreement_version)}).</p>
       <table style="border-collapse:collapse">${[
-        ['Reference', rec.id], ['Transaction', rec.transaction_label], ['Fee', formatPounds(rec.amount_pence)], ['Email', rec.client_email],
+        ['Reference', rec.id], ['Transaction', rec.transaction_label], ['Initial payment', formatPounds(rec.amount_pence)], ['Email', rec.client_email],
         ['Property postcode', rec.property_postcode], ['Payment', rec.payment_method === 'card' ? 'Card (Stripe) · awaiting payment' : 'Bank transfer · pending'],
         ['Signed', ukTime(rec.signed_at)], ['Early start requested', rec.early_start_requested ? 'Yes' : 'No'],
-        ['Work may begin', rec.early_start_requested ? 'Now' : `${ukDate(rec.services_may_start)} (cancellation period ends ${ukDate(rec.cancellation_period_ends)})`]
+        ['Work may begin', rec.early_start_requested ? 'Now' : `${ukDate(rec.services_may_start)} (cooling-off period ends ${ukDate(rec.cancellation_period_ends)})`]
       ].map(([k, v]) => `<tr><td style="padding:3px 16px 3px 0;color:#6b6f80">${k}</td><td style="padding:3px 0"><strong>${esc(v)}</strong></td></tr>`).join('')}</table>
       ${links}<p><a href="${await adminLink(env, '/admin/agreement', rec.id)}">Download the signed agreement</a> (also attached).</p>`),
     attachments: attachment
@@ -145,7 +146,7 @@ async function emailPaid(env, rec) {
   await sendEmail(env, {
     to: rec.client_email, replyTo: env.OFFICE_EMAIL,
     subject: `Payment received – thank you (${rec.id})`,
-    html: wrapEmail(`<p>Dear ${esc(first(rec.client_name))},</p><p>We’ve received your payment of <strong>${formatPounds(rec.amount_pence)}</strong> for your ${esc(rec.transaction_label.toLowerCase())}. Thank you.</p><p>${esc(startLine(rec))}</p><p>We’ll be in touch with the next steps.</p><p>Your reference: <strong>${rec.id}</strong></p>`)
+    html: wrapEmail(`<p>Dear ${esc(first(rec.client_name))},</p><p>We’ve received your initial payment of <strong>${formatPounds(rec.amount_pence)}</strong> for your ${esc(rec.transaction_label.toLowerCase())}. Thank you.</p><p>${esc(startLine(rec))}</p><p>We’ll be in touch with the next steps.</p><p>Your reference: <strong>${rec.id}</strong></p>`)
   });
   await sendEmail(env, {
     to: env.OFFICE_EMAIL,
@@ -297,7 +298,7 @@ async function handleAdmin(env, req, url) {
 }
 
 // Runs every morning (see [triggers] in wrangler.toml): tells Properfy whose
-// cancellation period has ended, for clients who didn't ask for an early start.
+// cooling-off period has ended, for clients who didn't ask for an early start.
 async function sendStartReminders(env, today) {
   const due = (await env.DB.prepare(`SELECT * FROM onboardings WHERE early_start_requested = 0 AND services_may_start <= ? AND start_reminder_sent_at IS NULL ORDER BY services_may_start`).bind(today).all()).results;
   if (!due.length) return 0;
@@ -305,7 +306,7 @@ async function sendStartReminders(env, today) {
   await sendEmail(env, {
     to: env.OFFICE_EMAIL,
     subject: `You can now start work for ${due.length} client${due.length > 1 ? 's' : ''}`,
-    html: wrapEmail(`<p>The 14-day cancellation period has ended for these clients, who didn’t ask for an early start. You can now begin work.</p><table style="border-collapse:collapse;font-size:14px">${rows}</table>`)
+    html: wrapEmail(`<p>The 14-day cooling-off period has ended for these clients, who didn’t ask for an early start. You can now begin work.</p><table style="border-collapse:collapse;font-size:14px">${rows}</table>`)
   });
   const at = nowIso();
   for (const r of due) {
