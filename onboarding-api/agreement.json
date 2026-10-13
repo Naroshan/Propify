@@ -1,0 +1,24 @@
+{
+  "status": "draft",
+  "version": "draft-2026-10-13",
+  "title": "Properfy Welcome & Payment Agreement",
+  "coolingOffDays": 14,
+  "fees": [
+    { "id": "purchase", "label": "Purchase", "amountPence": 59500 },
+    { "id": "sale", "label": "Sale", "amountPence": 29500 },
+    { "id": "remortgage", "label": "Remortgage", "amountPence": 29500 },
+    { "id": "toe", "label": "Transfer of Equity", "amountPence": 29500 }
+  ],
+  "earlyStartConsent": "I expressly ask Properfy to begin work during my 14-day cancellation period. I understand that if I cancel during this period, I may have to pay for work already carried out, as set out in this agreement.",
+  "acceptConsent": "I have read and accept the Properfy Welcome & Payment Agreement, including the cancellation rights, payment terms, solicitor introductions and privacy policy.",
+  "sections": [
+    { "heading": "1. Welcome to Properfy", "paragraphs": ["[Properfy to supply the final wording for this section.]"] },
+    { "heading": "2. Your transaction and our fee", "paragraphs": ["[Properfy to supply the final wording for this section.]"] },
+    { "heading": "3. Payment terms", "paragraphs": ["[Properfy to supply the final wording for this section.]"] },
+    { "heading": "4. Your right to cancel", "paragraphs": ["[Properfy to supply the final wording for this section, including the 14-day cancellation period and how to cancel.]"] },
+    { "heading": "5. Starting work during the cancellation period", "paragraphs": ["[Properfy to supply the final wording for this section.]"] },
+    { "heading": "6. Solicitor and other professional introductions", "paragraphs": ["[Properfy to supply the final wording for this section.]"] },
+    { "heading": "7. Privacy policy", "paragraphs": ["[Properfy to supply the final wording for this section.]"] },
+    { "heading": "8. Complaints", "paragraphs": ["[Properfy to supply the final wording for this section.]"] }
+  ]
+}

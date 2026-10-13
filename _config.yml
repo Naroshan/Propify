@@ -1,0 +1,8 @@
+# GitHub Pages settings. The pages are plain HTML made by tools/build.js, so
+# Jekyll only copies files. These folders and files are for building and
+# running the site, not for visitors, so they are kept off the website.
+exclude:
+  - README.md
+  - tools
+  - onboarding-api
+  - node_modules

@@ -40,6 +40,7 @@ The builder (`tools/build.js`, no dependencies) writes every page, plus `sitemap
 | `/<topic>/<guide>/` | The 26 guides, for example `/conveyancing/how-long-does-conveyancing-take/`. |
 | `/checklists/`, `/glossary/`, `/about/` | Checklists (ticks are saved in the browser; `#address` opens one directly), glossary and about. |
 | `/privacy/`, `/complaints/`, `/partners/`, `404.html` (GitHub Pages shows it for any missing address) | Supporting pages. `/partners/` is the "Partner login" link: a register-interest form. |
+| `/get-started/` | Client onboarding: choose a transaction, sign the Properfy Welcome & Payment Agreement and pay by card or bank transfer. Not in the menus or sitemap, and hidden from search engines: send clients the link. See below. |
 
 ## Leads
 
@@ -57,6 +58,20 @@ Each email has a reference (e.g. `PFY-48213`, also shown to the customer), the p
 - Set `leadEndpoint` to `null` for preview mode: nothing is sent and the site says so.
 - Events are also pushed to `window.dataLayer`, ready for Google Tag Manager if you add it.
 
+## Client onboarding (`/get-started/`)
+
+One page where a client:
+
+1. chooses Purchase (£595), Sale, Remortgage or Transfer of Equity (£295 each)
+2. gives their name, email and property postcode
+3. reads and accepts the agreement, and can ask for work to begin during the 14-day cancellation period
+4. signs, by drawing or typing
+5. pays by card (Stripe Checkout) or gets the Tide bank details, with the postcode as the reference
+
+The page is built from `getStartedBody()` in the builder. Its behaviour is in `assets/js/get-started.js`. The agreement text and fees come from **`onboarding-api/agreement.json`**, so the page and the signed PDF always match.
+
+The page needs a server for payments, signed PDFs, emails and private storage, so those run in a small Cloudflare Worker in **`onboarding-api/`**. That folder's README covers how it works, how to test it (`npm test`) and how to set it up. Until `onboardingApi` is set in `data.js`, the page shows but can't be submitted.
+
 ## England and Wales only
 
 - **Forms:** every form asks for a full postcode. Postcodes in Scotland, Northern Ireland, the Channel Islands and the Isle of Man are refused with a message saying why (TD12 and TD15 are in England and allowed). Phone numbers must be UK numbers. The areas are in `PFY.config.serviceArea`; the checks are `PF.checkPostcode` and `PF.validUkPhone` in `site.js`.
@@ -68,6 +83,7 @@ Each email has a reference (e.g. `PFY-48213`, also shown to the customer), the p
 - **Guide reviews.** The design shows "Reviewed by [Panel solicitor name]" on every guide. That line stays hidden until `PFY.config.reviewer` is set to a real reviewer. The About page says guides are reviewed by qualified professionals, so arrange that review.
 - **Compliance.** Have the mortgage and specialist-finance wording, the introducer statement in the footer, the repossession page, `privacy.html` and `complaints.html` reviewed by a qualified adviser. Fill in the company details once Properfy Ltd is registered.
 - **Figures** such as timescales, cash-buyer price ranges and lender rules of thumb are typical figures from the design. Confirm them with your partners.
+- **Onboarding agreement.** `onboarding-api/agreement.json` holds placeholder wording. Add the final agreement, have it checked, and follow the steps in `onboarding-api/README.md`.
 
 ## Structure
 
@@ -80,9 +96,12 @@ assets/
   js/site.js                behaviour and lead sending
   fonts/                    Inter and Sora (self-hosted)
   img/favicon.svg
+  js/get-started.js         the onboarding page
 tools/
   build.js                  page builder
   icons.js                  Phosphor icon paths used by the builder
+onboarding-api/             backend for /get-started/ (Cloudflare Worker), with its own README
+_config.yml                 keeps tools/, onboarding-api/ and this README off the website
 ```
 
 ## Credits

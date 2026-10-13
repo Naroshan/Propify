@@ -398,6 +398,11 @@ window.PFY.config = {
   leadEndpoint: "https://formsubmit.co/ajax/info@properfy.co.uk",
   contact: { email: "info@properfy.co.uk", phone: "07746 448080", phoneHref: "+447746448080" },
   site: "https://properfy.co.uk",
+  // The onboarding API (Cloudflare Worker in onboarding-api/) behind
+  // /get-started/. Set to its address once deployed, e.g.
+  // "https://properfy-onboarding.<your-subdomain>.workers.dev". While null,
+  // the page shows but can't be submitted.
+  onboardingApi: null,
   // Who reviewed the guides. Shown on every guide as "Reviewed by …" once set.
   reviewer: null,
   guidesUpdated: "September 2026",
