@@ -9,12 +9,12 @@ OFFICE_EMAIL = "info@properfy.co.uk"
 FROM_EMAIL = "Properfy <info@properfy.co.uk>"
 STRIPE_API_BASE = "https://api.stripe.com"
 RESEND_API_BASE = "https://api.resend.com"
-# Tide account for bank transfers (fill in before going live).
+# Tide account for bank transfers. The sort code and account number are
+# set privately (below), not in this public repository.
 BANK_ACCOUNT_NAME = "Properfy Ltd"
-BANK_SORT_CODE = "[sort code]"
-BANK_ACCOUNT_NUMBER = "[account number]"
 # Secrets, set with `npx wrangler secret put NAME` (never commit them):
-#   STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY, ADMIN_SECRET
+#   STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY, ADMIN_SECRET,
+#   BANK_SORT_CODE, BANK_ACCOUNT_NUMBER
 
 # Every morning at 07:00 UTC (08:00 in summer): email Properfy the clients
 # whose cancellation period has ended.
