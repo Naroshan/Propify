@@ -207,7 +207,8 @@ function footer() {
     </div>
     <p style="margin:0;font-size:12px;line-height:1.6;color:var(--color-neutral-500);max-width:860px">Properfy is an introducer. We don’t provide legal services, mortgage advice or surveys ourselves; these are provided by the professionals we introduce you to, who are responsible for their advice. We may receive a referral fee from partners, and we’ll tell you before you’re introduced. Your home may be repossessed if you do not keep up repayments on your mortgage. Guides cover England and Wales unless stated and are general information, not advice.</p>
     <p style="margin:0;font-size:12px;line-height:1.6;color:var(--color-neutral-500)">Properfy covers homes in England and Wales only. Call <a href="tel:${c.phoneHref}" style="color:var(--color-neutral-400);text-decoration:underline">${c.phone}</a> or email <a href="mailto:${c.email}" style="color:var(--color-neutral-400);text-decoration:underline">${c.email}</a>.</p>
-    <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--color-neutral-500)"><span>© 2026 Properfy Ltd</span><a class="hv-text" href="${u(FILE.privacy)}" ${legal}>Privacy</a><a class="hv-text" href="${u(FILE.privacy)}#cookies" ${legal}>Cookies</a><a class="hv-text" href="${u(FILE.complaints)}" ${legal}>Complaints</a><a href="${u(FILE.partners)}" style="color:var(--color-neutral-400);text-decoration:underline">Partner login</a></div>
+    <p style="margin:0;font-size:12px;line-height:1.6;color:var(--color-neutral-500)">${CFG.company.name} is registered in England and Wales, company number ${CFG.company.number}. Registered office: ${CFG.company.office}.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--color-neutral-500)"><span>© 2026 ${CFG.company.name}</span><a class="hv-text" href="${u(FILE.privacy)}" ${legal}>Privacy</a><a class="hv-text" href="${u(FILE.privacy)}#cookies" ${legal}>Cookies</a><a class="hv-text" href="${u(FILE.complaints)}" ${legal}>Complaints</a><a href="${u(FILE.partners)}" style="color:var(--color-neutral-400);text-decoration:underline">Partner login</a></div>
   </div>
 </footer>`;
 }
@@ -934,7 +935,9 @@ function privacyBody() {
   return simpleHero('Privacy notice', 'Your details, your say.', 'What we collect, why, and who sees it, in plain English.') + `
   <div style="max-width:1180px;margin:0 auto;padding:0 var(--pad-x) 40px;box-sizing:border-box">
     <article class="prose">
-      <!-- Draft for review by a qualified adviser before launch. Add company number, ICO registration and retention periods. -->
+      <!-- Draft for review by a qualified adviser before launch. Add ICO registration and retention periods. -->
+      <h2>Who we are</h2>
+      <p>${CFG.company.name} is responsible for the personal information described here. We’re registered in England and Wales, company number ${CFG.company.number}. Our registered office is ${CFG.company.office}, and you can contact us at <a href="mailto:${c.email}">${c.email}</a>.</p>
       <h2>What we collect</h2>
       <p>When you tell us about your move or ask for a callback, quote or quick-sale options, we collect what you give us: your name, phone number, email address and postcode, what you’re doing and the stage you’re at, and anything else you choose to tell us. If you ask us to email you a checklist, we collect your email address and postcode. If you’re a partner registering interest, we collect your name, firm, role, office postcode and contact details.</p>
       <p>If you sign up with us online (at <a href="/get-started/">properfy.co.uk/get-started</a>), we also collect the transaction you choose, your name, email address and property postcode, your signature, whether you asked us to start work during your cooling-off period, and the date, time, IP address and browser you signed with. We also record how and when you made your initial payment. We never see your card details.</p>
