@@ -1,0 +1,17 @@
+{
+  "name": "properfy-onboarding-api",
+  "private": true,
+  "description": "Backend for properfy.co.uk/get-started: signed agreements, Stripe payments and emails.",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "node test/run.mjs"
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}

@@ -1,0 +1,37 @@
+# Properfy onboarding API (Cloudflare Worker). See README.md in this folder.
+name = "properfy-onboarding"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+
+[vars]
+SITE_ORIGIN = "https://properfy.co.uk"
+OFFICE_EMAIL = "info@properfy.co.uk"
+FROM_EMAIL = "Properfy <info@properfy.co.uk>"
+STRIPE_API_BASE = "https://api.stripe.com"
+RESEND_API_BASE = "https://api.resend.com"
+# Tide account for bank transfers (fill in before going live).
+BANK_ACCOUNT_NAME = "Properfy Ltd"
+BANK_SORT_CODE = "[sort code]"
+BANK_ACCOUNT_NUMBER = "[account number]"
+# Secrets, set with `npx wrangler secret put NAME` (never commit them):
+#   STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY, ADMIN_SECRET
+
+# Every morning at 07:00 UTC (08:00 in summer): email Properfy the clients
+# whose cancellation period has ended.
+[triggers]
+crons = ["0 7 * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "properfy-onboarding"
+database_id = "00000000-0000-0000-0000-000000000000" # replace with the id from `wrangler d1 create`
+
+[[r2_buckets]]
+binding = "AGREEMENTS"
+bucket_name = "properfy-agreements" # private: never enable public access
+jurisdiction = "eu" # created with --jurisdiction eu (see README.md)
+
+[[rules]]
+type = "Data"
+globs = ["**/*.png"]
+fallthrough = false
