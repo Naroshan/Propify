@@ -51,7 +51,7 @@ You'll need three accounts:
 - **Resend:** the free plan sends 3,000 emails a month.
 
 1. **Agreement.** It's in `agreement.json` (version `2026-10-14.2`), complete with its cancellation form. See "Changing the agreement" below if it needs changes.
-2. **Bank details.** Fill in `BANK_ACCOUNT_NAME`, `BANK_SORT_CODE` and `BANK_ACCOUNT_NUMBER` in `wrangler.toml`.
+2. **Bank details.** `BANK_ACCOUNT_NAME` is in `wrangler.toml`; check it matches the Tide account name exactly. The sort code and account number are set as secrets in step 6, so they stay out of this public repository.
 3. **Database and storage**, both kept in the EU:
    ```bash
    npx wrangler login
@@ -67,6 +67,8 @@ You'll need three accounts:
    npx wrangler secret put STRIPE_SECRET_KEY      # sk_test_… first, sk_live_… when going live
    npx wrangler secret put RESEND_API_KEY
    npx wrangler secret put ADMIN_SECRET           # a long random string, e.g. from: openssl rand -hex 32
+   npx wrangler secret put BANK_SORT_CODE         # the Tide sort code
+   npx wrangler secret put BANK_ACCOUNT_NUMBER    # the Tide account number
    ```
 7. **Stripe webhook.**
    - In Stripe, go to Developers → Webhooks and add the endpoint `https://<worker address>/api/stripe/webhook`.
