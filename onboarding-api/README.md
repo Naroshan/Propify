@@ -50,7 +50,7 @@ You'll need three accounts:
 - **Stripe**
 - **Resend:** the free plan sends 3,000 emails a month.
 
-1. **Agreement.** It's in `agreement.json`. Fill in Properfy's postal address where the cancellation form says `[registered office address]`, and give the agreement a new `version`. See "Changing the agreement" below.
+1. **Agreement.** It's in `agreement.json` (version `2026-10-14`), complete with its cancellation form. See "Changing the agreement" below if it needs changes.
 2. **Bank details.** Fill in `BANK_ACCOUNT_NAME`, `BANK_SORT_CODE` and `BANK_ACCOUNT_NUMBER` in `wrangler.toml`.
 3. **Database and storage**, both kept in the EU:
    ```bash

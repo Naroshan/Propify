@@ -1,6 +1,6 @@
 {
   "status": "final",
-  "version": "2026-10-13.2",
+  "version": "2026-10-14",
   "title": "Properfy Welcome & Payment Agreement",
   "subtitle": "Your Property Journey Starts Here",
   "coolingOffDays": 14,
@@ -160,7 +160,7 @@
       "h": "Cancellation Form"
     },
     "Complete and return this form only if you wish to cancel this agreement. You can email it to info@properfy.co.uk or post it to the address below.",
-    "To: Properfy Ltd, [registered office address], info@properfy.co.uk",
+    "To: Properfy Ltd, 16 Prescot Street, London E1 8AZ, info@properfy.co.uk",
     "I/We* hereby give notice that I/We* cancel my/our* contract for the supply of the following service: ………………………………………………",
     "Ordered on: ………………………………………………",
     "Name of consumer(s): ………………………………………………",
