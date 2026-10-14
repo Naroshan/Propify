@@ -397,6 +397,8 @@ window.PFY.config = {
   // arrives. Set to null for preview mode (nothing is sent; the site says so).
   leadEndpoint: "https://formsubmit.co/ajax/info@properfy.co.uk",
   contact: { email: "info@properfy.co.uk", phone: "07746 448080", phoneHref: "+447746448080" },
+  // Shown in the footer and privacy notice (UK companies must show these on their website).
+  company: { name: "Properfy Ltd", number: "17499140", office: "16 Prescot Street, London E1 8AZ" },
   site: "https://properfy.co.uk",
   // The onboarding API (Cloudflare Worker in onboarding-api/) behind
   // /get-started/. Set to its address once deployed, e.g.
