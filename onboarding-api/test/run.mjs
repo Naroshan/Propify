@@ -327,8 +327,13 @@ async function uiTests() {
   const err = (p) => p.locator('[data-gs-err] span').textContent();
 
   section('Browser: validation');
-  let p = await newPage();
+  let p = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   await p.goto(`${SITE}/get-started/`);
+  check('says sign-up opens soon while the API isn’t connected', await p.locator('[data-gs-closed]').isVisible());
+  await p.close();
+  p = await newPage();
+  await p.goto(`${SITE}/get-started/`);
+  check('no "opens soon" notice once it’s connected', await p.locator('[data-gs-closed]').isHidden());
   await p.click('[data-gs-submit]');
   check('asks for a transaction first', /choose your transaction/.test(await err(p)));
   await fill(p, 'purchase', { postcode: 'G1 1AA' });

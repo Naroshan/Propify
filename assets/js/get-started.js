@@ -275,6 +275,9 @@
     check();
   }
 
+  // Until the onboarding API is connected (PFY.config.onboardingApi), say so up front.
+  if (!API && !$('.gs-draft:not([data-gs-closed])')) $('[data-gs-closed]').hidden = false;
+
   refresh();
   resume();
 })(window, document);

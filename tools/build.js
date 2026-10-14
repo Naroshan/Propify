@@ -1057,6 +1057,7 @@ function getStartedBody() {
   <div class="gs-wrap" data-gs>
     <form class="gs-form" id="gs-form" data-gs-form data-agreement-version="${esc(A.version)}" data-cooling-off-days="${A.coolingOffDays}" novalidate>
       ${draft}
+      <p class="gs-draft" role="note" data-gs-closed hidden>${ic('warning-circle')}<span><strong>Online sign-up opens soon.</strong> To get started now, call us on <a href="tel:${CFG.contact.phoneHref}">${CFG.contact.phone}</a> or email <a href="mailto:${CFG.contact.email}">${CFG.contact.email}</a>.</span></p>
       ${step(1, NEON[0], 'Choose your transaction', 'Your initial payment on account.', `<fieldset class="gs-options"><legend class="sr-only">Your transaction</legend>
         ${A.fees.map((f) => { const [i, c] = optIcon[f.id] || ['house-line', NEON[0]]; return `<label class="gs-option" style="--c:${c}"><input type="radio" name="transaction" value="${f.id}" data-label="${esc(f.label)}" data-pence="${f.amountPence}"><span class="gs-option-box">${ic(i, `font-size:28px;color:${c};filter:drop-shadow(0 0 5px ${c})`)}<span class="gs-option-label">${esc(f.label)}</span><span class="gs-option-price">${pounds(f.amountPence)}</span></span></label>`; }).join('')}
       </fieldset>
