@@ -122,7 +122,8 @@ function header(active) {
     { label: 'Sell fast', href: FILE.quick, key: 'quick' },
     { label: 'Repossession help', href: FILE.repo, key: 'repo' },
     { label: 'Property Hub', href: FILE.hub, key: 'hub' },
-    { label: 'About', href: FILE.about, key: 'about' }
+    { label: 'About', href: FILE.about, key: 'about' },
+    { label: 'Get started', href: FILE.getStarted, key: 'start' }
   ];
   const navHtml = nav.map((l) => l.menu
     ? `<button type="button" class="nav-link" data-svc-toggle aria-expanded="false" aria-controls="svc-menu"${active === l.key ? ' style="color:var(--color-text)"' : ''}>${l.label}${ic('caret-down', 'font-size:12px')}</button>`
@@ -135,7 +136,8 @@ function header(active) {
     { label: 'Specialist transactions', href: FILE.specialist },
     { label: 'Property Hub', href: FILE.hub },
     { label: 'Checklists', href: FILE.checklists },
-    { label: 'About', href: FILE.about }
+    { label: 'About', href: FILE.about },
+    { label: 'Get started', href: FILE.getStarted }
   ];
   const menuItems = svcMenu.concat([{ label: 'All specialist transactions', icon: 'ph ph-puzzle-piece', href: FILE.specialist }]);
   return `<header class="site-header">
@@ -1190,7 +1192,7 @@ write(FILE.complaints, { page: 'complaints', title: 'Complaints | Properfy', des
 write(FILE.partners, { page: 'partners', title: 'For partners | Properfy', desc: 'Conveyancers, brokers, surveyors and other home services in England and Wales: register your interest in working with Properfy.', crumbs: [{ label: 'For partners' }], band: false, body: partnersBody });
 write('404.html', { page: 'notfound', title: 'Page not found | Properfy', desc: 'This page isn’t here. It may have moved when we updated the site.', noindex: true, band: false, body: notFoundBody });
 // Written last so its form fields don't renumber the field ids on other pages.
-write(FILE.getStarted, { page: 'get-started', title: 'Get started | Properfy', desc: 'Your property journey starts here. Choose your transaction, sign your Properfy agreement and pay securely online.', noindex: true, band: false, sticky: false, crumbs: [{ label: 'Get started' }], scripts: ['assets/js/get-started.js'], body: getStartedBody });
+write(FILE.getStarted, { page: 'get-started', active: 'start', title: 'Get started | Properfy', desc: 'Your property journey starts here. Choose your transaction, sign your Properfy agreement and pay securely online.', noindex: true, band: false, sticky: false, crumbs: [{ label: 'Get started' }], scripts: ['assets/js/get-started.js'], body: getStartedBody });
 
 // sitemap.xml and robots.txt
 const urls = built.filter((b) => b.sitemap).map((b) => `  <url><loc>${b.canonical}</loc></url>`).join('\n');
