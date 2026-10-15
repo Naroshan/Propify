@@ -144,7 +144,7 @@ function header(active) {
   <div style="max-width:1180px;margin:0 auto;padding:12px var(--pad-x);display:flex;align-items:center;gap:22px;box-sizing:border-box">
     <a href="${u(FILE.home)}" class="lk" style="margin-right:auto;display:flex;align-items:center" aria-label="Properfy home">${wordmark()}</a>
     <nav class="desk-nav" aria-label="Main">${navHtml}</nav>
-    <button type="button" class="btn btn-primary" data-lead="move" style="white-space:nowrap"><span class="cta-long">Tell us about my move</span><span class="cta-short">Get help</span></button>
+    <button type="button" class="btn btn-primary" data-lead="move" style="white-space:nowrap"><span class="cta-long">Tell us about your move</span><span class="cta-short">Get help</span></button>
     <button type="button" class="btn btn-ghost btn-icon burger" data-burger aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu">${ic('list', 'font-size:20px')}</button>
   </div>
   <div class="svc-menu" id="svc-menu" hidden>
@@ -186,7 +186,7 @@ function band() {
         <h2 class="h2">Tell us about your move</h2>
         <p style="margin:0;font-size:16px;color:var(--color-neutral-100);max-width:560px;line-height:1.55;text-wrap:pretty">Buying, selling, remortgaging or simply not sure where to start? Tell us what you’re trying to do and we’ll help you work out what you need.</p>
       </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" data-lead="move" class="btn btn-primary" style="height:48px;padding:0 22px;font-size:15px;color:var(--color-text);border-color:var(--color-text)">Tell us about my move${ic('arrow-right')}</button><button type="button" data-lead="callback" class="btn btn-ghost" style="height:48px;color:var(--color-text)">${ic('phone')}Request a callback</button></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" data-lead="move" class="btn btn-primary" style="height:48px;padding:0 22px;font-size:15px;color:var(--color-text);border-color:var(--color-text)">Tell us about your move${ic('arrow-right')}</button><button type="button" data-lead="callback" class="btn btn-ghost" style="height:48px;color:var(--color-text)">${ic('phone')}Request a callback</button></div>
     </div>
   </section>`;
 }
@@ -215,7 +215,7 @@ function footer() {
 
 function stickyCta() {
   return `<div class="sticky-cta">
-    <button type="button" data-lead="move" class="btn btn-primary" style="flex:1;height:44px">Tell us about my move</button>
+    <button type="button" data-lead="move" class="btn btn-primary" style="flex:1;height:44px">Tell us about your move</button>
     <button type="button" data-lead="callback" class="btn btn-secondary btn-icon" style="width:44px;height:44px" aria-label="Request a callback">${ic('phone', 'font-size:18px')}</button>
   </div>`;
 }
@@ -332,7 +332,7 @@ function homeBody() {
         <h1 style="font-size:var(--h1);line-height:1.03;letter-spacing:-0.035em;text-wrap:balance">Everything you need to move home. In one place.</h1>
         <p style="margin:0;font-size:17px;line-height:1.6;color:var(--color-neutral-300);max-width:520px;text-wrap:pretty">Buying, selling and moving involves dozens of tasks, professionals and services. You don’t need to understand the property industry. Just tell us what you’re trying to do, and we’ll help you work out the next step.</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button type="button" data-lead="move" class="btn btn-primary" style="height:46px;padding:0 20px;font-size:15px">Tell us about my move${ic('arrow-right')}</button>
+          <button type="button" data-lead="move" class="btn btn-primary" style="height:46px;padding:0 20px;font-size:15px">Tell us about your move${ic('arrow-right')}</button>
           <a href="${u(FILE.hub)}" class="btn btn-secondary" style="height:46px;padding:0 20px;font-size:15px">${ic('question')}Ask a property question</a>
         </div>
         <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--color-neutral-400)">
@@ -582,7 +582,7 @@ function specialistBody() {
     <span class="kicker">Specialist property transactions</span>
     <h1 style="font-size:var(--h1);line-height:1.05;letter-spacing:-0.035em;text-wrap:balance">My transaction isn’t straightforward</h1>
     <p style="margin:0;font-size:17px;color:var(--color-neutral-300);max-width:620px;line-height:1.6;text-wrap:pretty">Find the situation closest to yours. If it isn’t here, or you have more than one, tell us and we’ll work out the route with you.</p>
-    <div><button type="button" data-lead="move" class="btn btn-primary" style="height:44px">Tell us about my move${ic('arrow-right')}</button></div>
+    <div><button type="button" data-lead="move" class="btn btn-primary" style="height:44px">Tell us about your move${ic('arrow-right')}</button></div>
   </section>
   <div style="max-width:1180px;margin:0 auto;padding:0 var(--pad-x) 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:34px">
     ${specGroups().map((g) => `<section style="display:flex;flex-direction:column;gap:12px">
@@ -671,7 +671,7 @@ function articleBody(id) {
         <h2 style="font-size:24px;letter-spacing:-0.02em">How can Properfy help?</h2>
         <p style="margin:0;font-size:15px;color:var(--color-neutral-300);line-height:1.6">Not sure what you need? Tell us about your move and we’ll help you work out the next step.</p>
         <div style="display:flex;flex-wrap:wrap;gap:8px">${svcChips(g.help)}</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" data-lead="move" class="btn btn-primary" style="height:42px">Tell us about my move${ic('arrow-right')}</button><button type="button" data-lead="callback" class="btn btn-secondary" style="height:42px">${ic('phone')}Request a callback</button></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" data-lead="move" class="btn btn-primary" style="height:42px">Tell us about your move${ic('arrow-right')}</button><button type="button" data-lead="callback" class="btn btn-secondary" style="height:42px">${ic('phone')}Request a callback</button></div>
       </section>
       ${g.follow ? `<section style="display:flex;flex-direction:column;gap:4px">
           <h2 style="font-size:24px;letter-spacing:-0.02em;margin-bottom:8px">You might also be wondering</h2>
@@ -686,7 +686,7 @@ function articleBody(id) {
       <div style="padding:18px;border-radius:14px;background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px">
         <span style="font-size:16px;font-weight:500">Talk it through with us</span>
         <span style="font-size:13px;color:var(--color-neutral-400);line-height:1.5">Every move is different. Tell us yours and we’ll explain your next steps.</span>
-        <button type="button" data-lead="move" class="btn btn-primary btn-block" style="height:40px">Tell us about my move</button>
+        <button type="button" data-lead="move" class="btn btn-primary btn-block" style="height:40px">Tell us about your move</button>
       </div>
       <nav aria-label="Related guides" style="display:flex;flex-direction:column">
         <span style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-neutral-400);margin-bottom:4px">Related guides</span>

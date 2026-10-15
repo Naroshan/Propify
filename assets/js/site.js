@@ -1,6 +1,6 @@
 /*
   Properfy — behaviour
-  Menus, the animated wordmark, the "Tell us about my move" / callback
+  Menus, the animated wordmark, the "Tell us about your move" / callback
   enquiry form, every other form (quote, quick sale, repossession, checklist,
   partners), Property Hub search, checklists and the glossary filter.
 
@@ -246,7 +246,7 @@
     }, 2400);
   })();
 
-  /* ── Enquiry form: "Tell us about my move" and "Request a callback" ───── */
+  /* ── Enquiry form: "Tell us about your move" and "Request a callback" ───── */
 
   var L = null, modal = null, lastFocus = null;
   var STAGE_TITLES = ['What are you doing?', 'What stage are you at?', 'What do you need help with?', 'Where can we reach you?'];
@@ -289,7 +289,7 @@
     var kicker = L.done ? 'Thank you' : L.topic ? L.topic : move ? 'Tell us about your move' : 'Callback';
     var title = L.done ? 'Thanks' + (L.name ? ', ' + first(L.name) : '') + '. We’ll be in touch.' : move ? STAGE_TITLES[L.step] : 'Request a callback';
     var sub = L.done ? 'Here’s what happens now.' : move ? STAGE_SUBS[L.step] : 'Leave your number and we’ll call you at a time that suits.';
-    var next = L.done ? 'Done' : move && L.step < 3 ? (L.step === 2 ? 'Continue' : 'Next') : move ? 'Tell us about my move' : 'Request my callback';
+    var next = L.done ? 'Done' : move && L.step < 3 ? (L.step === 2 ? 'Continue' : 'Next') : move ? 'Tell us about your move' : 'Request my callback';
     var dots = move && !L.done ? '<div style="display:flex;gap:5px" aria-hidden="true">' + [0, 1, 2, 3].map(function (i) { return '<div style="flex:1;height:3px;border-radius:2px;transition:background .2s;background:' + (i <= L.step ? 'var(--color-accent)' : 'var(--color-neutral-800)') + '"></div>'; }).join('') + '</div>' : '';
     var dialog = $('.dialog', modal);
     dialog.innerHTML =
