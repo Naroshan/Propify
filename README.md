@@ -46,7 +46,7 @@ The builder (`tools/build.js`, no dependencies) writes every page, plus `sitemap
 
 Every form is emailed to the inbox in `PFY.config.leadEndpoint` using FormSubmit (`https://formsubmit.co/ajax/<your email>`):
 
-- **Tell us about my move** and **Request a callback** (the pop-up on every page)
+- **Tell us about your move** and **Request a callback** (the pop-up on every page)
 - **Quote requests** on service pages
 - **Quick sale** (subject starts "HIGH PRIORITY") and **repossession callbacks** (subject starts "URGENT" for court, possession order or eviction stages)
 - **Checklist requests** and **partner enquiries**
