@@ -935,7 +935,7 @@ function privacyBody() {
   return simpleHero('Privacy notice', 'Your details, your say.', 'What we collect, why, and who sees it, in plain English.') + `
   <div style="max-width:1180px;margin:0 auto;padding:0 var(--pad-x) 40px;box-sizing:border-box">
     <article class="prose">
-      <!-- Draft for review by a qualified adviser before launch. Add ICO registration and retention periods. -->
+      <!-- Draft for review by a qualified adviser before launch. Add the ICO registration number. -->
       <h2>Who we are</h2>
       <p>${CFG.company.name} is responsible for the personal information described here. We’re registered in England and Wales, company number ${CFG.company.number}. Our registered office is ${CFG.company.office}, and you can contact us at <a href="mailto:${c.email}">${c.email}</a>.</p>
       <h2>What we collect</h2>
@@ -954,6 +954,8 @@ function privacyBody() {
       <h2>How your details reach us</h2>
       <p>Forms on this site are delivered to our inbox by FormSubmit (formsubmit.co), an email-forwarding service used only to pass your details to us.</p>
       <p>Online sign-ups are handled by our own system, which runs on Cloudflare and keeps your signed agreement and records in private storage in the EU. Card payments are processed by Stripe. Emails, including the copy of your signed agreement, are sent through Resend.</p>
+      <h2>How long we keep your information</h2>
+      <p>If you sign an agreement with us, we keep it, with your details and payment records, for 6 years after your transaction ends (or after you cancel), because that’s how long a claim about a contract can be made and how long we must keep financial records. If you send us an enquiry that doesn’t go ahead, we delete it 12 months after we last spoke. Checklist requests are deleted 3 months after we send the checklist. After these periods we delete your information securely.</p>
       <h2 id="cookies" style="scroll-margin-top:90px">Cookies and storage</h2>
       <p>We don’t use advertising or analytics cookies. The site keeps a few small things in your browser: your checklist progress, so your ticks are still there when you come back; for the length of your visit, the page you arrived on, so your enquiry tells us how you found us; and, if you sign up online, your sign-up reference in that browser tab, so we can show your confirmation when you come back from paying. That last one is removed when you close the tab. You can clear the others by clearing your browser data.</p>
       <h2>Your rights</h2>
