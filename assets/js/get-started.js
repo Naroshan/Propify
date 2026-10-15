@@ -179,7 +179,7 @@
     if (!el.accept.checked) return showErr('Please tick the box to accept the agreement.', el.accept.closest('label'));
     var sig = signatureImage();
     if (!sig) return showErr(mode === 'type' ? 'Please type your name to sign.' : 'Please draw your signature in the box.', mode === 'type' ? el.typedSignature : pad);
-    if (!API) return showErr('Online sign-up isn’t open yet. Please call us on ' + ((CFG.contact || {}).phone || '07746 448080') + '.');
+    if (!API) return showErr('Online sign-up isn’t open yet. Please call us on ' + ((CFG.contact || {}).phone || '020 3475 2007') + '.');
     var method = payMethod();
     busy(true, method === 'card' ? 'Signing and opening secure checkout…' : 'Signing your agreement…');
     api('/api/onboarding', {
@@ -269,7 +269,7 @@
         if (back !== 'paid') return showDone(s, auth, 'retry');
         if (tries++ < 10) { showDone(s, auth, 'confirming'); w.setTimeout(check, 2000); return; }
         showDone(s, auth, 'confirming');
-        $('[data-done-lead]').textContent = 'Your agreement is signed. We haven’t had confirmation of your card payment from Stripe yet. We’ll email you as soon as it arrives, or call us on ' + ((CFG.contact || {}).phone || '07746 448080') + ' if you have any questions.';
+        $('[data-done-lead]').textContent = 'Your agreement is signed. We haven’t had confirmation of your card payment from Stripe yet. We’ll email you as soon as it arrives, or call us on ' + ((CFG.contact || {}).phone || '020 3475 2007') + ' if you have any questions.';
       }).catch(function () { /* show the form */ });
     }
     check();
