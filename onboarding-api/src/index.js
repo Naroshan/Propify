@@ -114,7 +114,7 @@ const publicStatus = (env, rec) => ({
 
 /* ── Emails ───────────────────────────────────────────────────────────── */
 
-const wrapEmail = (inner) => `<div style="font-family:Arial,Helvetica,sans-serif;color:#222433;font-size:15px;line-height:1.55;max-width:560px">${inner}<p style="color:#6b6f80;font-size:12px;margin-top:28px">Properfy · info@properfy.co.uk · 07746 448080 · properfy.co.uk</p></div>`;
+const wrapEmail = (inner) => `<div style="font-family:Arial,Helvetica,sans-serif;color:#222433;font-size:15px;line-height:1.55;max-width:560px">${inner}<p style="color:#6b6f80;font-size:12px;margin-top:28px">Properfy · info@properfy.co.uk · 020 3475 2007 · properfy.co.uk</p></div>`;
 const bankHtml = (b) => `<table style="border-collapse:collapse;margin:8px 0 14px">${[['Account name', b.accountName], ['Sort code', b.sortCode], ['Account number', b.accountNumber], ['Amount', b.amount], ['Reference', b.reference]].map(([k, v]) => `<tr><td style="padding:3px 16px 3px 0;color:#6b6f80">${k}</td><td style="padding:3px 0"><strong>${esc(v)}</strong></td></tr>`).join('')}</table>`;
 const startLine = (rec) => rec.early_start_requested
   ? 'You asked us to start work during your 14-day cooling-off period, so we can begin straight away.'
@@ -186,10 +186,10 @@ async function startCheckout(env, rec, token) {
 async function createOnboarding(env, req) {
   if (!AGREEMENT_READY && env.ALLOW_DRAFT_AGREEMENT !== 'true') {
     if (AGREEMENT_BLANKS.length) console.error('Agreement has blanks to fill in: ' + AGREEMENT_BLANKS.join(', '));
-    return fail(env, req, 'Online onboarding isn’t open yet. Please call us on 07746 448080.', 503);
+    return fail(env, req, 'Online onboarding isn’t open yet. Please call us on 020 3475 2007.', 503);
   }
   const notSet = notConfigured(env);
-  if (notSet.length) { console.error('Not configured: ' + notSet.join(', ')); return fail(env, req, 'Online onboarding isn’t available just now. Please call us on 07746 448080.', 503); }
+  if (notSet.length) { console.error('Not configured: ' + notSet.join(', ')); return fail(env, req, 'Online onboarding isn’t available just now. Please call us on 020 3475 2007.', 503); }
   const len = Number(req.headers.get('Content-Length') || 0);
   if (len > 600000) return fail(env, req, 'That request was too large.', 413);
   let b;
@@ -217,7 +217,7 @@ async function createOnboarding(env, req) {
   const ip = req.headers.get('CF-Connecting-IP');
   const hourAgo = new Date(Date.now() - 3600000).toISOString();
   const recent = await env.DB.prepare('SELECT SUM(CASE WHEN signer_ip = ? THEN 1 ELSE 0 END) AS by_ip, SUM(CASE WHEN lower(client_email) = lower(?) THEN 1 ELSE 0 END) AS by_email FROM onboardings WHERE created_at > ?').bind(ip, email, hourAgo).first();
-  if ((ip && recent.by_ip >= 10) || recent.by_email >= 5) return fail(env, req, 'You’ve already sent a few agreements recently. Please call us on 07746 448080 and we’ll help.', 429);
+  if ((ip && recent.by_ip >= 10) || recent.by_email >= 5) return fail(env, req, 'You’ve already sent a few agreements recently. Please call us on 020 3475 2007 and we’ll help.', 429);
 
   const signedAt = nowIso();
   const co = coolingOff(signedAt, AGREEMENT.coolingOffDays);
@@ -369,7 +369,7 @@ export default {
       return fail(env, req, 'Not found', 404);
     } catch (e) {
       console.error(e);
-      return fail(env, req, 'Something went wrong on our side. Please try again, or call us on 07746 448080.', 500);
+      return fail(env, req, 'Something went wrong on our side. Please try again, or call us on 020 3475 2007.', 500);
     }
   }
 };

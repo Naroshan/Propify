@@ -396,7 +396,7 @@ window.PFY.config = {
   // "Activate Form" email instead: click it once and everything after
   // arrives. Set to null for preview mode (nothing is sent; the site says so).
   leadEndpoint: "https://formsubmit.co/ajax/info@properfy.co.uk",
-  contact: { email: "info@properfy.co.uk", phone: "07746 448080", phoneHref: "+447746448080" },
+  contact: { email: "info@properfy.co.uk", phone: "020 3475 2007", phoneHref: "+442034752007" },
   // Shown in the footer and privacy notice (UK companies must show these on their website).
   company: { name: "Properfy Ltd", number: "17499140", office: "16 Prescot Street, London E1 8AZ" },
   site: "https://properfy.co.uk",
