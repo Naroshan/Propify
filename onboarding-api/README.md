@@ -119,4 +119,5 @@ Only an agreement with `"status": "final"` and no blanks can be signed. A blank 
 - **Storage.** The PDFs and signature images are in a private bucket. Each client's private status token is stored only as a hash. On the page, it is kept in the browser tab's session rather than in the address bar or history.
 - **Stripe webhooks** must carry a valid signature less than 5 minutes old. Each event is handled once, and the amount and currency must match the initial payment.
 - **Limits.** Only the website's own address can call the API from a browser (`SITE_ORIGIN`, plus `EXTRA_ORIGINS` for a test copy). Each email address can sign up 5 times an hour and each connection 10 times.
+- **UK only.** Connections from outside the UK are refused, using the country Cloudflare reports for each visitor (`ALLOWED_COUNTRIES` in `wrangler.toml`). This covers office links too, so mark bank transfers as received from the UK. Stripe's webhook is the one exception: Stripe calls it from abroad, and every call is signature-checked.
 - **Checks on every sign-up:** postcodes outside England and Wales are refused, and there is a hidden spam-trap field.
