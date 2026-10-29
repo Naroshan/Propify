@@ -78,6 +78,14 @@ const fail = (env, req, message, status = 400, extra = {}) => json(env, req, { o
 const page = (title, body, status = 200) => new Response(`<!DOCTYPE html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${esc(title)}</title>
 <style>body{margin:0;background:#171b40;color:#e9e9ed;font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif;display:grid;place-items:center;min-height:100vh;padding:20px;box-sizing:border-box}main{max-width:520px;width:100%;background:#232532;border-radius:14px;padding:28px;box-shadow:0 0 0 1px #3f424d}h1{font-size:22px;font-weight:500;margin:0 0 10px}p{margin:0 0 12px;color:#cfd3e5}dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0 0 18px}dt{color:#9397ab}dd{margin:0}button{font:inherit;color:#9184d9;background:transparent;border:1px solid #9184d9;border-radius:8px;padding:10px 18px;cursor:pointer}button:hover{background:rgba(145,132,217,.12)}.ok{color:#1fd67a}</style></head><body><main>${body}</main></body></html>`, { status, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex', 'Referrer-Policy': 'no-referrer' } });
 
+// Properfy serves England and Wales only, so connections from outside the UK
+// (Cloudflare's country code GB) are refused. ALLOWED_COUNTRIES is in wrangler.toml.
+function outsideUk(env, req) {
+  const allowed = String(env.ALLOWED_COUNTRIES ?? 'GB').split(',').map((s) => s.trim().toUpperCase()).filter(Boolean);
+  return !allowed.includes(String((req.cf && req.cf.country) || '').toUpperCase());
+}
+const UK_ONLY = 'Properfy only works with clients in England and Wales, so online sign-up isn’t available from outside the UK. If you’re in the UK and using a VPN, turn it off and try again.';
+
 // Everything that must be set before sign-ups open: the secrets (wrangler
 // secret put) and the Tide details (wrangler.toml).
 const adminReady = (env) => String(env.ADMIN_SECRET || '').length >= 32;
@@ -336,6 +344,10 @@ export default {
     env.API_ORIGIN = env.API_ORIGIN || url.origin;
     try {
       if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors(env, req) });
+      // Stripe calls the webhook from its own servers abroad; every call is signature-checked.
+      if (url.pathname !== '/api/stripe/webhook' && outsideUk(env, req)) {
+        return url.pathname.startsWith('/admin/') ? page('Not available', `<h1>Not available outside the UK</h1><p>${esc(UK_ONLY)}</p>`, 403) : fail(env, req, UK_ONLY, 403);
+      }
       if (url.pathname === '/api/health') return json(env, req, { ok: true, agreementVersion: AGREEMENT.version, agreementStatus: AGREEMENT.status, agreementReady: AGREEMENT_READY });
       if (url.pathname === '/api/stripe/webhook' && req.method === 'POST') return await handleWebhook(env, req);
       if (url.pathname.startsWith('/admin/')) return await handleAdmin(env, req, url);

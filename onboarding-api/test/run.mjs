@@ -18,7 +18,7 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const API_DIR = path.resolve(HERE, '..');
 const SITE_DIR = path.resolve(API_DIR, '..');
 const OUT_DIR = process.env.TEST_OUT || path.join(API_DIR, '.wrangler', 'test-output');
-const PORT = { site: 8765, worker: 8787, mock: 9911, draft: 8788, unset: 8789 };
+const PORT = { site: 8765, worker: 8787, mock: 9911, draft: 8788, unset: 8789, abroad: 8790 };
 const SITE = `http://127.0.0.1:${PORT.site}`;
 const API = `http://127.0.0.1:${PORT.worker}`;
 const MOCK = `http://127.0.0.1:${PORT.mock}`;
@@ -74,11 +74,15 @@ const TEST_VARS = {
   BANK_ACCOUNT_NAME: 'Properfy Ltd', BANK_SORT_CODE: '04-00-04', BANK_ACCOUNT_NUMBER: '12345678'
 };
 
-async function startWorker(port = PORT.worker, vars = TEST_VARS) {
+async function startWorker(port = PORT.worker, vars = TEST_VARS, country = 'GB') {
   // Never test against a server left over from another run.
   if (await fetch(`http://127.0.0.1:${port}/`).then(() => true, () => false)) throw new Error(`Port ${port} is already in use. Stop the other server and try again.`);
   const persist = path.join(API_DIR, '.wrangler', `test-state-${port}-${Date.now()}`);
-  const env = { ...process.env, WRANGLER_SEND_METRICS: 'false', CI: '1' };
+  // Where the requests seem to come from (Cloudflare's request.cf), as the Worker only serves the UK.
+  fs.mkdirSync(persist, { recursive: true });
+  const cfFile = path.join(persist, 'cf.json');
+  fs.writeFileSync(cfFile, JSON.stringify({ country, colo: country === 'GB' ? 'LHR' : 'CDG', asn: 64512, timezone: 'Europe/London' }));
+  const env = { ...process.env, WRANGLER_SEND_METRICS: 'false', CI: '1', CLOUDFLARE_CF_FETCH_PATH: cfFile };
   execFileSync('npx', ['wrangler', 'd1', 'execute', 'properfy-onboarding', '--local', '--persist-to', persist, '--file', 'schema.sql'], { cwd: API_DIR, env, stdio: 'ignore' });
   // Pass every var on the command line, blank where unset, so wrangler.toml's placeholders don't apply.
   const all = { SITE_ORIGIN: SITE, BANK_ACCOUNT_NAME: '', BANK_SORT_CODE: '', BANK_ACCOUNT_NUMBER: '', ...vars };
@@ -91,7 +95,7 @@ async function startWorker(port = PORT.worker, vars = TEST_VARS) {
   proc.stdout.on('data', (d) => { log += d; });
   proc.stderr.on('data', (d) => { log += d; });
   for (let i = 0; i < 90; i++) {
-    try { const r = await fetch(`http://127.0.0.1:${port}/api/health`); if (r.ok) return { stop, log: () => log }; } catch { /* starting */ }
+    try { const r = await fetch(`http://127.0.0.1:${port}/api/health`); if (r.ok || (country !== 'GB' && r.status === 403)) return { stop, log: () => log }; } catch { /* starting */ }
     await sleep(500);
   }
   stop();
@@ -297,6 +301,31 @@ async function safetyTests() {
   }
 }
 
+// Properfy serves England and Wales only: the API refuses anyone outside the UK,
+// except Stripe's webhook calls.
+async function ukOnlyTests() {
+  section('API: UK only');
+  const abroad = await startWorker(PORT.abroad, TEST_VARS, 'FR');
+  try {
+    const at = (p) => `http://127.0.0.1:${PORT.abroad}${p}`;
+    let r = await fetch(at('/api/onboarding'), { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: SITE }, body: JSON.stringify(validBody()) });
+    const body = await r.json();
+    check('sign-ups from outside the UK are refused', r.status === 403 && /outside the UK/.test(body.error), `${r.status} ${body.error}`);
+    check('the refusal can be read by the sign-up page', r.headers.get('Access-Control-Allow-Origin') === SITE);
+    r = await fetch(at('/api/health'));
+    check('every other address is refused too', r.status === 403);
+    r = await fetch(at('/admin/confirm-bank?id=PFY-AAAAAA&sig=x'));
+    check('office links are refused outside the UK', r.status === 403 && /outside the UK/.test(await r.text()));
+    const ev = JSON.stringify({ id: 'evt_abroad', type: 'checkout.session.completed', data: { object: {} } });
+    r = await fetch(at('/api/stripe/webhook'), { method: 'POST', body: ev, headers: { 'Stripe-Signature': signWebhook(ev, 'wrong-secret') } });
+    check('Stripe’s webhook still reaches its signature check from abroad', r.status === 400);
+    r = await fetch(`${API}/api/health`);
+    check('requests from the UK are served', r.status === 200);
+  } finally {
+    abroad.stop();
+  }
+}
+
 async function uiTests() {
   let chromium;
   try { ({ chromium } = await import(process.env.PLAYWRIGHT_PATH || 'playwright')); } catch {
@@ -430,6 +459,7 @@ try {
   worker = await startWorker();
   await apiTests();
   await safetyTests();
+  await ukOnlyTests();
   await uiTests();
 } catch (e) {
   failures++;

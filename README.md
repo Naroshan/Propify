@@ -76,6 +76,7 @@ The page needs a server for payments, signed PDFs, emails and private storage, s
 
 - **Forms:** every form asks for a full postcode. Postcodes in Scotland, Northern Ireland, the Channel Islands and the Isle of Man are refused with a message saying why (TD12 and TD15 are in England and allowed). Phone numbers must be UK numbers. The areas are in `PFY.config.serviceArea`; the checks are `PF.checkPostcode` and `PF.validUkPhone` in `site.js`.
 - **Limits:** these checks run in the visitor's browser. They stop genuine customers outside England and Wales from sending enquiries, but not a determined person or a bot posting straight to the form service, and not anyone calling or emailing the contact details in the footer.
+- **Online sign-up:** the onboarding backend refuses every connection from outside the UK (see `onboarding-api/README.md`).
 - **Blocking visitors outright:** GitHub Pages can't block by location. To stop visitors outside the UK loading the site, put the domain behind Cloudflare (free plan) with a rule that blocks every country other than GB, exempting verified bots so search engines can still index the site.
 
 ## Before launch
