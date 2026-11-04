@@ -40,7 +40,8 @@ The builder (`tools/build.js`, no dependencies) writes every page, plus `sitemap
 | `/<topic>/<guide>/` | The 26 guides, for example `/conveyancing/how-long-does-conveyancing-take/`. |
 | `/checklists/`, `/glossary/`, `/about/` | Checklists (ticks are saved in the browser; `#address` opens one directly), glossary and about. |
 | `/privacy/`, `/complaints/`, `/partners/`, `404.html` (GitHub Pages shows it for any missing address) | Supporting pages. `/partners/` is the "Partner login" link: a register-interest form. |
-| `/get-started/` | Client onboarding: choose a transaction, sign the Properfy Welcome & Payment Agreement and pay by card or bank transfer. Not in the menus or sitemap, and hidden from search engines: send clients the link. See below. |
+| `/get-started/` | Client onboarding: choose a transaction, accept the Client Terms of Business and pay by card or bank transfer. In the menu ("Get started") and the sitemap. See below. |
+| `/terms/` | The Client Terms of Business & Payment Agreement in full, with the right to cancel and the cancellation form. Linked from the sign-up page and the footer. |
 
 ## Leads
 
@@ -62,13 +63,12 @@ Each email has a reference (e.g. `PFY-48213`, also shown to the customer), the p
 
 One page where a client:
 
-1. chooses Purchase (£595 initial payment), Sale, Remortgage or Transfer of Equity (£295 each)
-2. gives their name, email and property postcode
-3. reads and accepts the agreement, and can ask for work to begin during the 14-day cooling-off period
-4. signs, by drawing or typing
-5. pays by card (Stripe Checkout) or gets the Tide bank details, with the postcode as the reference
+1. chooses Purchase (£595 initial payment), Sale or Remortgage (£295 each). Transfer of equity and other matters are arranged by phone, as the terms don't cover them.
+2. gives their name, email, UK phone number, property address and postcode
+3. accepts the Terms of Business by ticking a box. The full terms are a link to `/terms/` (opening in a new tab); the client can tick without opening it. Two more boxes are optional: sharing their details for other services they ask for, and starting work during the 14-day cooling-off period. No signature is needed.
+4. pays by card (Stripe Checkout) or gets the Tide bank details, with the postcode as the reference
 
-The page is built from `getStartedBody()` in the builder. Its behaviour is in `assets/js/get-started.js`. The agreement text and amounts come from **`onboarding-api/agreement.json`**, so the page and the signed PDF always match.
+The page is built from `getStartedBody()` in the builder and the terms page from `termsBody()`. The page's behaviour is in `assets/js/get-started.js`. The terms, tick boxes and amounts come from **`onboarding-api/agreement.json`**, so the sign-up page, the terms page and the PDF clients receive always match.
 
 The page needs a server for payments, signed PDFs, emails and private storage, so those run in a small Cloudflare Worker in **`onboarding-api/`**. That folder's README covers how it works, how to test it (`npm test`) and how to set it up. Until `onboardingApi` is set in `data.js`, the page shows but can't be submitted.
 
@@ -84,7 +84,7 @@ The page needs a server for payments, signed PDFs, emails and private storage, s
 - **Guide reviews.** The design shows "Reviewed by [Panel solicitor name]" on every guide. That line stays hidden until `PFY.config.reviewer` is set to a real reviewer. The About page says guides are reviewed by qualified professionals, so arrange that review.
 - **Compliance.** Have the mortgage and specialist-finance wording, the introducer statement in the footer, the repossession page, `privacy.html` and `complaints.html` reviewed by a qualified adviser. The company details (Properfy Ltd, company number 17499140) are in `PFY.config.company` and show in the footer and privacy notice.
 - **Figures** such as timescales, cash-buyer price ranges and lender rules of thumb are typical figures from the design. Confirm them with your partners.
-- **Onboarding agreement.** `onboarding-api/agreement.json` holds the Properfy Welcome & Payment Agreement (version 2026-10-14.2) and its cancellation form. Have the agreement checked by a solicitor, then follow the steps in `onboarding-api/README.md`.
+- **Onboarding terms.** `onboarding-api/agreement.json` holds the Client Terms of Business & Payment Agreement (version 1.0, effective 4 November 2026), followed by the right to cancel and the cancellation form. To set up online sign-up, follow the steps in `onboarding-api/README.md`.
 
 ## Structure
 

@@ -2,15 +2,15 @@
   Properfy onboarding API (Cloudflare Worker)
 
   Backs properfy.co.uk/get-started:
-    POST /api/onboarding                  sign the agreement (PDF saved, emailed) and choose a payment method
+    POST /api/onboarding                  accept the Terms of Business (PDF record saved, emailed) and choose a payment method
     GET  /api/onboarding/:id?token=…      status for the thank-you screen
     POST /api/onboarding/:id/checkout     start (or restart) Stripe card checkout
     POST /api/onboarding/:id/bank         switch to bank transfer
     POST /api/stripe/webhook              verified Stripe events mark card payments as paid
-    GET  /admin/agreement?id=…&sig=…      Properfy downloads a signed PDF (signed link, emailed to Properfy only)
+    GET  /admin/agreement?id=…&sig=…      Properfy downloads a client's PDF (signed link, emailed to Properfy only)
     GET|POST /admin/confirm-bank?id=…&sig=…  Properfy marks a bank transfer as received
 
-  Records are kept in D1 (DB) and signed PDFs in a private R2 bucket
+  Records are kept in D1 (DB) and the PDFs in a private R2 bucket
   (AGREEMENTS). Nothing is publicly readable: clients get their PDF by email,
   and Properfy's links are signed with ADMIN_SECRET.
 */
@@ -32,13 +32,18 @@ const randomHex = (n) => hex(crypto.getRandomValues(new Uint8Array(n)));
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const nowIso = () => new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
 const first = (name) => String(name).trim().split(/\s+/)[0];
+// UK numbers only, as on the website's forms.
+const validUkPhone = (v) => /^(?:\+44|0044|0)[1-9]\d{8,9}$/.test(String(v || '').replace(/[\s().-]/g, ''));
+const pdfName = (rec) => `Properfy-terms-${rec.id}.pdf`;
 
 const AGREEMENT_SHA = sha256(JSON.stringify(AGREEMENT));
-// Every piece of text in the agreement. A "[…]" in any of it is a blank still to fill in.
-const agreementText = (A) => [A.title, A.subtitle, A.acceptConsent, A.earlyStartConsent, ...[A.intro, ...A.sections.map((s) => [s.heading, ...s.blocks]), A.closing, A.appendix]
-  .flat().filter(Boolean).flatMap((b) => (typeof b === 'string' ? [b] : b.h ? [b.h] : b.list || (b.table ? b.table.flat() : [])))];
+// Every piece of text in the terms. A "[…]" in any of it is a blank still to fill in.
+const CONSENTS = ['acceptConsent', 'introductionsConsent', 'earlyStartConsent'];
+const agreementText = (A) => [A.title, A.subtitle, A.effectiveDate, ...CONSENTS.flatMap((k) => [A[k].heading, A[k].label, ...A[k].text]), ...(A.confirmation || []),
+  ...[A.intro, ...A.sections.map((s) => [s.heading, ...s.blocks]), A.closing, A.appendix]
+    .flat().filter(Boolean).flatMap((b) => (typeof b === 'string' ? [b] : b.h ? [b.h] : b.strong ? [b.strong] : b.list || (b.table ? b.table.flat() : [])))];
 const AGREEMENT_BLANKS = agreementText(AGREEMENT).join('\n').match(/\[[^\]\n]+\]/g) || [];
-// Only a final agreement with no blanks can be signed (ALLOW_DRAFT_AGREEMENT is for tests).
+// Only final terms with no blanks can be accepted (ALLOW_DRAFT_AGREEMENT is for tests).
 const AGREEMENT_READY = AGREEMENT.status === 'final' && !AGREEMENT_BLANKS.length;
 const FEES = Object.fromEntries(AGREEMENT.fees.map((f) => [f.id, f]));
 
@@ -52,8 +57,8 @@ const newId = () => {
 // The UK date the cooling-off (cancellation) period ends, 14 days after the
 // day the contract is made, and the first day work may begin without an
 // early-start request.
-function coolingOff(signedAt, days) {
-  const ukDay = new Date(signedAt).toLocaleDateString('en-CA', { timeZone: 'Europe/London' }); // YYYY-MM-DD
+function coolingOff(acceptedAt, days) {
+  const ukDay = new Date(acceptedAt).toLocaleDateString('en-CA', { timeZone: 'Europe/London' }); // YYYY-MM-DD
   const d = new Date(ukDay + 'T12:00:00Z');
   const end = new Date(d.getTime() + days * 86400000).toISOString().slice(0, 10);
   const start = new Date(d.getTime() + (days + 1) * 86400000).toISOString().slice(0, 10);
@@ -129,29 +134,30 @@ const startLine = (rec) => rec.early_start_requested
   : `You didn’t ask us to start early, so we won’t begin work until your 14-day cooling-off period ends on ${ukDate(rec.cancellation_period_ends)}.`;
 
 async function emailAgreement(env, rec, pdfBytes) {
-  const attachment = [{ filename: `Properfy-agreement-${rec.id}.pdf`, content: toBase64(pdfBytes) }];
+  const attachment = [{ filename: pdfName(rec), content: toBase64(pdfBytes) }];
   const payLine = rec.payment_method === 'bank'
     ? `<p>To make your initial payment by bank transfer, please send <strong>${formatPounds(rec.amount_pence)}</strong> using your property’s postcode as the reference:</p>${bankHtml(bankDetails(env, rec))}<p>Your payment will show as pending until we’ve confirmed it.</p>`
     : `<p>Your initial payment of <strong>${formatPounds(rec.amount_pence)}</strong> is being made securely by card through Stripe. We’ll email you when it’s confirmed.</p>`;
   await sendEmail(env, {
     to: rec.client_email, replyTo: env.OFFICE_EMAIL,
-    subject: `Your signed Properfy agreement (${rec.id})`,
-    html: wrapEmail(`<p>Dear ${esc(first(rec.client_name))},</p><p>Thank you for choosing Properfy. Your property journey starts here, and we’ll support you every step of the way.</p><p>A copy of your signed <strong>${esc(AGREEMENT.title)}</strong> is attached for your records.</p>${payLine}<p>${esc(startLine(rec))}</p><p>We’ll be in touch with the next steps.</p><p>Your reference: <strong>${rec.id}</strong></p>`),
+    subject: `Your Properfy Terms of Business (${rec.id})`,
+    html: wrapEmail(`<p>Dear ${esc(first(rec.client_name))},</p><p>Thank you for choosing Properfy. Your property journey starts here, and we’ll support you every step of the way.</p><p>A copy of the <strong>${esc(AGREEMENT.title)}</strong> you accepted is attached for your records, together with your choices and how to cancel.</p>${payLine}<p>${esc(startLine(rec))}</p><p>We’ll be in touch with the next steps.</p><p>Your reference: <strong>${rec.id}</strong></p>`),
     attachments: attachment
   });
   const links = rec.payment_method === 'bank'
     ? `<p><a href="${await adminLink(env, '/admin/confirm-bank', rec.id)}">Mark the bank transfer as received</a> (only once it’s in the Tide account).</p>` : '';
   await sendEmail(env, {
     to: env.OFFICE_EMAIL, replyTo: rec.client_email,
-    subject: `New signed agreement: ${rec.transaction_label} · ${rec.client_name} (${rec.property_postcode}) · ${rec.id}`,
-    html: wrapEmail(`<p><strong>${esc(rec.client_name)}</strong> has signed the ${esc(AGREEMENT.title)} (version ${esc(rec.agreement_version)}).</p>
+    subject: `New sign-up: ${rec.transaction_label} · ${rec.client_name} (${rec.property_postcode}) · ${rec.id}`,
+    html: wrapEmail(`<p><strong>${esc(rec.client_name)}</strong> has accepted the ${esc(AGREEMENT.title)} (version ${esc(rec.agreement_version)}).</p>
       <table style="border-collapse:collapse">${[
         ['Reference', rec.id], ['Transaction', rec.transaction_label], ['Initial payment', formatPounds(rec.amount_pence)], ['Email', rec.client_email],
-        ['Property postcode', rec.property_postcode], ['Payment', rec.payment_method === 'card' ? 'Card (Stripe) · awaiting payment' : 'Bank transfer · pending'],
-        ['Signed', ukTime(rec.signed_at)], ['Early start requested', rec.early_start_requested ? 'Yes' : 'No'],
+        ['Contact number', rec.client_phone], ['Property address', rec.property_address], ['Property postcode', rec.property_postcode],
+        ['Payment', rec.payment_method === 'card' ? 'Card (Stripe) · awaiting payment' : 'Bank transfer · pending'],
+        ['Accepted', ukTime(rec.accepted_at)], ['Introductions authorised', rec.introductions_authorised ? 'Yes' : 'No'], ['Early start requested', rec.early_start_requested ? 'Yes' : 'No'],
         ['Work may begin', rec.early_start_requested ? 'Now' : `${ukDate(rec.services_may_start)} (cooling-off period ends ${ukDate(rec.cancellation_period_ends)})`]
       ].map(([k, v]) => `<tr><td style="padding:3px 16px 3px 0;color:#6b6f80">${k}</td><td style="padding:3px 0"><strong>${esc(v)}</strong></td></tr>`).join('')}</table>
-      ${links}<p><a href="${await adminLink(env, '/admin/agreement', rec.id)}">Download the signed agreement</a> (also attached).</p>`),
+      ${links}<p><a href="${await adminLink(env, '/admin/agreement', rec.id)}">Download the PDF record</a> (also attached).</p>`),
     attachments: attachment
   });
 }
@@ -199,7 +205,7 @@ async function createOnboarding(env, req) {
   const notSet = notConfigured(env);
   if (notSet.length) { console.error('Not configured: ' + notSet.join(', ')); return fail(env, req, 'Online onboarding isn’t available just now. Please call us on 020 3475 2007.', 503); }
   const len = Number(req.headers.get('Content-Length') || 0);
-  if (len > 600000) return fail(env, req, 'That request was too large.', 413);
+  if (len > 20000) return fail(env, req, 'That request was too large.', 413);
   let b;
   try { b = await req.json(); } catch { return fail(env, req, 'Something went wrong. Please try again.'); }
   if (b.website) return json(env, req, { ok: true, ignored: true }); // honeypot
@@ -210,47 +216,45 @@ async function createOnboarding(env, req) {
   if (name.length < 2 || name.length > 100) return fail(env, req, 'Please add your full name.', 400, { field: 'name' });
   const email = String(b.email || '').trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email.length > 200) return fail(env, req, 'That email doesn’t look quite right.', 400, { field: 'email' });
+  const phone = String(b.phone || '').trim();
+  if (!validUkPhone(phone) || phone.length > 30) return fail(env, req, 'Please use a UK phone number, for example 07700 900123.', 400, { field: 'phone' });
+  const address = String(b.address || '').trim().replace(/\s+/g, ' ');
+  if (address.length < 5 || address.length > 300) return fail(env, req, 'Please add the property’s address.', 400, { field: 'address' });
   const area = checkPostcode(b.postcode);
   if (!area.ok) return fail(env, req, area.message, 400, { field: 'postcode' });
-  if (b.agreementVersion !== AGREEMENT.version) return fail(env, req, 'The agreement has been updated. Please reload the page to see the latest version.', 409);
-  if (b.acceptAgreement !== true) return fail(env, req, 'Please tick the box to accept the agreement.', 400, { field: 'accept' });
+  if (b.agreementVersion !== AGREEMENT.version) return fail(env, req, 'Our Terms of Business have been updated. Please reload the page to see the latest version.', 409);
+  if (b.acceptAgreement !== true) return fail(env, req, 'Please tick the box to accept our Terms of Business.', 400, { field: 'accept' });
   const method = b.paymentMethod === 'bank' ? 'bank' : b.paymentMethod === 'card' ? 'card' : null;
   if (!method) return fail(env, req, 'Please choose how you’d like to pay.', 400, { field: 'payment' });
-  const sigMethod = b.signature && b.signature.method === 'typed' ? 'typed' : 'drawn';
-  const m = String(b.signature && b.signature.image || '').match(/^data:image\/png;base64,([A-Za-z0-9+/=]+)$/);
-  if (!m || m[1].length > 400000) return fail(env, req, 'Please sign the agreement.', 400, { field: 'signature' });
-  const signaturePng = Uint8Array.from(atob(m[1]), (c) => c.charCodeAt(0));
-  if (signaturePng.length < 200 || signaturePng[0] !== 0x89 || signaturePng[1] !== 0x50) return fail(env, req, 'Please sign the agreement.', 400, { field: 'signature' });
 
   const ip = req.headers.get('CF-Connecting-IP');
   const hourAgo = new Date(Date.now() - 3600000).toISOString();
-  const recent = await env.DB.prepare('SELECT SUM(CASE WHEN signer_ip = ? THEN 1 ELSE 0 END) AS by_ip, SUM(CASE WHEN lower(client_email) = lower(?) THEN 1 ELSE 0 END) AS by_email FROM onboardings WHERE created_at > ?').bind(ip, email, hourAgo).first();
-  if ((ip && recent.by_ip >= 10) || recent.by_email >= 5) return fail(env, req, 'You’ve already sent a few agreements recently. Please call us on 020 3475 2007 and we’ll help.', 429);
+  const recent = await env.DB.prepare('SELECT SUM(CASE WHEN client_ip = ? THEN 1 ELSE 0 END) AS by_ip, SUM(CASE WHEN lower(client_email) = lower(?) THEN 1 ELSE 0 END) AS by_email FROM onboardings WHERE created_at > ?').bind(ip, email, hourAgo).first();
+  if ((ip && recent.by_ip >= 10) || recent.by_email >= 5) return fail(env, req, 'You’ve already signed up a few times recently. Please call us on 020 3475 2007 and we’ll help.', 429);
 
-  const signedAt = nowIso();
-  const co = coolingOff(signedAt, AGREEMENT.coolingOffDays);
+  const acceptedAt = nowIso();
+  const co = coolingOff(acceptedAt, AGREEMENT.coolingOffDays);
   const token = randomHex(24);
   let id = newId();
   while (await getRec(env, id)) id = newId();
   const agreementSha = await AGREEMENT_SHA;
   const rec = {
-    id, token_hash: await sha256(token), created_at: signedAt, transaction_type: fee.id, transaction_label: fee.label, amount_pence: fee.amountPence,
-    client_name: name, client_email: email, property_postcode: area.postcode,
-    agreement_version: AGREEMENT.version, agreement_sha256: agreementSha, agreement_accepted: 1, early_start_requested: b.earlyStart === true ? 1 : 0,
-    cancellation_period_ends: co.end, services_may_start: b.earlyStart === true ? signedAt.slice(0, 10) : co.start,
-    signature_method: sigMethod, signature_typed_name: sigMethod === 'typed' ? String(b.signature.typedName || name).slice(0, 100) : null,
-    signed_at: signedAt, signer_ip: ip || null, signer_user_agent: (req.headers.get('User-Agent') || '').slice(0, 400),
+    id, token_hash: await sha256(token), created_at: acceptedAt, transaction_type: fee.id, transaction_label: fee.label, amount_pence: fee.amountPence,
+    client_name: name, client_email: email, client_phone: phone, property_address: address, property_postcode: area.postcode,
+    agreement_version: AGREEMENT.version, agreement_sha256: agreementSha, agreement_accepted: 1,
+    introductions_authorised: b.introductions === true ? 1 : 0, early_start_requested: b.earlyStart === true ? 1 : 0,
+    cancellation_period_ends: co.end, services_may_start: b.earlyStart === true ? acceptedAt.slice(0, 10) : co.start,
+    accepted_at: acceptedAt, client_ip: ip || null, client_user_agent: (req.headers.get('User-Agent') || '').slice(0, 400),
     pdf_key: `agreements/${id}.pdf`, pdf_sha256: '', payment_method: method, payment_status: method === 'bank' ? 'pending_bank' : 'awaiting_card',
-    agreement_email_status: 'pending', updated_at: signedAt
+    agreement_email_status: 'pending', updated_at: acceptedAt
   };
 
-  const pdfBytes = await buildAgreementPdf({ agreement: AGREEMENT, agreementSha256: agreementSha, rec, signaturePng, logoPng: LOGO });
+  const pdfBytes = await buildAgreementPdf({ agreement: AGREEMENT, agreementSha256: agreementSha, rec, logoPng: LOGO });
   rec.pdf_sha256 = await sha256(pdfBytes);
   await env.AGREEMENTS.put(rec.pdf_key, pdfBytes, { httpMetadata: { contentType: 'application/pdf' }, customMetadata: { id, client: name, sha256: rec.pdf_sha256 } });
-  await env.AGREEMENTS.put(`signatures/${id}.png`, signaturePng, { httpMetadata: { contentType: 'image/png' } });
   const cols = Object.keys(rec);
   await env.DB.prepare(`INSERT INTO onboardings (${cols.join(',')}) VALUES (${cols.map(() => '?').join(',')})`).bind(...cols.map((c) => rec[c])).run();
-  await logEvent(env, id, 'signed', { agreementVersion: rec.agreement_version, earlyStart: !!rec.early_start_requested, method, signature: sigMethod });
+  await logEvent(env, id, 'accepted', { agreementVersion: rec.agreement_version, introductions: !!rec.introductions_authorised, earlyStart: !!rec.early_start_requested, method });
 
   try {
     await emailAgreement(env, rec, pdfBytes);
@@ -295,12 +299,12 @@ async function handleAdmin(env, req, url) {
   const path = url.pathname, id = url.searchParams.get('id'), sig = url.searchParams.get('sig');
   if (!await adminOk(env, path, id, sig)) return page('Link not valid', '<h1>This link isn’t valid</h1><p>Use the link from the Properfy email.</p>', 403);
   const rec = await getRec(env, id);
-  if (!rec) return page('Not found', '<h1>Agreement not found</h1>', 404);
+  if (!rec) return page('Not found', '<h1>Sign-up not found</h1>', 404);
 
   if (path === '/admin/agreement') {
     const obj = await env.AGREEMENTS.get(rec.pdf_key);
     if (!obj) return page('Not found', '<h1>PDF not found</h1>', 404);
-    return new Response(obj.body, { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename="Properfy-agreement-${rec.id}.pdf"`, 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
+    return new Response(obj.body, { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename="${pdfName(rec)}"`, 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
   }
   // /admin/confirm-bank: GET shows the details; POST (the button) confirms.
   // A button is used so email link scanners can't confirm a payment by opening the link.

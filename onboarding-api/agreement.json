@@ -1,8 +1,9 @@
 {
   "status": "final",
-  "version": "2026-10-14.2",
-  "title": "Properfy Welcome & Payment Agreement",
-  "subtitle": "Your Property Journey Starts Here",
+  "version": "1.0",
+  "effectiveDate": "4 November 2026",
+  "title": "Client Terms of Business & Payment Agreement",
+  "subtitle": "One move. One place. One team.",
   "coolingOffDays": 14,
   "fees": [
     {
@@ -19,143 +20,277 @@
       "id": "remortgage",
       "label": "Remortgage",
       "amountPence": 29500
-    },
-    {
-      "id": "toe",
-      "label": "Transfer of Equity",
-      "amountPence": 29500
     }
   ],
-  "acceptConsent": "I have read and understood the Properfy Welcome & Payment Agreement, including the cancellation and refund terms, how my initial payment may be used, solicitor introductions and the Privacy Notice. I accept it and authorise Properfy to begin arranging my transaction in accordance with my selected start option.",
-  "earlyStartConsent": "I expressly request that Properfy begins work immediately, during my 14-day cooling-off period. I understand that if I cancel during this period, Properfy may charge a proportionate amount for services already supplied, and that I will lose my right to cancel once Properfy’s agreed services have been fully performed.",
-  "intro": [
-    {
-      "h": "Welcome to Properfy!"
-    },
-    "Thank you for choosing us to help with your property transaction.",
-    "Our aim is simple: to make your property journey as smooth, straightforward and stress-free as possible.",
-    "From getting your transaction underway to helping you reach completion, we’ll be here to guide you, keep you informed and support you every step of the way.",
-    "We’ll help coordinate your onboarding, introduce you to a suitable conveyancing law firm from our trusted partner network and assist with keeping everything on track.",
-    "Before we get started, please take a moment to review the information below and complete your online agreement."
+  "acceptConsent": {
+    "heading": "Acceptance of Terms",
+    "label": "I have read and agree to Properfy’s Terms of Business.",
+    "text": [
+      "I confirm that I understand the allocation of my initial payment, the services provided, the fees and refund arrangements, and the No Move, No Fee provisions.",
+      "I also understand that Properfy operates a managed conveyancing service and will allocate my instruction to an independent law firm selected from its approved panel based on the nature of my transaction, the firm’s suitability and its capacity to accept new work.",
+      "I acknowledge that Properfy’s fees are included within my original quotation and that Properfy may receive referral fees from its appointed legal and other service providers."
+    ]
+  },
+  "introductionsConsent": {
+    "heading": "Third-Party Introduction Authorisation",
+    "label": "I authorise Properfy to share my details for additional services I request.",
+    "text": [
+      "I authorise Properfy to share my relevant contact details and property transaction information with selected third-party service providers when I request a quotation or agree to an introduction.",
+      "I understand that Properfy may receive a referral fee or commission from these introductions and that I am not obliged to use any recommended provider for optional additional services."
+    ]
+  },
+  "earlyStartConsent": {
+    "heading": "Request to Commence Services",
+    "label": "I request that Properfy begins work on my instruction immediately.",
+    "text": [
+      "I expressly request that Properfy begins providing its services during any applicable statutory cancellation period.",
+      "I understand that, if I subsequently exercise a statutory right to cancel, I may be required to pay a proportionate amount for services already provided, where permitted by law.",
+      "I acknowledge that, where a service is fully performed during the applicable cancellation period following the necessary express request and statutory acknowledgements, I may lose the statutory right to cancel that fully performed service."
+    ]
+  },
+  "confirmation": [
+    "By submitting this form and proceeding with payment, you confirm your electronic acceptance of the applicable terms and any separately selected authorisations.",
+    "Your acceptance will be recorded and retained as part of your payment and onboarding records."
   ],
+  "intro": [],
   "sections": [
     {
-      "heading": "1. Getting Started",
+      "heading": "1. Introduction",
       "blocks": [
-        "To begin your transaction, we request an initial payment on account.",
-        "Our standard amounts are:",
+        "Thank you for choosing Properfy Ltd (“Properfy”, “we”, “us” or “our”) to assist with your property transaction.",
+        "These Terms of Business explain the services we provide, how your initial payment is allocated, the arrangements we have with independent law firms and other service providers, and your rights and responsibilities as a client.",
+        "Our aim is to make moving home simpler by bringing together the services you need, coordinating the initial arrangements and supporting you throughout your property journey.",
+        "By accepting these terms electronically, you enter into an agreement with Properfy for the services described below."
+      ]
+    },
+    {
+      "heading": "2. Our Services",
+      "blocks": [
+        "Properfy provides property transaction coordination, client onboarding, administration and introduction services.",
+        "Our services may include establishing your file, collecting preliminary information, coordinating the appointment of an independent law firm from our approved panel, arranging property searches, assisting with administrative requirements and providing access to additional property-related services throughout your move.",
+        "Properfy is not a regulated law firm and does not provide legal advice or undertake reserved legal activities.",
+        "All conveyancing and associated legal work is undertaken by an independent, appropriately regulated law firm, which will issue its own client care documentation and terms of engagement.",
+        "The appointed law firm remains responsible for all legal advice, client identification, anti-money laundering checks, legal due diligence and completion of your transaction."
+      ]
+    },
+    {
+      "heading": "3. Your Quotation and Initial Payment",
+      "blocks": [
+        "Your original quotation sets out the costs associated with your property transaction, including the relevant Properfy services.",
         {
-          "table": [
-            [
-              "Transaction Type",
-              "Initial Payment"
-            ],
-            [
-              "Property Purchase",
-              "£595"
-            ],
-            [
-              "Property Sale",
-              "£295"
-            ],
-            [
-              "Remortgage",
-              "£295"
-            ],
-            [
-              "Transfer of Equity",
-              "£295"
-            ]
-          ]
+          "strong": "Properfy’s fees are already included within your original quotation and do not represent additional charges on top of the fees quoted to you."
         },
-        "For certain transactions, including auctions, leasehold properties and more specialist matters, the amount may vary. We’ll always confirm this with you before requesting payment.",
-        "Your initial payment will be allocated towards the agreed costs of progressing your transaction. These may include payments to your appointed law firm, conveyancing searches, disbursements and any agreed Properfy service charges.",
-        "Your initial payment is not necessarily the full cost of your conveyancing. Your appointed law firm will work from the quotation you’ve accepted through Properfy, and any additional costs will be explained and agreed with you before they’re incurred, unless already authorised."
+        "An initial payment on account is required to establish your file and arrange the preliminary services necessary to progress your instruction.",
+        "For a property purchase, the initial payment is £595. This comprises £360 allocated towards property searches, £75 allocated to the appointed law firm towards its initial onboarding and money on account requirements, and £160 for Properfy’s file opening, administration and coordination services.",
+        "For a property sale or remortgage, the initial payment is £295. This comprises £75 allocated to the appointed law firm towards its initial onboarding and money on account requirements, and £220 for Properfy’s onboarding, file opening and administration services.",
+        "These payments form part of the overall costs disclosed in your quotation and will not be charged again for the same services.",
+        "The allocation of your payment will be recorded against your instruction. Amounts allocated to the appointed law firm will be transferred or credited in accordance with the firm’s payment arrangements. Amounts allocated towards searches or other third-party services will be applied when those services are ordered or provided.",
+        "The quoted fees and payment information will identify any applicable VAT.",
+        "Any additional services or costs outside your original quotation will be explained and agreed where required before chargeable work is undertaken."
       ]
     },
     {
-      "heading": "2. Your Conveyancing Solicitor",
+      "heading": "4. Commencement of Your Instruction",
       "blocks": [
-        "Properfy works with a trusted network of independent conveyancing law firms.",
-        "We’ll introduce you to the firm best suited to your transaction, taking into account the type of legal work required, the firm’s expertise and its availability.",
-        "Your appointed solicitor will be responsible for carrying out the legal work and will provide their own terms of engagement.",
-        "By accepting this agreement, you authorise Properfy to share the information needed to arrange your introduction, coordinate your initial onboarding and transfer agreed funds on account to your appointed law firm.",
-        "These funds may be held by your solicitor towards searches, disbursements and other agreed conveyancing costs, in accordance with the firm’s terms and applicable rules.",
-        "We’re with you every step of the way. Although your solicitor will handle the legal work, our team will remain available throughout your transaction to assist with communication, answer questions about the process and help keep things moving towards completion."
+        "Once you have accepted these terms, made the required initial payment and supplied the necessary information, Properfy will begin establishing your file and coordinating the relevant services.",
+        "This may include reviewing your information, preparing your instruction for referral, communicating with your appointed law firm, coordinating preliminary documentation and arranging searches where applicable.",
+        "These activities may take place before your appointed law firm formally commences its legal work.",
+        "You acknowledge that Properfy’s services are separate from the legal services undertaken by the appointed law firm and may be performed regardless of whether your property transaction ultimately completes."
       ]
     },
     {
-      "heading": "3. Cancellations & Refunds",
+      "heading": "5. Fees and Refund Arrangements",
       "blocks": [
-        "We understand that plans can change, and we aim to keep our terms fair and straightforward.",
+        "Properfy’s onboarding, administration, file opening and coordination charges relate to the services we provide in establishing and coordinating your transaction.",
+        "Once these services have been fully performed, the corresponding charges are generally non-refundable, including where your property transaction subsequently falls through or you decide not to proceed, subject always to applicable consumer protection legislation.",
+        "Where you cancel before services have been completed, any amount payable or refundable will be assessed according to the services provided, expenditure properly incurred, the circumstances of cancellation and your statutory rights.",
+        "Where part of your initial payment has been allocated towards searches or other third-party services, the treatment of those funds will depend on whether the relevant services have been instructed, performed or paid for.",
+        "Any sums that remain unspent, are recoverable or must otherwise be refunded under applicable law will be dealt with accordingly.",
+        "Properfy will not retain funds solely because these terms have been accepted where the law requires those funds to be refunded."
+      ]
+    },
+    {
+      "heading": "6. No Move, No Fee Arrangements",
+      "blocks": [
+        "Properfy works with independent law firms, some of which offer conveyancing services under a No Move, No Fee arrangement.",
+        "Where this arrangement applies to your instruction, the appointed law firm’s qualifying legal fees may be waived if your transaction does not proceed to completion, subject to the eligibility requirements, conditions and exclusions contained within that firm’s terms of engagement.",
+        "No Move, No Fee does not automatically extend to Properfy’s charges for services already provided, property searches, Land Registry charges, third-party disbursements or other expenditure incurred during the transaction.",
+        "These costs may remain payable even where the transaction does not complete.",
+        "Your appointed law firm will confirm the precise scope of any No Move, No Fee arrangement before commencing its legal services.",
+        "Properfy does not independently guarantee the appointed law firm’s No Move, No Fee policy unless such a guarantee has been expressly confirmed by Properfy in writing."
+      ]
+    },
+    {
+      "heading": "7. Transactions That Do Not Proceed",
+      "blocks": [
+        "We understand that property transactions do not always complete.",
+        "A transaction may fall through due to changes in personal circumstances, mortgage difficulties, adverse survey findings, title issues, withdrawal by another party or other circumstances outside your control.",
+        "Where a transaction does not proceed, Properfy will assist you in reviewing the position and identifying whether any preliminary documentation or services may be suitable for use in a subsequent transaction.",
+        "Where existing searches or documentation remain valid and acceptable to the relevant parties, we will seek to avoid unnecessary duplication of services.",
+        "However, a replacement transaction may require fresh searches, additional administration or further legal work.",
+        "The failure of a property transaction to complete does not automatically entitle a client to a refund of charges for services properly performed or third-party expenditure already incurred.",
+        "Your statutory consumer rights remain unaffected."
+      ]
+    },
+    {
+      "heading": "8. Appointment and Allocation of Legal Representatives",
+      "blocks": [
+        "Properfy operates an approved panel of independent, appropriately regulated law firms selected to provide conveyancing and associated legal services to our clients.",
+        "As part of our managed conveyancing service, Properfy will allocate your instruction to a law firm from our panel based on the nature and complexity of your transaction, the firm’s relevant experience, lender-panel requirements where applicable, geographical or specialist considerations, and its capacity to accept new instructions at the time.",
+        "Our objective is to allocate each client to a suitable legal provider capable of progressing their transaction efficiently and in accordance with the relevant professional and regulatory requirements.",
         {
-          "h": "Your 14-day cooling-off period"
+          "strong": "By instructing Properfy, you agree that your conveyancing transaction will be allocated to a law firm selected by Properfy from our approved panel."
         },
-        "Where applicable under consumer law, you have a 14-day cooling-off period from entering into this agreement, during which you may cancel your Properfy services.",
-        "If you’d like us to begin work straight away, you can authorise us to do so when completing your online agreement.",
-        {
-          "h": "Once your transaction is underway"
-        },
-        "Your initial payment may be used towards agreed services and costs incurred in progressing your transaction.",
-        "If you decide not to proceed, change solicitors or your transaction falls through, fees for services already provided and costs properly incurred or committed with your authorisation may be non-refundable, subject to your statutory rights.",
-        "If you cancel within your cooling-off period after expressly requesting an immediate start, we may charge a proportionate amount for services already supplied, where permitted by law.",
-        "If our agreed services have been fully performed during that period, your cancellation right may end where the required consent and acknowledgement have been given.",
-        "Any remaining funds will be refunded where required by your agreement or applicable law. Where funds have already been transferred to your appointed solicitor, we’ll help coordinate any refund due in accordance with the solicitor’s terms and applicable law.",
-        "To request cancellation, simply email info@properfy.co.uk.",
-        "Nothing in these terms affects your statutory consumer rights."
+        "The selection and allocation of the appointed law firm form part of our managed service and are not offered as a client-selected choice between panel firms.",
+        "Where circumstances require, including changes in capacity, conflicts of interest, lender requirements or the appointed firm’s inability to proceed, Properfy may arrange an alternative allocation from its panel. We will notify you of any proposed change and explain any implications for your instruction.",
+        "Your appointed law firm will remain an independent legal service provider and will issue its own client care documentation and terms of engagement.",
+        "The law firm will be responsible for all legal advice, conveyancing work, regulatory compliance and professional obligations relating to your transaction.",
+        "You retain the right to decline the proposed appointment or instruct a law firm independently. However, choosing a firm outside Properfy’s approved panel will fall outside our managed conveyancing service and may affect the services, fees and arrangements available through Properfy.",
+        "Any fees payable or refundable following cancellation or a decision to instruct an alternative firm will be determined in accordance with these terms and your statutory rights.",
+        "Properfy may receive a referral fee or other commercial remuneration from the appointed law firm, where permitted by applicable law and professional regulation. Any required disclosures will be made.",
+        "Nothing in these terms restricts the professional independence of the appointed law firm or your rights as its client."
       ]
     },
     {
-      "heading": "4. Keeping Your Transaction Moving",
+      "heading": "9. Additional Legal Costs and Disbursements",
       "blocks": [
-        "To help us progress your transaction efficiently, we ask that you provide accurate information, complete any identification or source-of-funds checks requested by your solicitor and respond promptly to requests for documents or payments.",
-        "If additional services or costs are required, these will be explained to you before they’re agreed, unless already authorised.",
-        "While Properfy will help coordinate the process and keep you informed, property transactions can be affected by third parties and circumstances outside our control. Completion dates and outcomes cannot be guaranteed.",
-        "Our commitment is to be here to support you throughout your property journey, from instruction to completion."
+        "Your original quotation will identify the fees and anticipated costs associated with your transaction.",
+        "Although Properfy’s fees are included within that quotation, additional expenditure may arise where your transaction requires work or services outside the original scope.",
+        "This may include unexpected title issues, additional searches, lender requirements, supplementary documentation or other unforeseen legal complexities.",
+        "Any additional charges will be explained and agreed where required before the relevant chargeable work is undertaken.",
+        "Properfy will not charge an additional fee for a service already included within your original quotation unless a separate additional service has been expressly agreed."
       ]
     },
     {
-      "heading": "5. Your Personal Information",
+      "heading": "10. Additional Property Services",
       "blocks": [
-        "We’ll share relevant information with your appointed partner law firm and other necessary service providers to help arrange or progress your transaction, in accordance with our Privacy Notice.",
-        "You can read our Privacy Notice here:",
-        "https://properfy.co.uk/privacy/",
-        "If you have any questions or concerns about our service, please contact us at info@properfy.co.uk."
+        "Throughout your property journey, Properfy may provide information about additional services that could assist with your move.",
+        "These may include mortgage advice, property surveys, removals, insurance, utilities, auction services, specialist finance and other property-related services.",
+        "Our aim is to make these services easier to access by introducing you to suitable independent providers when required.",
+        "These additional services are entirely optional, and you are under no obligation to accept a quotation or instruct any provider recommended by Properfy.",
+        "You remain free to obtain alternative quotations and appoint your own providers for these additional services.",
+        "This freedom of choice for optional services is separate from the panel allocation arrangements governing Properfy’s managed conveyancing service under Section 8."
       ]
     },
     {
-      "heading": "6. Your Online Agreement",
+      "heading": "11. Third-Party Introductions and Sharing Your Information",
       "blocks": [
-        "By accepting these terms electronically, you confirm that you’ve read and understood this agreement, understand how your initial payment may be used and authorise Properfy to begin arranging your transaction in accordance with your selected start option.",
-        "You’ll also be asked to confirm whether you’d like us to start work immediately during your 14-day cooling-off period.",
-        "Your acceptance and any early-start authorisation will be recorded electronically, and a copy of your agreement will be provided for your records."
+        "Where you request a quotation or agree to an introduction to an additional service provider, Properfy may share relevant information with that provider to facilitate your enquiry.",
+        "This may include your name, contact details, property address, transaction type, anticipated timescales and other information reasonably necessary for the requested service.",
+        "We will only share information relevant to the service you have requested or agreed to receive and will handle your personal information in accordance with applicable UK data protection legislation and our Privacy Notice.",
+        "Your acceptance of these Terms of Business does not authorise Properfy to disclose your information indiscriminately to unrelated third parties.",
+        "Where a provider requires additional financial information, identity documents or other sensitive documentation, this will be handled in accordance with the relevant legal requirements and the provider’s own privacy arrangements.",
+        "Third-party providers may act as independent data controllers and will be responsible for explaining how they process the information they receive.",
+        "You may decline any optional introduction without affecting your ability to continue using Properfy’s core services."
       ]
     },
     {
-      "heading": "7. Making Your Payment",
+      "heading": "12. Referral Fees and Commercial Relationships",
       "blocks": [
-        "You’re almost ready to get started!",
-        "Once you’ve accepted the agreement, you’ll be able to make your initial payment securely through our website using your preferred payment option:",
-        {
-          "list": [
-            "Debit or credit card: Pay securely through Stripe.",
-            "Bank transfer: Make a manual payment using the bank details and payment reference displayed on the payment page."
-          ]
-        },
-        "Once we’ve received your agreement and confirmed your payment, we’ll be ready to progress your onboarding in accordance with your selected start option."
+        "Properfy maintains commercial relationships with selected independent law firms and other property-related service providers.",
+        "Where we introduce you to one of these providers, Properfy may receive a referral fee, introduction commission or other commercial remuneration.",
+        "Such payments may be made following an introduction, instruction or completed transaction, depending on the arrangements agreed with the provider.",
+        "Any referral payment received by Properfy will not result in an additional charge to you from Properfy unless that charge has been expressly disclosed and agreed in advance.",
+        "Where applicable law or professional regulation requires further disclosure of a referral arrangement, including the amount or basis of the payment, the relevant disclosure will be provided.",
+        "Referral arrangements do not remove the professional independence of any appointed law firm or other regulated provider."
+      ]
+    },
+    {
+      "heading": "13. Independent Third-Party Providers",
+      "blocks": [
+        "Any independent third-party provider introduced through Properfy will operate under its own terms and conditions.",
+        "The provider will be responsible for the services it agrees to deliver, including quotations, service standards, professional advice and any relevant regulatory obligations.",
+        "Properfy will take reasonable care when making introductions and coordinating services but does not guarantee the performance or outcome of services supplied independently by third parties.",
+        "Nothing in these terms excludes any responsibility Properfy may have under applicable law."
+      ]
+    },
+    {
+      "heading": "14. Your Responsibilities",
+      "blocks": [
+        "To help us provide an efficient service, you agree to supply accurate and complete information when requested.",
+        "You should notify Properfy or your appointed law firm promptly if your circumstances, contact information or property transaction details change.",
+        "You are responsible for completing relevant onboarding requirements, providing identification and source-of-funds information where requested, and cooperating with the appointed law firm throughout the transaction.",
+        "Delays in supplying information or completing required tasks may affect the progress of your transaction.",
+        "Properfy will not be responsible for delays caused by circumstances outside its reasonable control, except where liability cannot lawfully be excluded."
+      ]
+    },
+    {
+      "heading": "15. Cancellation and Consumer Rights",
+      "blocks": [
+        "You may request cancellation of Properfy’s services by contacting us in writing.",
+        "Your statutory rights under UK consumer protection legislation remain unaffected by these terms.",
+        "Where your agreement is concluded online or at a distance, statutory cancellation rights may apply. Details of any applicable cancellation rights and how to exercise them will be provided before you become contractually bound.",
+        "Where you expressly request that services begin during an applicable statutory cancellation period, you may be required to pay a proportionate amount for services already provided if you subsequently cancel, where permitted by law.",
+        "Where services have been fully performed following a valid express request and the legally required acknowledgements have been obtained, your statutory cancellation rights in relation to those completed services may be affected as provided by law.",
+        "Nothing in this agreement removes or restricts your statutory consumer rights."
+      ]
+    },
+    {
+      "heading": "16. Responsibility and Liability",
+      "blocks": [
+        "Properfy will provide its services with reasonable care and skill.",
+        "Although we will take reasonable steps to coordinate your transaction efficiently, we cannot guarantee that a property purchase, sale or remortgage will complete or that any particular completion date will be achieved.",
+        "Property transactions involve independent third parties, including buyers, sellers, lenders, estate agents and legal representatives, whose actions may affect progress.",
+        "Nothing in these terms excludes or restricts liability where doing so would be unlawful, including liability for fraud, fraudulent misrepresentation or death or personal injury caused by negligence."
+      ]
+    },
+    {
+      "heading": "17. Privacy and Data Protection",
+      "blocks": [
+        "Properfy will process your personal information in accordance with applicable UK data protection legislation, including the UK GDPR and Data Protection Act 2018.",
+        "Your information will be used for appropriate purposes connected with providing our services, administering your instruction, processing payments, arranging requested introductions and meeting applicable legal obligations.",
+        "Further information about how we collect, use, share, retain and protect personal data, together with your rights, is provided in our Privacy Notice.",
+        "You may request information about our processing of your personal data or exercise your applicable data protection rights by contacting Properfy."
+      ]
+    },
+    {
+      "heading": "18. Communication and Complaints",
+      "blocks": [
+        "Properfy may communicate with you by email, telephone, text message or through our online client portal where appropriate to your instruction and in accordance with applicable law.",
+        "We aim to provide clear communication and support throughout your property journey.",
+        "If you have any concerns about Properfy’s services, please contact us so that we can investigate and respond.",
+        "Complaints relating specifically to legal services undertaken by your appointed law firm should be directed to that firm under its own complaints procedure."
+      ]
+    },
+    {
+      "heading": "19. Changes to These Terms",
+      "blocks": [
+        "The version of these Terms of Business accepted by you will apply to your instruction unless changes are agreed or otherwise permitted by law.",
+        "Properfy may update its terms for future clients or future instructions.",
+        "We will not retrospectively impose additional fees or materially disadvantage you by changing the terms of an existing instruction without an appropriate contractual or legal basis."
+      ]
+    },
+    {
+      "heading": "20. Governing Law",
+      "blocks": [
+        "These terms are governed by the laws of England and Wales, subject to any mandatory consumer protections applicable to you.",
+        "Nothing in this clause restricts any right you may have under applicable consumer legislation to bring proceedings in another competent jurisdiction."
+      ]
+    },
+    {
+      "heading": "21. Electronic Acceptance and Record Keeping",
+      "blocks": [
+        "Properfy operates a digital onboarding and payment process.",
+        "You will be asked to provide your details, review these Terms of Business and confirm your acceptance electronically before making your initial payment.",
+        "Your electronic acceptance will form part of your agreement with Properfy. A handwritten signature is not required.",
+        "Properfy will retain a record of the terms accepted, the date and time of acceptance, your relevant client details and the associated payment reference.",
+        "Where you separately authorise a third-party introduction, we may also retain a record of the service requested, the provider selected and the information shared.",
+        "These records may be used to administer your instruction, respond to enquiries, investigate complaints and demonstrate compliance with applicable legal obligations."
       ]
     }
   ],
   "closing": [
-    {
-      "h": "Thank You for Choosing Properfy!"
-    },
-    "We’re delighted to be part of your property journey.",
-    "From your first instruction to the day you complete, our team will be here to support you every step of the way.",
-    "Property moves, handled properly.",
-    "Properfy LTD\nRegistered in England and Wales, company number 17499140\nRegistered office: 16 Prescot Street, London E1 8AZ\nwww.properfy.co.uk\ninfo@properfy.co.uk"
+    "Properfy Ltd\nWebsite: www.properfy.co.uk\nRegistered Company Number: 17499140\nRegistered Office: 16 Prescot Street, London E1 8AZ\nContact Email: info@properfy.co.uk",
+    "These Terms of Business should be read alongside Properfy’s Privacy Notice and the separate terms of engagement issued by your appointed law firm."
   ],
   "appendix": [
+    {
+      "h": "Your Right to Cancel"
+    },
+    "Where applicable under consumer law, you have a 14-day cooling-off period from entering into this agreement, during which you may cancel your Properfy services.",
+    "If you’d like us to begin work straight away, you can authorise us to do so when completing your online agreement.",
+    "To request cancellation, simply email info@properfy.co.uk.",
+    "Nothing in these terms affects your statutory consumer rights.",
     {
       "h": "Cancellation Form"
     },

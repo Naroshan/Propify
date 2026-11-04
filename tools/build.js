@@ -24,16 +24,17 @@ const P = sandbox.window.PFY;
 const U = P.ui;
 const CFG = P.config;
 const ICONS = require('./icons.js');
-// The Welcome & Payment Agreement and fees, shared with the onboarding API so
-// the page and the signed PDF always match.
+// The Client Terms of Business and fees, shared with the onboarding API so
+// the sign-up page, the terms page and the PDF clients receive always match.
 const AGREEMENT = JSON.parse(fs.readFileSync(path.join(ROOT, 'onboarding-api/agreement.json'), 'utf8'));
-// The amounts in the agreement's table must be the amounts charged.
+// Every amount charged must be stated in the terms, in a paragraph naming its transaction.
 {
-  const table = AGREEMENT.sections.flatMap((sec) => sec.blocks).find((b) => b && b.table);
-  const rows = table ? table.table.slice(1) : [];
   const gbp = (p) => '£' + (p / 100).toLocaleString('en-GB', { minimumFractionDigits: p % 100 ? 2 : 0 });
-  if (rows.length !== AGREEMENT.fees.length || rows.some((r, i) => r[1] !== gbp(AGREEMENT.fees[i].amountPence))) {
-    throw new Error('onboarding-api/agreement.json: the table of amounts doesn’t match "fees". Change both together.');
+  const paras = AGREEMENT.sections.flatMap((sec) => sec.blocks).map((b) => (typeof b === 'string' ? b : b.strong || '')).filter(Boolean);
+  for (const f of AGREEMENT.fees) {
+    if (!paras.some((t) => t.toLowerCase().includes(f.label.toLowerCase()) && t.includes(gbp(f.amountPence)))) {
+      throw new Error(`onboarding-api/agreement.json: the terms don’t say ${gbp(f.amountPence)} for ${f.label}. Change "fees" and the terms together.`);
+    }
   }
 }
 
@@ -79,7 +80,7 @@ const FILE = {
   home: '', hub: 'property-hub/', specialist: 'specialist-property-transactions/',
   checklists: 'checklists/', glossary: 'glossary/', about: 'about/',
   quick: P.quick.slug + '/', repo: P.repo.slug + '/',
-  privacy: 'privacy/', complaints: 'complaints/', partners: 'partners/', getStarted: 'get-started/'
+  privacy: 'privacy/', terms: 'terms/', complaints: 'complaints/', partners: 'partners/', getStarted: 'get-started/'
 };
 const jFile = (k) => P.journeys[k].slug + '/';
 const sFile = (k) => P.services[k].slug + '/';
@@ -208,7 +209,7 @@ function footer() {
     <p style="margin:0;font-size:12px;line-height:1.6;color:var(--color-neutral-500);max-width:860px">Properfy is an introducer. We don’t provide legal services, mortgage advice or surveys ourselves; these are provided by the professionals we introduce you to, who are responsible for their advice. We may receive a referral fee from partners, and we’ll tell you before you’re introduced. Your home may be repossessed if you do not keep up repayments on your mortgage. Guides cover England and Wales unless stated and are general information, not advice.</p>
     <p style="margin:0;font-size:12px;line-height:1.6;color:var(--color-neutral-500)">Properfy covers homes in England and Wales only. Call <a href="tel:${c.phoneHref}" style="color:var(--color-neutral-400);text-decoration:underline">${c.phone}</a> or email <a href="mailto:${c.email}" style="color:var(--color-neutral-400);text-decoration:underline">${c.email}</a>.</p>
     <p style="margin:0;font-size:12px;line-height:1.6;color:var(--color-neutral-500)">${CFG.company.name} is registered in England and Wales, company number ${CFG.company.number}. Registered office: ${CFG.company.office}.</p>
-    <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--color-neutral-500)"><span>© 2026 ${CFG.company.name}</span><a class="hv-text" href="${u(FILE.privacy)}" ${legal}>Privacy</a><a class="hv-text" href="${u(FILE.privacy)}#cookies" ${legal}>Cookies</a><a class="hv-text" href="${u(FILE.complaints)}" ${legal}>Complaints</a><a href="${u(FILE.partners)}" style="color:var(--color-neutral-400);text-decoration:underline">Partner login</a></div>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--color-neutral-500)"><span>© 2026 ${CFG.company.name}</span><a class="hv-text" href="${u(FILE.privacy)}" ${legal}>Privacy</a><a class="hv-text" href="${u(FILE.privacy)}#cookies" ${legal}>Cookies</a><a class="hv-text" href="${u(FILE.terms)}" ${legal}>Terms</a><a class="hv-text" href="${u(FILE.complaints)}" ${legal}>Complaints</a><a href="${u(FILE.partners)}" style="color:var(--color-neutral-400);text-decoration:underline">Partner login</a></div>
   </div>
 </footer>`;
 }
@@ -940,20 +941,20 @@ function privacyBody() {
       <p>${CFG.company.name} is responsible for the personal information described here. We’re registered in England and Wales, company number ${CFG.company.number}. Our registered office is ${CFG.company.office}, and you can contact us at <a href="mailto:${c.email}">${c.email}</a>. We’re registered with the Information Commissioner’s Office (ICO), registration number ${CFG.company.ico}.</p>
       <h2>What we collect</h2>
       <p>When you tell us about your move or ask for a callback, quote or quick-sale options, we collect what you give us: your name, phone number, email address and postcode, what you’re doing and the stage you’re at, and anything else you choose to tell us. If you ask us to email you a checklist, we collect your email address and postcode. If you’re a partner registering interest, we collect your name, firm, role, office postcode and contact details.</p>
-      <p>If you sign up with us online (at <a href="/get-started/">properfy.co.uk/get-started</a>), we also collect the transaction you choose, your name, email address and property postcode, your signature, whether you asked us to start work during your cooling-off period, and the date, time, IP address and browser you signed with. We also record how and when you made your initial payment. We never see your card details.</p>
+      <p>If you sign up with us online (at <a href="/get-started/">properfy.co.uk/get-started</a>), we also collect the transaction you choose, your name, email address, phone number, property address and postcode, that you accepted our Terms of Business, whether you authorised us to share your details for other services you ask for, whether you asked us to start work during your cooling-off period, and the date, time, IP address and browser you used. We also record how and when you made your initial payment. We never see your card details.</p>
       <h2>Why we collect it</h2>
       <ul>
         <li>To call you back and help you work out what you need.</li>
         <li>With your agreement, to introduce you to professionals who can help.</li>
         <li>To send you the checklist you asked for.</li>
-        <li>If you sign up with us, to arrange your transaction, keep a record of the agreement you signed and your payment, and email you a copy.</li>
+        <li>If you sign up with us, to arrange your transaction, keep a record of the terms you accepted and your payment, and email you a copy.</li>
       </ul>
       <h2>Who we share it with</h2>
       <p>Only the professionals you agree to be introduced to, such as a conveyancer, a mortgage broker, a surveyor or a removals firm. We tell you before any introduction is made, and we never sell your data.</p>
       <p>If you sign up with us, we share the details needed to arrange your introduction and onboarding with your appointed law firm, and transfer agreed funds on account to them, as your agreement explains.</p>
       <h2>How your details reach us</h2>
       <p>Forms on this site are delivered to our inbox by FormSubmit (formsubmit.co), an email-forwarding service used only to pass your details to us.</p>
-      <p>Online sign-ups are handled by our own system, which runs on Cloudflare and keeps your signed agreement and records in private storage in the EU. Card payments are processed by Stripe. Emails, including the copy of your signed agreement, are sent through Resend.</p>
+      <p>Online sign-ups are handled by our own system, which runs on Cloudflare and keeps a copy of the terms you accepted, and your records, in private storage in the EU. Card payments are processed by Stripe. Emails, including your copy of the terms, are sent through Resend.</p>
       <h2>How long we keep your information</h2>
       <p>If you sign an agreement with us, we keep it, with your details and payment records, for 6 years after your transaction ends (or after you cancel), because that’s how long a claim about a contract can be made and how long we must keep financial records. If you send us an enquiry that doesn’t go ahead, we delete it 12 months after we last spoke. Checklist requests are deleted 3 months after we send the checklist. After these periods we delete your information securely.</p>
       <h2 id="cookies" style="scroll-margin-top:90px">Cookies and storage</h2>
@@ -1023,22 +1024,44 @@ function notFoundBody() {
 
 /* ── Get started (onboarding) ───────────────────────────────────────────── */
 
-// The agreement as HTML. Blocks are paragraphs (strings), {h} subheadings,
-// {table} (first row is the header) and {list}. Links open in a new tab so a
-// half-filled form isn't lost.
-function agreementHtml(A) {
+// Every piece of text in the terms. A "[…]" in any of it is a blank still to fill in.
+const termsStrings = (A) => [A.title, A.subtitle, A.effectiveDate, ...['acceptConsent', 'introductionsConsent', 'earlyStartConsent'].flatMap((k) => [A[k].heading, A[k].label, ...A[k].text]),
+  ...(A.confirmation || []), ...[A.intro, ...A.sections.map((sec) => [sec.heading, ...sec.blocks]), A.closing, A.appendix].flat().filter(Boolean)
+    .flatMap((b) => (typeof b === 'string' ? [b] : b.h ? [b.h] : b.strong ? [b.strong] : b.list || (b.table ? b.table.flat() : [])))];
+
+// The terms as HTML. Blocks are paragraphs (strings), {strong} paragraphs in
+// bold, {h} subheadings, {list} and {table} (first row is the header).
+function termsHtml(A) {
   const inline = (t) => esc(t)
-    .replace(/https:\/\/[^\s<]*[^\s<.,]/g, (u) => `<a href="${u}" target="_blank" rel="noopener">${u}</a>`)
+    .replace(/https:\/\/[^\s<]*[^\s<.,]/g, (u) => `<a href="${u}">${u}</a>`)
     .replace(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g, (m) => `<a href="mailto:${m}">${m}</a>`)
     .replace(/\n/g, '<br>');
-  const blocks = (list, h = 'h5') => list.map((b) => {
+  const blocks = (list, h = 'h3') => list.map((b) => {
     if (typeof b === 'string') return `<p>${inline(b)}</p>`;
+    if (b.strong) return `<p><strong>${inline(b.strong)}</strong></p>`;
     if (b.h) return `<${h}>${esc(b.h)}</${h}>`;
     if (b.list) return `<ul>${b.list.map((li) => `<li>${inline(li)}</li>`).join('')}</ul>`;
     if (b.table) { const [head, ...rows] = b.table; return `<table><thead><tr>${head.map((c) => `<th scope="col">${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((c) => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`; }
     return '';
   }).join('');
-  return `<h3>${esc(A.title)}</h3>${blocks(A.intro || [], 'h4')}${A.sections.map((sec) => `<h4>${esc(sec.heading)}</h4>${blocks(sec.blocks)}`).join('')}${A.closing ? `<hr>${blocks(A.closing, 'h4')}` : ''}${A.appendix ? `<hr>${blocks(A.appendix, 'h4')}` : ''}`;
+  const consent = (c, tag) => `<h3>${esc(c.heading)} <span class="terms-tag">${tag}</span></h3><p><strong>${esc(c.label)}</strong></p>${c.text.map((t) => `<p>${esc(t)}</p>`).join('')}`;
+  return `${blocks(A.intro || [])}${A.sections.map((sec) => `<h2>${esc(sec.heading)}</h2>${blocks(sec.blocks)}`).join('')}
+      <h2>Client Details and Digital Acceptance</h2>
+      <p>When you sign up online, you give your full name, email address, contact number and property address, choose your transaction, and see your initial payment on account. You then confirm the following.</p>
+      ${consent(A.acceptConsent, 'Required')}${consent(A.introductionsConsent, 'Optional')}${consent(A.earlyStartConsent, 'Optional')}
+      <h3>Confirmation</h3>${(A.confirmation || []).map((t) => `<p>${esc(t)}</p>`).join('')}
+      <hr>${blocks(A.closing || [])}
+      ${A.appendix ? `<hr><div id="cancel">${blocks(A.appendix, 'h2')}</div>` : ''}`;
+}
+
+function termsBody() {
+  const A = AGREEMENT;
+  return simpleHero('Terms of Business', esc(A.title), `${esc(A.subtitle)} Version ${esc(A.version)}, effective ${esc(A.effectiveDate)}.`) + `
+  <div style="max-width:1180px;margin:0 auto;padding:0 var(--pad-x) 40px;box-sizing:border-box">
+    <article class="prose terms">
+      ${termsHtml(A)}
+    </article>
+  </div>`;
 }
 
 function getStartedBody() {
@@ -1049,15 +1072,17 @@ function getStartedBody() {
         <div class="gs-step-head"><span class="gs-num" style="--c:${c}">${n}</span><div><h2 id="gs-h${n}" style="font-size:22px;letter-spacing:-0.02em">${title}</h2>${sub ? `<p style="margin:2px 0 0;font-size:14px;color:var(--color-neutral-400)">${sub}</p>` : ''}</div></div>
         <div class="gs-step-body">${inner}</div>
       </section>`;
-  const blanks = /\[[^\]\n]+\]/.test([A.intro, ...A.sections.map((sec) => sec.blocks), A.closing, A.appendix].flat(2).filter((b) => typeof b === 'string').join('\n'));
-  const draft = A.status !== 'final' || blanks ? `<p class="gs-draft" role="note">${ic('warning-circle')}<span><strong>Draft agreement.</strong> This agreement is still being finalised, so online sign-up is closed for now. Please call us on ${CFG.contact.phone}.</span></p>` : '';
+  const blanks = /\[[^\]\n]+\]/.test(termsStrings(A).join('\n'));
+  const draft = A.status !== 'final' || blanks ? `<p class="gs-draft" role="note">${ic('warning-circle')}<span><strong>Draft terms.</strong> Our Terms of Business are still being finalised, so online sign-up is closed for now. Please call us on ${CFG.contact.phone}.</span></p>` : '';
+  const termsLink = `<a href="${u(FILE.terms)}" target="_blank" rel="noopener" data-gs-terms>${esc(A.title)}</a>`;
+  const check = (name, c, tag) => `<label class="gs-check"><input type="checkbox" name="${name}"><span><span class="gs-check-head"><strong>${esc(c.label)}</strong> <em class="gs-tag">${tag}</em></span>${c.text.map((t) => `<span class="gs-check-more">${esc(t)}</span>`).join('')}</span></label>`;
   return `<section style="background:${bg(NEON[0], NEON[2])}">
     <div style="max-width:1180px;margin:0 auto;padding:var(--page-hero-pad);box-sizing:border-box;display:flex;flex-direction:column;gap:16px">
       <span class="kicker">Get started with Properfy</span>
       <h1 style="font-size:var(--h1);line-height:1.05;letter-spacing:-0.035em;max-width:820px;text-wrap:balance">Your Property Journey Starts Here</h1>
       <p style="margin:0;font-size:17px;line-height:1.6;color:var(--color-neutral-300);max-width:660px;text-wrap:pretty">Welcome to Properfy! Thank you for choosing us to help with your property transaction. From getting your transaction underway to helping you reach completion, we’ll be here to guide you, keep you informed and support you every step of the way.</p>
-      <p style="margin:0;font-size:15px;line-height:1.6;color:var(--color-neutral-400);max-width:660px">Choose your transaction, read and sign your agreement, then make your initial payment. It only takes a few minutes.</p>
-      <ul class="ul" style="display:flex;flex-wrap:wrap;gap:8px 18px">${['Secure card payment by Stripe', 'Signed copy emailed to you', '14-day cooling-off period'].map((t) => `<li style="display:flex;gap:7px;align-items:center;font-size:14px;color:var(--color-neutral-200)">${ic('check', 'color:var(--color-accent)')}${t}</li>`).join('')}</ul>
+      <p style="margin:0;font-size:15px;line-height:1.6;color:var(--color-neutral-400);max-width:660px">Choose your transaction, add your details and accept our Terms of Business, then make your initial payment. It only takes a few minutes.</p>
+      <ul class="ul" style="display:flex;flex-wrap:wrap;gap:8px 18px">${['Secure card payment by Stripe', 'A copy of your terms emailed to you', '14-day cooling-off period'].map((t) => `<li style="display:flex;gap:7px;align-items:center;font-size:14px;color:var(--color-neutral-200)">${ic('check', 'color:var(--color-accent)')}${t}</li>`).join('')}</ul>
     </div>
   </section>
 
@@ -1065,31 +1090,28 @@ function getStartedBody() {
     <form class="gs-form" id="gs-form" data-gs-form data-agreement-version="${esc(A.version)}" data-cooling-off-days="${A.coolingOffDays}" novalidate>
       ${draft}
       <p class="gs-draft" role="note" data-gs-closed hidden>${ic('warning-circle')}<span><strong>Online sign-up opens soon.</strong> To get started now, call us on <a href="tel:${CFG.contact.phoneHref}">${CFG.contact.phone}</a> or email <a href="mailto:${CFG.contact.email}">${CFG.contact.email}</a>.</span></p>
-      ${step(1, NEON[0], 'Choose your transaction', 'Your initial payment on account.', `<fieldset class="gs-options"><legend class="sr-only">Your transaction</legend>
+      ${step(1, NEON[0], 'Choose your transaction', 'Your initial payment on account.', `<fieldset class="gs-options" style="--cols:${Math.min(A.fees.length, 3)}"><legend class="sr-only">Your transaction</legend>
         ${A.fees.map((f) => { const [i, c] = optIcon[f.id] || ['house-line', NEON[0]]; return `<label class="gs-option" style="--c:${c}"><input type="radio" name="transaction" value="${f.id}" data-label="${esc(f.label)}" data-pence="${f.amountPence}"><span class="gs-option-box">${ic(i, `font-size:28px;color:${c};filter:drop-shadow(0 0 5px ${c})`)}<span class="gs-option-label">${esc(f.label)}</span><span class="gs-option-price">${pounds(f.amountPence)}</span></span></label>`; }).join('')}
       </fieldset>
-      <p class="gs-note">Auction, leasehold or another specialist matter? The amount may vary. If we haven’t confirmed your amount yet, please call us on <a href="tel:${CFG.contact.phoneHref}">${CFG.contact.phone}</a> before paying.</p>`)}
-      ${step(2, NEON[1], 'Your details', 'So we can send you your signed agreement.', `<div class="gs-fields">
-        ${field('Full name', '<input class="input" name="name" autocomplete="name" placeholder="As it should appear on your agreement">')}
+      <p class="gs-note">Transfer of equity, auction or another specialist matter? Please call us on <a href="tel:${CFG.contact.phoneHref}">${CFG.contact.phone}</a> and we’ll arrange your initial payment with you.</p>`)}
+      ${step(2, NEON[1], 'Your details', 'So we can set up your file and send you a copy of your terms.', `<div class="gs-fields">
+        ${field('Full name', '<input class="input" name="name" autocomplete="name" placeholder="Your full name">')}
         ${field('Email address', '<input class="input" name="email" type="email" autocomplete="email" placeholder="you@example.com">')}
+        ${field('Contact number', '<input class="input" name="phone" type="tel" autocomplete="tel" placeholder="e.g. 07700 900123">')}
+        ${field('Property address', '<input class="input" name="address" autocomplete="street-address" placeholder="House number, street and town">')}
         ${field('Property postcode', '<input class="input" name="postcode" autocomplete="postal-code" autocapitalize="characters" placeholder="e.g. E8 3PL">')}
         <div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
       </div>`)}
-      ${step(3, NEON[3], 'Your agreement', `${esc(A.title)} · version ${esc(A.version)}`, `<div class="gs-agreement" tabindex="0" role="region" aria-label="${esc(A.title)}">${agreementHtml(A)}</div>
-        <label class="gs-check"><input type="checkbox" name="accept"><span><strong>Required.</strong> ${esc(A.acceptConsent)}</span></label>
-        <label class="gs-check"><input type="checkbox" name="earlyStart"><span><strong>Optional.</strong> ${esc(A.earlyStartConsent)}</span></label>
+      ${step(3, NEON[3], 'Your terms', `Version ${esc(A.version)}, effective ${esc(A.effectiveDate)}`, `<p class="gs-terms">${ic('book-open-text', 'font-size:22px;color:var(--color-accent);flex:none')}<span>Please read our ${termsLink} (opens in a new tab), then tick to confirm.</span></p>
+        ${check('accept', A.acceptConsent, 'Required')}
+        ${check('introductions', A.introductionsConsent, 'Optional')}
+        ${check('earlyStart', A.earlyStartConsent, 'Optional')}
         <p class="gs-note" data-gs-start></p>`)}
-      ${step(4, NEON[5], 'Sign your agreement', 'Draw your signature, or type it if you prefer.', `<div class="gs-sign">
-          <div class="gs-seg" role="group" aria-label="How to sign"><button type="button" data-sig-mode="draw" aria-pressed="true">Draw</button><button type="button" data-sig-mode="type" aria-pressed="false">Type</button></div>
-          <div class="gs-pad" data-sig-pad><canvas data-sig-canvas aria-label="Signature area. Draw your signature here."></canvas><span class="gs-pad-hint" data-sig-hint>Sign here</span><button type="button" class="btn btn-ghost gs-clear" data-sig-clear>Clear</button></div>
-          <div data-sig-typed hidden>${field('Type your full name to sign', '<input class="input" name="typedSignature" autocomplete="off">')}<div class="gs-typed-preview" data-sig-preview aria-hidden="true"></div></div>
-          <p class="gs-note" data-gs-signing></p>
-        </div>`)}
-      ${step(5, NEON[4], 'Choose how to pay', '', `<fieldset class="gs-options gs-pay"><legend class="sr-only">Payment method</legend>
+      ${step(4, NEON[4], 'Choose how to pay', '', `<fieldset class="gs-options gs-pay"><legend class="sr-only">Payment method</legend>
           <label class="gs-option" style="--c:${NEON[2]}"><input type="radio" name="payment" value="card" checked><span class="gs-option-box">${ic('shield-check', `font-size:26px;color:${NEON[2]}`)}<span class="gs-option-label">Card</span><span class="gs-option-sub">Secure checkout by Stripe</span></span></label>
           <label class="gs-option" style="--c:${NEON[1]}"><input type="radio" name="payment" value="bank"><span class="gs-option-box">${ic('bank', `font-size:26px;color:${NEON[1]}`)}<span class="gs-option-label">Bank transfer</span><span class="gs-option-sub">To our Tide account</span></span></label>
         </fieldset>
-        <p class="gs-note" data-gs-bank-note hidden>After you sign, we’ll show you our Tide bank details and email them to you. Use your property’s postcode <strong data-gs-ref>as the reference</strong>. Your payment shows as pending until we’ve confirmed it.</p>`)}
+        <p class="gs-note" data-gs-bank-note hidden>Once you’ve accepted our terms, we’ll show you our Tide bank details and email them to you. Use your property’s postcode <strong data-gs-ref>as the reference</strong>. Your payment shows as pending until we’ve confirmed it.</p>`)}
     </form>
 
     <aside class="gs-summary" aria-label="Summary">
@@ -1102,7 +1124,8 @@ function getStartedBody() {
           <dt>Work begins</dt><dd data-sum-start>After your cooling-off period</dd>
         </dl>
         <p class="form-err" role="alert" hidden data-gs-err style="margin:0;font-size:13px;color:var(--color-accent-200);display:flex;gap:6px;align-items:baseline">${ic('warning-circle')}<span></span></p>
-        <button type="submit" form="gs-form" class="btn btn-primary gs-pay-btn" data-gs-submit>Sign and pay securely${ic('arrow-right')}</button>
+        <p class="gs-confirm">${(A.confirmation || []).map(esc).join(' ')}</p>
+        <button type="submit" form="gs-form" class="btn btn-primary gs-pay-btn" data-gs-submit>Proceed to secure payment${ic('arrow-right')}</button>
         <p style="margin:0;font-size:12px;color:var(--color-neutral-400);line-height:1.5;display:flex;gap:6px">${ic('shield-check', 'color:var(--color-accent);margin-top:2px')}<span>Card payments are processed securely by Stripe. We never see your card details.</span></p>
       </div>
     </aside>
@@ -1193,11 +1216,12 @@ write(FILE.repo, { page: 'repo', active: 'repo', ...repoSeo, band: false, crumbs
 write('facing-repossession/', { page: 'repo', active: 'repo', ...repoSeo, canonical: FILE.repo, landing: true, band: false, crumbs: [{ label: 'Repossession help' }], ctx: { doing: 'Facing repossession' }, body: repoBody });
 
 write(FILE.privacy, { page: 'privacy', title: 'Privacy notice | Properfy', desc: 'What Properfy collects, why, and who sees it.', crumbs: [{ label: 'Privacy' }], body: privacyBody });
+write(FILE.terms, { page: 'terms', title: 'Terms of Business | Properfy', desc: 'Properfy’s Client Terms of Business & Payment Agreement: our services, your initial payment, refunds, how we allocate your law firm, referral fees and your right to cancel.', crumbs: [{ label: 'Terms of Business' }], body: termsBody });
 write(FILE.complaints, { page: 'complaints', title: 'Complaints | Properfy', desc: 'How to make a complaint to Properfy.', crumbs: [{ label: 'Complaints' }], body: complaintsBody });
 write(FILE.partners, { page: 'partners', title: 'For partners | Properfy', desc: 'Conveyancers, brokers, surveyors and other home services in England and Wales: register your interest in working with Properfy.', crumbs: [{ label: 'For partners' }], band: false, body: partnersBody });
 write('404.html', { page: 'notfound', title: 'Page not found | Properfy', desc: 'This page isn’t here. It may have moved when we updated the site.', noindex: true, band: false, body: notFoundBody });
 // Written last so its form fields don't renumber the field ids on other pages.
-write(FILE.getStarted, { page: 'get-started', active: 'start', title: 'Get started | Properfy', desc: 'Your property journey starts here. Choose your transaction, sign your Properfy agreement and pay securely online.', band: false, sticky: false, crumbs: [{ label: 'Get started' }], scripts: ['assets/js/get-started.js'], body: getStartedBody });
+write(FILE.getStarted, { page: 'get-started', active: 'start', title: 'Get started | Properfy', desc: 'Your property journey starts here. Choose your transaction, accept our Terms of Business and pay securely online.', band: false, sticky: false, crumbs: [{ label: 'Get started' }], scripts: ['assets/js/get-started.js'], body: getStartedBody });
 
 // sitemap.xml and robots.txt
 const urls = built.filter((b) => b.sitemap).map((b) => `  <url><loc>${b.canonical}</loc></url>`).join('\n');

@@ -4,23 +4,24 @@ CREATE TABLE IF NOT EXISTS onboardings (
   id TEXT PRIMARY KEY,                    -- client reference, e.g. PFY-7K2QXD
   token_hash TEXT NOT NULL,               -- SHA-256 of the client's private status token
   created_at TEXT NOT NULL,
-  transaction_type TEXT NOT NULL,         -- purchase | sale | remortgage | toe
+  transaction_type TEXT NOT NULL,         -- purchase | sale | remortgage
   transaction_label TEXT NOT NULL,
   amount_pence INTEGER NOT NULL,
   client_name TEXT NOT NULL,
   client_email TEXT NOT NULL,
+  client_phone TEXT NOT NULL,
+  property_address TEXT NOT NULL,
   property_postcode TEXT NOT NULL,        -- also the bank transfer reference
-  agreement_version TEXT NOT NULL,
-  agreement_sha256 TEXT NOT NULL,         -- fingerprint of the exact agreement text signed
+  agreement_version TEXT NOT NULL,        -- Terms of Business version accepted
+  agreement_sha256 TEXT NOT NULL,         -- fingerprint of the exact terms text accepted
   agreement_accepted INTEGER NOT NULL,
+  introductions_authorised INTEGER NOT NULL, -- 1 = may share details for other services they ask for
   early_start_requested INTEGER NOT NULL, -- 1 = asked for work to begin in the cancellation period
   cancellation_period_ends TEXT NOT NULL, -- UK date (YYYY-MM-DD)
   services_may_start TEXT NOT NULL,       -- UK date work may begin
-  signature_method TEXT NOT NULL,         -- drawn | typed
-  signature_typed_name TEXT,
-  signed_at TEXT NOT NULL,                -- UTC timestamp
-  signer_ip TEXT,
-  signer_user_agent TEXT,
+  accepted_at TEXT NOT NULL,              -- UTC timestamp the terms were accepted
+  client_ip TEXT,
+  client_user_agent TEXT,
   pdf_key TEXT NOT NULL,                  -- private R2 object key
   pdf_sha256 TEXT NOT NULL,
   payment_method TEXT NOT NULL,           -- card | bank
@@ -34,7 +35,7 @@ CREATE TABLE IF NOT EXISTS onboardings (
   updated_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS onboardings_status ON onboardings (payment_status, created_at);
-CREATE INDEX IF NOT EXISTS onboardings_ip ON onboardings (signer_ip, created_at);
+CREATE INDEX IF NOT EXISTS onboardings_ip ON onboardings (client_ip, created_at);
 CREATE INDEX IF NOT EXISTS onboardings_start ON onboardings (early_start_requested, services_may_start);
 
 -- Audit trail of everything that happens to an onboarding.

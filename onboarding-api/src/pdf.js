@@ -1,5 +1,6 @@
-// Builds the signed agreement PDF: client details, the agreement text,
-// consent choices and the signature with its audit details.
+// Builds the PDF record of the Terms of Business a client accepted: their
+// details, the full terms, their choices, the acceptance record, and the
+// right to cancel with the cancellation form.
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 
 const NAVY = rgb(0.09, 0.106, 0.251);
@@ -18,18 +19,17 @@ export const formatPounds = (pence) => '£' + (pence / 100).toLocaleString('en-G
 export const ukTime = (iso) => new Date(iso).toLocaleString('en-GB', { timeZone: 'Europe/London', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' });
 export const ukDate = (isoDate) => new Date(isoDate + 'T12:00:00Z').toLocaleDateString('en-GB', { timeZone: 'Europe/London', day: 'numeric', month: 'long', year: 'numeric' });
 
-export async function buildAgreementPdf({ agreement, agreementSha256, rec, signaturePng, logoPng }) {
+export async function buildAgreementPdf({ agreement, agreementSha256, rec, logoPng }) {
   const pdf = await PDFDocument.create();
   pdf.setTitle(`${agreement.title} – ${rec.id}`);
   pdf.setAuthor('Properfy');
-  pdf.setSubject(`Signed by ${rec.client_name}`);
+  pdf.setSubject(`Accepted by ${rec.client_name}`);
   pdf.setCreator('properfy.co.uk/get-started');
-  pdf.setCreationDate(new Date(rec.signed_at));
+  pdf.setCreationDate(new Date(rec.accepted_at));
 
   const font = await pdf.embedFont(StandardFonts.Helvetica);
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
   const logo = await pdf.embedPng(logoPng);
-  const sig = await pdf.embedPng(signaturePng);
 
   let page, y, pageTop;
   const width = A4[0] - M * 2;
@@ -38,7 +38,7 @@ export async function buildAgreementPdf({ agreement, agreementSha256, rec, signa
     y = A4[1] - M;
     const lw = 118, lh = lw * logo.height / logo.width;
     page.drawImage(logo, { x: M, y: y - lh, width: lw, height: lh });
-    const label = 'Welcome & Payment Agreement';
+    const label = 'Client Terms of Business';
     page.drawText(label, { x: A4[0] - M - font.widthOfTextAtSize(label, 8.5), y: y - lh + 4, size: 8.5, font, color: GREY });
     y -= lh + 10;
     page.drawLine({ start: { x: M, y }, end: { x: A4[0] - M, y }, thickness: 1.2, color: LAV });
@@ -78,9 +78,10 @@ export async function buildAgreementPdf({ agreement, agreementSha256, rec, signa
     }
     y -= gap;
   };
-  // Agreement blocks: paragraphs (strings), {h} subheadings, {list} and {table} (first row is the header).
+  // Terms blocks: paragraphs (strings), {strong} bold paragraphs, {h} subheadings, {list} and {table} (first row is the header).
   const block = (b, hSize = 10.5) => {
     if (typeof b === 'string') return text(b, { size: 10, gap: 6 });
+    if (b.strong) return text(b.strong, { f: bold, size: 10, gap: 6 });
     if (b.h) { ensure(34); return text(b.h, { f: bold, size: hSize, color: NAVY, gap: 3 }); }
     if (b.list) {
       for (const li of b.list) {
@@ -118,11 +119,13 @@ export async function buildAgreementPdf({ agreement, agreementSha256, rec, signa
   newPage();
   text(agreement.title, { f: bold, size: 17, color: NAVY, gap: 2 });
   if (agreement.subtitle) text(agreement.subtitle, { size: 11, color: NAVY, gap: 2 });
-  text(`Reference ${rec.id} · Agreement version ${agreement.version}`, { size: 9, color: GREY, gap: 14 });
+  text(`Reference ${rec.id} · Version ${agreement.version}${agreement.effectiveDate ? `, effective ${agreement.effectiveDate}` : ''}`, { size: 9, color: GREY, gap: 14 });
 
   text('Your details', { f: bold, size: 11.5, color: NAVY, gap: 4 });
   row('Client', rec.client_name);
   row('Email', rec.client_email);
+  row('Contact number', rec.client_phone);
+  row('Property address', rec.property_address);
   row('Property postcode', rec.property_postcode);
   row('Transaction', rec.transaction_label);
   row('Initial payment', formatPounds(rec.amount_pence));
@@ -148,29 +151,33 @@ export async function buildAgreementPdf({ agreement, agreementSha256, rec, signa
 
   ensure(120);
   y -= 6;
-  text('Your choices', { f: bold, size: 11.5, color: NAVY, gap: 4 });
-  text(`[x] ${agreement.acceptConsent}`, { size: 9.5, gap: 6 });
-  text(`[${rec.early_start_requested ? 'x' : ' '}] ${agreement.earlyStartConsent}`, { size: 9.5, gap: 6 });
+  text('Your choices', { f: bold, size: 11.5, color: NAVY, gap: 6 });
+  const choice = (c, ticked, tag) => {
+    ensure(60);
+    text(`[${ticked ? 'x' : ' '}] ${c.label} (${tag})`, { f: bold, size: 9.5, color: NAVY, gap: 2 });
+    for (const t of c.text) text(t, { size: 9.5, gap: 3, x: M + 18, w: width - 18 });
+    y -= 5;
+  };
+  choice(agreement.acceptConsent, true, 'required');
+  choice(agreement.introductionsConsent, !!rec.introductions_authorised, 'optional');
+  choice(agreement.earlyStartConsent, !!rec.early_start_requested, 'optional');
   text(rec.early_start_requested
     ? `The client asked for work to begin during the cooling-off period. The cooling-off period ends on ${ukDate(rec.cancellation_period_ends)}.`
-    : `The client did not ask for an early start. Properfy will not begin work until the cooling-off period has ended on ${ukDate(rec.cancellation_period_ends)}. Work may begin on ${ukDate(rec.services_may_start)}.`, { size: 9.5, color: NAVY, gap: 14 });
+    : `The client did not ask for an early start. Properfy will not begin work until the cooling-off period has ended on ${ukDate(rec.cancellation_period_ends)}. Work may begin on ${ukDate(rec.services_may_start)}.`, { size: 9.5, color: NAVY, gap: 8 });
+  for (const t of agreement.confirmation || []) text(t, { size: 9.5, gap: 4 });
+  y -= 10;
 
-  ensure(170);
-  text('Signature', { f: bold, size: 11.5, color: NAVY, gap: 6 });
-  const sw = Math.min(220, sig.width), sh = sw * sig.height / sig.width;
-  const boxH = Math.min(sh, 90);
-  const boxW = boxH * sig.width / sig.height;
-  page.drawRectangle({ x: M, y: y - boxH - 12, width: Math.max(boxW, 160) + 16, height: boxH + 12, borderColor: LAV, borderWidth: 0.8, color: rgb(1, 1, 1) });
-  page.drawImage(sig, { x: M + 8, y: y - boxH - 6, width: boxW, height: boxH });
-  y -= boxH + 22;
-  row('Signed by', `${rec.client_name} (${rec.signature_method === 'typed' ? 'typed signature' : 'drawn signature'})`);
-  row('Signed at', `${ukTime(rec.signed_at)} (${rec.signed_at} UTC)`);
-  row('IP address', rec.signer_ip || 'Not recorded');
-  row('Browser', rec.signer_user_agent || 'Not recorded');
-  row('Agreement version', agreement.version);
-  row('Agreement fingerprint', `SHA-256 ${agreementSha256}`);
+  ensure(120);
+  text('Acceptance record', { f: bold, size: 11.5, color: NAVY, gap: 6 });
+  row('Accepted by', rec.client_name);
+  row('How', 'Ticked to accept the Terms of Business and submitted the online form');
+  row('Accepted at', `${ukTime(rec.accepted_at)} (${rec.accepted_at} UTC)`);
+  row('IP address', rec.client_ip || 'Not recorded');
+  row('Browser', rec.client_user_agent || 'Not recorded');
+  row('Terms version', agreement.version);
+  row('Terms fingerprint', `SHA-256 ${agreementSha256}`);
 
-  // Appendix (the cancellation form) on its own page, so it can be printed and posted.
+  // Appendix (the right to cancel and the cancellation form) on its own page, so it can be printed and posted.
   if (agreement.appendix) {
     newPage();
     for (const b of agreement.appendix) {
