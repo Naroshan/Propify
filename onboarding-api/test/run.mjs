@@ -128,7 +128,7 @@ async function apiTests() {
     ['requires a UK phone number', { phone: '+1 202 555 0100' }, 400, /UK phone number/],
     ['requires the property address', { address: ' ' }, 400, /address/],
     ['rejects an unknown transaction', { transaction: 'mortgage' }, 400, /transaction/],
-    ['transfer of equity isn’t offered online', { transaction: 'toe' }, 400, /transaction/],
+    ['accepts a transfer of equity', { transaction: 'toe' }, 200, null],
     ['rejects a bad email', { email: 'nope' }, 400, /email/],
     ['requires a payment method', { paymentMethod: 'cash' }, 400, /pay/]
   ];

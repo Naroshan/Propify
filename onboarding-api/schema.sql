@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS onboardings (
   id TEXT PRIMARY KEY,                    -- client reference, e.g. PFY-7K2QXD
   token_hash TEXT NOT NULL,               -- SHA-256 of the client's private status token
   created_at TEXT NOT NULL,
-  transaction_type TEXT NOT NULL,         -- purchase | sale | remortgage
+  transaction_type TEXT NOT NULL,         -- purchase | sale | remortgage | toe
   transaction_label TEXT NOT NULL,
   amount_pence INTEGER NOT NULL,
   client_name TEXT NOT NULL,
