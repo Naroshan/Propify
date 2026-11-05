@@ -63,7 +63,7 @@ Each email has a reference (e.g. `PFY-48213`, also shown to the customer), the p
 
 One page where a client:
 
-1. chooses Purchase (£595 initial payment), Sale or Remortgage (£295 each). Transfer of equity and other matters are arranged by phone, as the terms don't cover them.
+1. chooses Purchase (£595 initial payment), Sale, Remortgage or Transfer of Equity (£295 each)
 2. gives their name, email, UK phone number, property address and postcode
 3. accepts the Terms of Business by ticking a box. The full terms are a link to `/terms/` (opening in a new tab); the client can tick without opening it. Two more boxes are optional: sharing their details for other services they ask for, and starting work during the 14-day cooling-off period. No signature is needed.
 4. pays by card (Stripe Checkout) or gets the Tide bank details, with the postcode as the reference
@@ -84,7 +84,7 @@ The page needs a server for payments, signed PDFs, emails and private storage, s
 - **Guide reviews.** The design shows "Reviewed by [Panel solicitor name]" on every guide. That line stays hidden until `PFY.config.reviewer` is set to a real reviewer. The About page says guides are reviewed by qualified professionals, so arrange that review.
 - **Compliance.** Have the mortgage and specialist-finance wording, the introducer statement in the footer, the repossession page, `privacy.html` and `complaints.html` reviewed by a qualified adviser. The company details (Properfy Ltd, company number 17499140) are in `PFY.config.company` and show in the footer and privacy notice.
 - **Figures** such as timescales, cash-buyer price ranges and lender rules of thumb are typical figures from the design. Confirm them with your partners.
-- **Onboarding terms.** `onboarding-api/agreement.json` holds the Client Terms of Business & Payment Agreement (version 1.0, effective 4 November 2026), followed by the right to cancel and the cancellation form. To set up online sign-up, follow the steps in `onboarding-api/README.md`.
+- **Onboarding terms.** `onboarding-api/agreement.json` holds the Client Terms of Business & Payment Agreement (version 1.1, effective 5 November 2026), followed by the right to cancel and the cancellation form. To set up online sign-up, follow the steps in `onboarding-api/README.md`.
 
 ## Structure
 

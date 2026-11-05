@@ -1,7 +1,7 @@
 {
   "status": "final",
-  "version": "1.0",
-  "effectiveDate": "4 November 2026",
+  "version": "1.1",
+  "effectiveDate": "5 November 2026",
   "title": "Client Terms of Business & Payment Agreement",
   "subtitle": "One move. One place. One team.",
   "coolingOffDays": 14,
@@ -19,6 +19,11 @@
     {
       "id": "remortgage",
       "label": "Remortgage",
+      "amountPence": 29500
+    },
+    {
+      "id": "toe",
+      "label": "Transfer of Equity",
       "amountPence": 29500
     }
   ],
@@ -82,7 +87,7 @@
         },
         "An initial payment on account is required to establish your file and arrange the preliminary services necessary to progress your instruction.",
         "For a property purchase, the initial payment is £595. This comprises £360 allocated towards property searches, £75 allocated to the appointed law firm towards its initial onboarding and money on account requirements, and £160 for Properfy’s file opening, administration and coordination services.",
-        "For a property sale or remortgage, the initial payment is £295. This comprises £75 allocated to the appointed law firm towards its initial onboarding and money on account requirements, and £220 for Properfy’s onboarding, file opening and administration services.",
+        "For a property sale, remortgage or transfer of equity, the initial payment is £295. This comprises £75 allocated to the appointed law firm towards its initial onboarding and money on account requirements, and £220 for Properfy’s onboarding, file opening and administration services.",
         "These payments form part of the overall costs disclosed in your quotation and will not be charged again for the same services.",
         "The allocation of your payment will be recorded against your instruction. Amounts allocated to the appointed law firm will be transferred or credited in accordance with the firm’s payment arrangements. Amounts allocated towards searches or other third-party services will be applied when those services are ordered or provided.",
         "The quoted fees and payment information will identify any applicable VAT.",

@@ -1090,10 +1090,10 @@ function getStartedBody() {
     <form class="gs-form" id="gs-form" data-gs-form data-agreement-version="${esc(A.version)}" data-cooling-off-days="${A.coolingOffDays}" novalidate>
       ${draft}
       <p class="gs-draft" role="note" data-gs-closed hidden>${ic('warning-circle')}<span><strong>Online sign-up opens soon.</strong> To get started now, call us on <a href="tel:${CFG.contact.phoneHref}">${CFG.contact.phone}</a> or email <a href="mailto:${CFG.contact.email}">${CFG.contact.email}</a>.</span></p>
-      ${step(1, NEON[0], 'Choose your transaction', 'Your initial payment on account.', `<fieldset class="gs-options" style="--cols:${Math.min(A.fees.length, 3)}"><legend class="sr-only">Your transaction</legend>
+      ${step(1, NEON[0], 'Choose your transaction', 'Your initial payment on account.', `<fieldset class="gs-options" style="--cols:${A.fees.length % 3 === 0 ? 3 : 2}"><legend class="sr-only">Your transaction</legend>
         ${A.fees.map((f) => { const [i, c] = optIcon[f.id] || ['house-line', NEON[0]]; return `<label class="gs-option" style="--c:${c}"><input type="radio" name="transaction" value="${f.id}" data-label="${esc(f.label)}" data-pence="${f.amountPence}"><span class="gs-option-box">${ic(i, `font-size:28px;color:${c};filter:drop-shadow(0 0 5px ${c})`)}<span class="gs-option-label">${esc(f.label)}</span><span class="gs-option-price">${pounds(f.amountPence)}</span></span></label>`; }).join('')}
       </fieldset>
-      <p class="gs-note">Transfer of equity, auction or another specialist matter? Please call us on <a href="tel:${CFG.contact.phoneHref}">${CFG.contact.phone}</a> and we’ll arrange your initial payment with you.</p>`)}
+      <p class="gs-note">Auction, leasehold or another specialist matter? Please call us on <a href="tel:${CFG.contact.phoneHref}">${CFG.contact.phone}</a> before paying and we’ll confirm your initial payment with you.</p>`)}
       ${step(2, NEON[1], 'Your details', 'So we can set up your file and send you a copy of your terms.', `<div class="gs-fields">
         ${field('Full name', '<input class="input" name="name" autocomplete="name" placeholder="Your full name">')}
         ${field('Email address', '<input class="input" name="email" type="email" autocomplete="email" placeholder="you@example.com">')}

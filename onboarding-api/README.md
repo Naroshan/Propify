@@ -50,7 +50,7 @@ You'll need three accounts:
 - **Stripe**
 - **Resend:** the free plan sends 3,000 emails a month.
 
-1. **Terms.** The Terms of Business are in `agreement.json` (version `1.0`), followed by the right to cancel and the cancellation form. See "Changing the terms" below if they need changes.
+1. **Terms.** The Terms of Business are in `agreement.json` (version `1.1`), followed by the right to cancel and the cancellation form. See "Changing the terms" below if they need changes.
 2. **Bank details.** `BANK_ACCOUNT_NAME` is in `wrangler.toml`; check it matches the Tide account name exactly. The sort code and account number are set as secrets in step 6, so they stay out of this public repository.
 3. **Database and storage**, both kept in the EU:
    ```bash
