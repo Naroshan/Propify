@@ -12,7 +12,7 @@ RESEND_API_BASE = "https://api.resend.com"
 # Countries allowed to use the API (comma-separated codes). GB is the whole UK.
 # Stripe's webhook is always allowed, as Stripe calls it from abroad.
 ALLOWED_COUNTRIES = "GB"
-# Tide account for bank transfers. The sort code and account number are
+# Starling account for bank transfers. The sort code and account number are
 # set privately (below), not in this public repository.
 BANK_ACCOUNT_NAME = "Properfy Ltd"
 # Secrets, set with `npx wrangler secret put NAME` (never commit them):

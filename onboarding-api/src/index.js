@@ -92,7 +92,7 @@ function outsideUk(env, req) {
 const UK_ONLY = 'Properfy only works with clients in England and Wales, so online sign-up isn’t available from outside the UK. If you’re in the UK and using a VPN, turn it off and try again.';
 
 // Everything that must be set before sign-ups open: the secrets (wrangler
-// secret put) and the Tide details (wrangler.toml).
+// secret put) and the Starling details (wrangler.toml).
 const adminReady = (env) => String(env.ADMIN_SECRET || '').length >= 32;
 function notConfigured(env) {
   const need = ['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'RESEND_API_KEY', 'BANK_ACCOUNT_NAME', 'BANK_SORT_CODE', 'BANK_ACCOUNT_NUMBER']
@@ -145,7 +145,7 @@ async function emailAgreement(env, rec, pdfBytes) {
     attachments: attachment
   });
   const links = rec.payment_method === 'bank'
-    ? `<p><a href="${await adminLink(env, '/admin/confirm-bank', rec.id)}">Mark the bank transfer as received</a> (only once it’s in the Tide account).</p>` : '';
+    ? `<p><a href="${await adminLink(env, '/admin/confirm-bank', rec.id)}">Mark the bank transfer as received</a> (only once it’s in the Starling account).</p>` : '';
   await sendEmail(env, {
     to: env.OFFICE_EMAIL, replyTo: rec.client_email,
     subject: `New sign-up: ${rec.transaction_label} · ${rec.client_name} (${rec.property_postcode}) · ${rec.id}`,
@@ -315,7 +315,7 @@ async function handleAdmin(env, req, url) {
     await markPaid(env, rec, 'properfy');
     return page('Payment confirmed', `<h1 class="ok">Bank transfer confirmed</h1>${details.replace('Pending', '<span class="ok">Paid</span>')}<p>We’ve emailed ${esc(rec.client_email)} to say their payment has been received.</p>`);
   }
-  return page('Confirm bank transfer', `<h1>Confirm bank transfer received?</h1>${details}<p>Only confirm once the money is in the Tide account.</p><form method="post"><button type="submit">Yes, mark as paid</button></form>`);
+  return page('Confirm bank transfer', `<h1>Confirm bank transfer received?</h1>${details}<p>Only confirm once the money is in the Starling account.</p><form method="post"><button type="submit">Yes, mark as paid</button></form>`);
 }
 
 // Runs every morning (see [triggers] in wrangler.toml): tells Properfy whose
