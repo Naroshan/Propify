@@ -15,7 +15,7 @@ Nothing is publicly readable. Clients get their PDF by email. The download and c
 1. The client picks a transaction and gives their name, email, UK phone number, property address and postcode (England and Wales only). They tick to accept the Terms of Business, which are linked from the page, and can tick two optional boxes: to let Properfy share their details for other services they ask for, and to ask for work to start during the cooling-off period. There is no signature: the terms say a handwritten signature is not required.
 2. The page sends this to the Worker, which checks it all again. The Worker then builds the PDF, stores it, records the acceptance details, and emails the PDF to the client and to Properfy.
 3. **Card:** the client goes to Stripe Checkout. When Stripe sends `checkout.session.completed`, the Worker checks the webhook signature, the amount and the currency, marks the record paid and emails both sides.
-4. **Bank transfer:** the client sees the Tide details, with their property postcode as the reference. Properfy's email has a "Mark the bank transfer as received" link. It opens a page with a button rather than confirming straight away, so email link scanners can't mark a payment as received.
+4. **Bank transfer:** the client sees the Starling details, with their property postcode as the reference. Properfy's email has a "Mark the bank transfer as received" link. It opens a page with a button rather than confirming straight away, so email link scanners can't mark a payment as received.
 5. The page shows the thank-you message.
 
 **Start date.** The 14-day cooling-off period ends 14 days after the UK date the client accepts the terms. Without an early-start request, work may begin the day after; the record holds this as `services_may_start`.
@@ -51,7 +51,7 @@ You'll need three accounts:
 - **Resend:** the free plan sends 3,000 emails a month.
 
 1. **Terms.** The Terms of Business are in `agreement.json` (version `1.1`), followed by the right to cancel and the cancellation form. See "Changing the terms" below if they need changes.
-2. **Bank details.** `BANK_ACCOUNT_NAME` is in `wrangler.toml`; check it matches the Tide account name exactly. The sort code and account number are set as secrets in step 6, so they stay out of this public repository.
+2. **Bank details.** `BANK_ACCOUNT_NAME` is in `wrangler.toml`; check it matches the Starling account name exactly. The sort code and account number are set as secrets in step 6, so they stay out of this public repository.
 3. **Database and storage**, both kept in the EU:
    ```bash
    npx wrangler login
@@ -67,8 +67,8 @@ You'll need three accounts:
    npx wrangler secret put STRIPE_SECRET_KEY      # sk_test_… first, sk_live_… when going live
    npx wrangler secret put RESEND_API_KEY
    npx wrangler secret put ADMIN_SECRET           # a long random string, e.g. from: openssl rand -hex 32
-   npx wrangler secret put BANK_SORT_CODE         # the Tide sort code
-   npx wrangler secret put BANK_ACCOUNT_NUMBER    # the Tide account number
+   npx wrangler secret put BANK_SORT_CODE         # the Starling sort code
+   npx wrangler secret put BANK_ACCOUNT_NUMBER    # the Starling account number
    ```
 7. **Stripe webhook.**
    - In Stripe, go to Developers → Webhooks and add the endpoint `https://<worker address>/api/stripe/webhook`.
@@ -84,7 +84,7 @@ Sign-ups stay closed until every secret and bank detail is set. The Worker logs 
 ## Day to day
 
 - **Every sign-up** sends an email to info@properfy.co.uk. It has the PDF attached and shows the client's details, whether they authorised introductions to other services, whether an early start was asked for and when work may begin. For bank transfers it also has the confirm link.
-- **When a bank transfer arrives in Tide**, open the link in that email, check the details and press "Yes, mark as paid". The client is emailed.
+- **When a bank transfer arrives in Starling**, open the link in that email, check the details and press "Yes, mark as paid". The client is emailed.
 - **Card payments** confirm themselves through Stripe.
 - **Each morning** (07:00 UTC, which is 08:00 in summer), you get "You can now start work for N clients" if anyone's cooling-off period has ended.
 - **To look up records:**

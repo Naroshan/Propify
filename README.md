@@ -66,7 +66,7 @@ One page where a client:
 1. chooses Purchase (£595 initial payment), Sale, Remortgage or Transfer of Equity (£295 each)
 2. gives their name, email, UK phone number, property address and postcode
 3. accepts the Terms of Business by ticking a box. The full terms are a link to `/terms/` (opening in a new tab); the client can tick without opening it. Two more boxes are optional: sharing their details for other services they ask for, and starting work during the 14-day cooling-off period. No signature is needed.
-4. pays by card (Stripe Checkout) or gets the Tide bank details, with the postcode as the reference
+4. pays by card (Stripe Checkout) or gets the Starling bank details, with the postcode as the reference
 
 The page is built from `getStartedBody()` in the builder and the terms page from `termsBody()`. The page's behaviour is in `assets/js/get-started.js`. The terms, tick boxes and amounts come from **`onboarding-api/agreement.json`**, so the sign-up page, the terms page and the PDF clients receive always match.
 

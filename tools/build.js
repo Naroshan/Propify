@@ -1109,9 +1109,9 @@ function getStartedBody() {
         <p class="gs-note" data-gs-start></p>`)}
       ${step(4, NEON[4], 'Choose how to pay', '', `<fieldset class="gs-options gs-pay"><legend class="sr-only">Payment method</legend>
           <label class="gs-option" style="--c:${NEON[2]}"><input type="radio" name="payment" value="card" checked><span class="gs-option-box">${ic('shield-check', `font-size:26px;color:${NEON[2]}`)}<span class="gs-option-label">Card</span><span class="gs-option-sub">Secure checkout by Stripe</span></span></label>
-          <label class="gs-option" style="--c:${NEON[1]}"><input type="radio" name="payment" value="bank"><span class="gs-option-box">${ic('bank', `font-size:26px;color:${NEON[1]}`)}<span class="gs-option-label">Bank transfer</span><span class="gs-option-sub">To our Tide account</span></span></label>
+          <label class="gs-option" style="--c:${NEON[1]}"><input type="radio" name="payment" value="bank"><span class="gs-option-box">${ic('bank', `font-size:26px;color:${NEON[1]}`)}<span class="gs-option-label">Bank transfer</span><span class="gs-option-sub">To our Starling account</span></span></label>
         </fieldset>
-        <p class="gs-note" data-gs-bank-note hidden>Once you’ve accepted our terms, we’ll show you our Tide bank details and email them to you. Use your property’s postcode <strong data-gs-ref>as the reference</strong>. Your payment shows as pending until we’ve confirmed it.</p>`)}
+        <p class="gs-note" data-gs-bank-note hidden>Once you’ve accepted our terms, we’ll show you our Starling bank details and email them to you. Use your property’s postcode <strong data-gs-ref>as the reference</strong>. Your payment shows as pending until we’ve confirmed it.</p>`)}
     </form>
 
     <aside class="gs-summary" aria-label="Summary">

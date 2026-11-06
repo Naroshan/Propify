@@ -145,7 +145,7 @@ async function apiTests() {
   const bank = await r.json();
   check('accepts the terms and returns a reference', r.ok && /^PFY-[A-Z0-9]{6}$/.test(bank.id), JSON.stringify(bank).slice(0, 200));
   check('payment is pending', bank.paymentStatus === 'pending_bank');
-  check('returns Tide details with the postcode as reference', bank.bank && bank.bank.reference === 'E8 3PL' && bank.bank.sortCode === '04-00-04' && bank.bank.amount === '£295.00');
+  check('returns Starling details with the postcode as reference', bank.bank && bank.bank.reference === 'E8 3PL' && bank.bank.sortCode === '04-00-04' && bank.bank.amount === '£295.00');
   check('the terms were emailed', bank.agreementEmailed === true);
   let st = await mockState();
   const agreementMails = st.emails.filter((e) => /Terms of Business|New sign-up/.test(e.subject) && e.subject.includes(bank.id));
@@ -417,7 +417,7 @@ async function uiTests() {
   check('no sideways scrolling on a phone', await p.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth));
   await p.click('[data-gs-submit]');
   await p.waitForSelector('[data-gs-done]:not([hidden])');
-  check('shows the Tide details', (await p.locator('[data-bank="sortCode"]').textContent()) === '04-00-04');
+  check('shows the Starling details', (await p.locator('[data-bank="sortCode"]').textContent()) === '04-00-04');
   check('reference is the postcode', (await p.locator('[data-bank="reference"]').textContent()) === 'CF10 1AA');
   check('says payment is pending', /pending/.test(await p.locator('[data-done-bank]').textContent()));
   await p.screenshot({ path: path.join(OUT_DIR, 'ui-bank-done-mobile.png'), fullPage: true });

@@ -2,7 +2,7 @@
   Properfy — Get started (properfy.co.uk/get-started/)
   Choose a transaction, give your details, accept the Terms of Business
   (linked, at /terms/), then pay by card (Stripe Checkout) or bank transfer
-  (Tide). Everything is sent to the onboarding API (onboarding-api/), which
+  (Starling). Everything is sent to the onboarding API (onboarding-api/), which
   saves a PDF record of the accepted terms privately and emails it to the
   client and Properfy.
 */
