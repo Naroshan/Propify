@@ -14,7 +14,7 @@ RESEND_API_BASE = "https://api.resend.com"
 ALLOWED_COUNTRIES = "GB"
 # Bank transfer (Starling): "off" until the Starling account is live, then
 # "on" (and set bankTransfers: true in assets/js/data.js). Card works either way.
-BANK_TRANSFERS = "off"
+BANK_TRANSFERS = "on"
 # Starling account for bank transfers. The sort code and account number are
 # set privately (below), not in this public repository.
 BANK_ACCOUNT_NAME = "Properfy Ltd"

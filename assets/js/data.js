@@ -407,7 +407,7 @@ window.PFY.config = {
   // Offer bank transfer (Starling) on /get-started/ as well as card. Keep
   // false until the Starling account is live; switch BANK_TRANSFERS on in
   // onboarding-api/wrangler.toml at the same time.
-  bankTransfers: false,
+  bankTransfers: true,
   // Who reviewed the guides. Shown on every guide as "Reviewed by …" once set.
   reviewer: null,
   guidesUpdated: "September 2026",
