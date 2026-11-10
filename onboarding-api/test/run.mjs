@@ -342,6 +342,11 @@ async function uiTests() {
 
   section('Browser: validation');
   let p = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  // As if PFY.config.onboardingApi were null (online sign-up closed).
+  await p.route('**/assets/js/data.js', async (route) => {
+    const res = await route.fetch();
+    await route.fulfill({ response: res, body: (await res.text()).replace(/onboardingApi: "[^"]*"/, 'onboardingApi: null') });
+  });
   await p.goto(`${SITE}/get-started/`);
   check('says sign-up opens soon while the API isn’t connected', await p.locator('[data-gs-closed]').isVisible());
   await p.close();
