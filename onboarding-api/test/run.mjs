@@ -67,7 +67,8 @@ async function startWorker(port = PORT.worker, vars = TEST_VARS, country = 'GB')
   const env = { ...process.env, WRANGLER_SEND_METRICS: 'false', CI: '1', CLOUDFLARE_CF_FETCH_PATH: cfFile };
   execFileSync('npx', ['wrangler', 'd1', 'execute', 'properfy-onboarding', '--local', '--persist-to', persist, '--file', 'schema.sql'], { cwd: API_DIR, env, stdio: 'ignore' });
   // Pass every var on the command line, blank where unset, so wrangler.toml's placeholders don't apply.
-  const all = { SITE_ORIGIN: SITE, BANK_ACCOUNT_NAME: '', BANK_SORT_CODE: '', BANK_ACCOUNT_NUMBER: '', ...vars };
+  // Bank transfer is on unless a test switches it off.
+  const all = { SITE_ORIGIN: SITE, BANK_TRANSFERS: 'on', BANK_ACCOUNT_NAME: '', BANK_SORT_CODE: '', BANK_ACCOUNT_NUMBER: '', ...vars };
   const args = ['wrangler', 'dev', '--local', '--port', String(port), '--inspector-port', String(port + 1000), '--ip', '127.0.0.1', '--persist-to', persist, '--test-scheduled'];
   for (const [k, v] of Object.entries(all)) args.push('--var', `${k}:${v}`);
   // Its own process group, so stopping it also stops wrangler's workerd.
@@ -256,19 +257,28 @@ async function apiTests() {
 async function safetyTests() {
   section('API: safety switches');
   const started = await Promise.allSettled([
-    startWorker(PORT.draft, { ...TEST_VARS, ALLOW_DRAFT_AGREEMENT: '' }),
+    // Live settings: no ALLOW_DRAFT_AGREEMENT, and bank transfer switched off (so no bank details are needed).
+    startWorker(PORT.draft, { ...TEST_VARS, ALLOW_DRAFT_AGREEMENT: '', BANK_TRANSFERS: 'off', BANK_SORT_CODE: '', BANK_ACCOUNT_NUMBER: '' }),
     startWorker(PORT.unset, { SITE_ORIGIN: SITE, ALLOW_DRAFT_AGREEMENT: 'true', ADMIN_SECRET: 'too-short', BANK_SORT_CODE: '[sort code]' })
   ]);
   const [draft, unset] = started.map((x) => x.value);
   try {
     const failed = started.find((x) => x.status === 'rejected');
     if (failed) throw failed.reason;
-    const signUp = (port) => fetch(`http://127.0.0.1:${port}/api/onboarding`, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: SITE }, body: JSON.stringify(validBody()) });
-    let r = await signUp(PORT.draft);
+    const signUp = (port, o) => fetch(`http://127.0.0.1:${port}/api/onboarding`, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: SITE }, body: JSON.stringify(validBody(o)) });
+    let r = await signUp(PORT.draft, { paymentMethod: 'card', email: 'live.card@example.com' });
     // Live settings (no ALLOW_DRAFT_AGREEMENT): only final terms with no blanks can be accepted.
-    const ready = (await (await fetch(`http://127.0.0.1:${PORT.draft}/api/health`)).json()).agreementReady;
-    if (ready) check('the final terms can be accepted with the live settings', r.status === 200, String(r.status));
-    else {
+    const health = await (await fetch(`http://127.0.0.1:${PORT.draft}/api/health`)).json();
+    check('the health check says bank transfer is off', health.bankTransfers === false);
+    if (health.agreementReady) {
+      const card = await r.json();
+      check('the final terms can be accepted with the live settings, paying by card', r.status === 200 && !!card.checkoutUrl, `${r.status} ${JSON.stringify(card).slice(0, 160)}`);
+      r = await signUp(PORT.draft, { paymentMethod: 'bank', email: 'live.bank@example.com' });
+      const refused = await r.json();
+      check('bank transfer is refused while switched off', r.status === 400 && /Bank transfer isn’t available yet/.test(refused.error) && refused.field === 'payment', `${r.status} ${refused.error}`);
+      r = await fetch(`http://127.0.0.1:${PORT.draft}/api/onboarding/${card.id}/bank`, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: SITE }, body: JSON.stringify({ token: card.token }) });
+      check('a card sign-up can’t switch to bank transfer either', r.status === 400 && /isn’t available yet/.test((await r.json()).error));
+    } else {
       check('terms that are a draft or have blanks can’t be accepted', r.status === 503 && /isn’t open yet/.test((await r.json()).error));
       const blanks = agreementStrings(AGREEMENT).join('\n').match(/\[[^\]\n]+\]/g);
       if (blanks) {
@@ -324,9 +334,14 @@ async function uiTests() {
   }
   const browser = await chromium.launch();
   const errors = [];
-  const newPage = async (width = 1280) => {
+  // bank: as if PFY.config.bankTransfers were on (true) or off (false).
+  const newPage = async (width = 1280, { bank = true } = {}) => {
     const p = await browser.newPage({ viewport: { width, height: 900 } });
     await p.addInitScript((api) => { window.PFY_ONBOARDING_API = api; }, API);
+    await p.route('**/assets/js/data.js', async (route) => {
+      const res = await route.fetch();
+      await route.fulfill({ response: res, body: (await res.text()).replace(/bankTransfers: (true|false)/, `bankTransfers: ${bank}`) });
+    });
     p.on('pageerror', (e) => errors.push(e.message));
     return p;
   };
@@ -350,9 +365,12 @@ async function uiTests() {
   await p.goto(`${SITE}/get-started/`);
   check('says sign-up opens soon while the API isn’t connected', await p.locator('[data-gs-closed]').isVisible());
   await p.close();
-  p = await newPage();
+  p = await newPage(1280, { bank: false });
   await p.goto(`${SITE}/get-started/`);
   check('no "opens soon" notice once it’s connected', await p.locator('[data-gs-closed]').isHidden());
+  check('card only while bank transfer is switched off', await p.locator('.gs-pay label:has(input[value="card"])').isVisible() && await p.locator('.gs-pay label:has(input[value="bank"])').isHidden());
+  check('no "pay by bank transfer instead" button either', (await p.locator('[data-retry-bank]').getAttribute('hidden')) !== null);
+  check('summary says card', (await p.locator('[data-sum-pay]').textContent()) === 'Card (Stripe)');
   await p.click('[data-gs-submit]');
   check('asks for a transaction first', /choose your transaction/.test(await err(p)));
   check('offers only the transactions the terms cover', (await p.locator('input[name="transaction"]').count()) === AGREEMENT.fees.length);

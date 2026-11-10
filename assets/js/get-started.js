@@ -1,8 +1,8 @@
 /*
   Properfy — Get started (properfy.co.uk/get-started/)
   Choose a transaction, give your details, accept the Terms of Business
-  (linked, at /terms/), then pay by card (Stripe Checkout) or bank transfer
-  (Starling). Everything is sent to the onboarding API (onboarding-api/), which
+  (linked, at /terms/), then pay by card (Stripe Checkout) or, once switched
+  on in PFY.config.bankTransfers, bank transfer (Starling). Everything is sent to the onboarding API (onboarding-api/), which
   saves a PDF record of the accepted terms privately and emails it to the
   client and Properfy.
 */
@@ -13,6 +13,7 @@
   var CFG = PFY.config || {};
   var PF = w.PF || {};
   var API = w.PFY_ONBOARDING_API || CFG.onboardingApi;
+  var BANK = CFG.bankTransfers === true;
   var root = d.querySelector('[data-gs]');
   if (!root) return;
 
@@ -29,6 +30,11 @@
   var first = function (n) { return String(n || '').trim().split(/\s+/)[0]; };
   var pounds = function (p) { return '£' + (p / 100).toLocaleString('en-GB', { minimumFractionDigits: p % 100 ? 2 : 0 }); };
 
+  // Card only until bank transfer is switched on (PFY.config.bankTransfers).
+  $$('[data-gs-bank-only]').forEach(function (x) { x.hidden = !BANK; });
+  $('.gs-pay').classList.toggle('gs-pay-one', !BANK);
+  if (!BANK) form.querySelector('input[name="payment"][value="card"]').checked = true;
+
   /* ── Summary and helper text ──────────────────────────────────────── */
 
   function startDate() {
@@ -37,7 +43,7 @@
     return dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   }
   function selected() { var r = form.querySelector('input[name="transaction"]:checked'); return r ? { id: r.value, label: r.getAttribute('data-label'), pence: Number(r.getAttribute('data-pence')) } : null; }
-  function payMethod() { var r = form.querySelector('input[name="payment"]:checked'); return r ? r.value : 'card'; }
+  function payMethod() { var r = form.querySelector('input[name="payment"]:checked'); return r && BANK ? r.value : 'card'; }
 
   function refresh() {
     var tx = selected();
@@ -113,7 +119,7 @@
       showDone(res, { id: res.id, t: res.token }, res.checkoutError ? 'retry' : null, res.checkoutError);
     }).catch(function (err) {
       busy(false);
-      var field = err.field && ({ transaction: form.querySelector('fieldset'), name: el.name, email: el.email, phone: el.phone, address: el.address, postcode: el.postcode, accept: el.accept.closest('label') }[err.field]);
+      var field = err.field && ({ transaction: form.querySelector('fieldset'), name: el.name, email: el.email, phone: el.phone, address: el.address, postcode: el.postcode, accept: el.accept.closest('label'), payment: $('.gs-pay') }[err.field]);
       showErr(err.message === 'Failed to fetch' ? 'We couldn’t reach our server. Check your connection and try again.' : err.message, field);
     });
   });

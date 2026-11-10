@@ -40,7 +40,7 @@ The builder (`tools/build.js`, no dependencies) writes every page, plus `sitemap
 | `/<topic>/<guide>/` | The 26 guides, for example `/conveyancing/how-long-does-conveyancing-take/`. |
 | `/checklists/`, `/glossary/`, `/about/` | Checklists (ticks are saved in the browser; `#address` opens one directly), glossary and about. |
 | `/privacy/`, `/complaints/`, `/partners/`, `404.html` (GitHub Pages shows it for any missing address) | Supporting pages. `/partners/` is the "Partner login" link: a register-interest form. |
-| `/get-started/` | Client onboarding: choose a transaction, accept the Client Terms of Business and pay by card or bank transfer. In the menu ("Get started") and the sitemap. See below. |
+| `/get-started/` | Client onboarding: choose a transaction, accept the Client Terms of Business and pay by card (bank transfer once switched on). In the menu ("Get started") and the sitemap. See below. |
 | `/terms/` | The Client Terms of Business & Payment Agreement in full, with the right to cancel and the cancellation form. Linked from the sign-up page and the footer. |
 
 ## Leads
@@ -66,7 +66,7 @@ One page where a client:
 1. chooses Purchase (£595 initial payment), Sale, Remortgage or Transfer of Equity (£295 each)
 2. gives their name, email, UK phone number, property address and postcode
 3. accepts the Terms of Business by ticking a box. The full terms are a link to `/terms/` (opening in a new tab); the client can tick without opening it. Two more boxes are optional: sharing their details for other services they ask for, and starting work during the 14-day cooling-off period. No signature is needed.
-4. pays by card (Stripe Checkout) or gets the Starling bank details, with the postcode as the reference
+4. pays by card (Stripe Checkout) or, once bank transfer is switched on, gets the Starling bank details, with the postcode as the reference. Bank transfer is off until the Starling account is live: set `bankTransfers: true` in `data.js` and `BANK_TRANSFERS = "on"` in `onboarding-api/wrangler.toml` to offer it.
 
 The page is built from `getStartedBody()` in the builder and the terms page from `termsBody()`. The page's behaviour is in `assets/js/get-started.js`. The terms, tick boxes and amounts come from **`onboarding-api/agreement.json`**, so the sign-up page, the terms page and the PDF clients receive always match.
 
