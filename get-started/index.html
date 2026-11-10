@@ -118,10 +118,10 @@
         <p class="gs-note" data-gs-start></p></div>
       </section>
       <section class="gs-step" aria-labelledby="gs-h4">
-        <div class="gs-step-head"><span class="gs-num" style="--c:#ff7a2f">4</span><div><h2 id="gs-h4" style="font-size:22px;letter-spacing:-0.02em">Choose how to pay</h2></div></div>
-        <div class="gs-step-body"><fieldset class="gs-options gs-pay"><legend class="sr-only">Payment method</legend>
+        <div class="gs-step-head"><span class="gs-num" style="--c:#ff7a2f">4</span><div><h2 id="gs-h4" style="font-size:22px;letter-spacing:-0.02em">How you’ll pay</h2></div></div>
+        <div class="gs-step-body"><fieldset class="gs-options gs-pay gs-pay-one"><legend class="sr-only">Payment method</legend>
           <label class="gs-option" style="--c:#a259ff"><input type="radio" name="payment" value="card" checked><span class="gs-option-box"><svg class="ph" style="font-size:26px;color:#a259ff" aria-hidden="true"><use href="#i-shield-check"/></svg><span class="gs-option-label">Card</span><span class="gs-option-sub">Secure checkout by Stripe</span></span></label>
-          <label class="gs-option" style="--c:#1fd67a"><input type="radio" name="payment" value="bank"><span class="gs-option-box"><svg class="ph" style="font-size:26px;color:#1fd67a" aria-hidden="true"><use href="#i-bank"/></svg><span class="gs-option-label">Bank transfer</span><span class="gs-option-sub">To our Starling account</span></span></label>
+          <label class="gs-option" style="--c:#1fd67a" data-gs-bank-only hidden><input type="radio" name="payment" value="bank"><span class="gs-option-box"><svg class="ph" style="font-size:26px;color:#1fd67a" aria-hidden="true"><use href="#i-bank"/></svg><span class="gs-option-label">Bank transfer</span><span class="gs-option-sub">To our Starling account</span></span></label>
         </fieldset>
         <p class="gs-note" data-gs-bank-note hidden>Once you’ve accepted our terms, we’ll show you our Starling bank details and email them to you. Use your property’s postcode <strong data-gs-ref>as the reference</strong>. Your payment shows as pending until we’ve confirmed it.</p></div>
       </section>
@@ -156,7 +156,7 @@
       </div>
       <div data-done-retry hidden style="display:flex;gap:10px;flex-wrap:wrap">
         <button type="button" class="btn btn-primary" style="height:44px;padding:0 18px" data-retry-card>Pay by card<svg class="ph" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
-        <button type="button" class="btn btn-secondary" style="height:44px;padding:0 18px" data-retry-bank>Pay by bank transfer instead</button>
+        <button type="button" class="btn btn-secondary" style="height:44px;padding:0 18px" data-retry-bank data-gs-bank-only hidden>Pay by bank transfer instead</button>
       </div>
       <ul class="ul gs-done-list">
         <li data-done-emailed><svg class="ph" style="color:var(--color-accent)" aria-hidden="true"><use href="#i-envelope-simple"/></svg><span></span></li>

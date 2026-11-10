@@ -404,6 +404,10 @@ window.PFY.config = {
   // /get-started/. Set to null to close online sign-up: the page then says
   // it opens soon and gives the phone number.
   onboardingApi: "https://properfy-onboarding.properfy.workers.dev",
+  // Offer bank transfer (Starling) on /get-started/ as well as card. Keep
+  // false until the Starling account is live; switch BANK_TRANSFERS on in
+  // onboarding-api/wrangler.toml at the same time.
+  bankTransfers: false,
   // Who reviewed the guides. Shown on every guide as "Reviewed by …" once set.
   reviewer: null,
   guidesUpdated: "September 2026",

@@ -91,11 +91,17 @@ function outsideUk(env, req) {
 }
 const UK_ONLY = 'Properfy only works with clients in England and Wales, so online sign-up isn’t available from outside the UK. If you’re in the UK and using a VPN, turn it off and try again.';
 
+// Bank transfer (Starling) is offered only while BANK_TRANSFERS is "on"
+// (wrangler.toml). Card payments work either way.
+const bankOn = (env) => String(env.BANK_TRANSFERS || '').trim().toLowerCase() === 'on';
+const BANK_OFF = 'Bank transfer isn’t available yet. Please pay by card, or call us on 020 3475 2007.';
+const cardDown = (env) => 'Card payment isn’t available just now. ' + (bankOn(env) ? 'Please try again, or pay by bank transfer.' : 'Please try again, or call us on 020 3475 2007.');
+
 // Everything that must be set before sign-ups open: the secrets (wrangler
-// secret put) and the Starling details (wrangler.toml).
+// secret put) and, while bank transfer is on, the Starling details.
 const adminReady = (env) => String(env.ADMIN_SECRET || '').length >= 32;
 function notConfigured(env) {
-  const need = ['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'RESEND_API_KEY', 'BANK_ACCOUNT_NAME', 'BANK_SORT_CODE', 'BANK_ACCOUNT_NUMBER']
+  const need = ['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'RESEND_API_KEY', ...(bankOn(env) ? ['BANK_ACCOUNT_NAME', 'BANK_SORT_CODE', 'BANK_ACCOUNT_NUMBER'] : [])]
     .filter((n) => !env[n] || /^\s*(\[.*\])?\s*$/.test(env[n]));
   if (!adminReady(env)) need.push('ADMIN_SECRET (at least 32 characters)');
   return need;
@@ -226,6 +232,7 @@ async function createOnboarding(env, req) {
   if (b.acceptAgreement !== true) return fail(env, req, 'Please tick the box to accept our Terms of Business.', 400, { field: 'accept' });
   const method = b.paymentMethod === 'bank' ? 'bank' : b.paymentMethod === 'card' ? 'card' : null;
   if (!method) return fail(env, req, 'Please choose how you’d like to pay.', 400, { field: 'payment' });
+  if (method === 'bank' && !bankOn(env)) return fail(env, req, BANK_OFF, 400, { field: 'payment' });
 
   const ip = req.headers.get('CF-Connecting-IP');
   const hourAgo = new Date(Date.now() - 3600000).toISOString();
@@ -269,7 +276,7 @@ async function createOnboarding(env, req) {
   if (method === 'card') {
     try { out.checkoutUrl = await startCheckout(env, rec, token); } catch (e) {
       await logEvent(env, id, 'checkout_failed', { error: String(e.message || e) });
-      out.checkoutError = 'Card payment isn’t available just now. You can try again, or pay by bank transfer.';
+      out.checkoutError = cardDown(env);
     }
   }
   return json(env, req, out);
@@ -352,7 +359,7 @@ export default {
       if (url.pathname !== '/api/stripe/webhook' && outsideUk(env, req)) {
         return url.pathname.startsWith('/admin/') ? page('Not available', `<h1>Not available outside the UK</h1><p>${esc(UK_ONLY)}</p>`, 403) : fail(env, req, UK_ONLY, 403);
       }
-      if (url.pathname === '/api/health') return json(env, req, { ok: true, agreementVersion: AGREEMENT.version, agreementStatus: AGREEMENT.status, agreementReady: AGREEMENT_READY });
+      if (url.pathname === '/api/health') return json(env, req, { ok: true, agreementVersion: AGREEMENT.version, agreementStatus: AGREEMENT.status, agreementReady: AGREEMENT_READY, bankTransfers: bankOn(env) });
       if (url.pathname === '/api/stripe/webhook' && req.method === 'POST') return await handleWebhook(env, req);
       if (url.pathname.startsWith('/admin/')) return await handleAdmin(env, req, url);
       if (url.pathname === '/api/onboarding' && req.method === 'POST') return await createOnboarding(env, req);
@@ -368,10 +375,11 @@ export default {
         if (m[2] === '/checkout' && req.method === 'POST') {
           try { return json(env, req, { ...publicStatus(env, rec), checkoutUrl: await startCheckout(env, rec, token) }); } catch (e) {
             await logEvent(env, rec.id, 'checkout_failed', { error: String(e.message || e) });
-            return fail(env, req, 'Card payment isn’t available just now. Please try again, or pay by bank transfer.', 502);
+            return fail(env, req, cardDown(env), 502);
           }
         }
         if (m[2] === '/bank' && req.method === 'POST') {
+          if (!bankOn(env)) return fail(env, req, BANK_OFF, 400);
           await env.DB.prepare(`UPDATE onboardings SET payment_method = 'bank', payment_status = 'pending_bank', updated_at = ? WHERE id = ?`).bind(nowIso(), rec.id).run();
           await logEvent(env, rec.id, 'switched_to_bank');
           const fresh = await getRec(env, rec.id);

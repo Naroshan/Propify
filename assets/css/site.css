@@ -484,6 +484,7 @@ body.modal-open { overflow: hidden; }
 @media (max-width: 599px) { .gs-step-body { padding-left: 0; } }
 .gs-options { border: 0; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr)); gap: 10px; }
 @media (max-width: 599px) { .gs-options { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.gs-options.gs-pay-one { grid-template-columns: minmax(0, 1fr); }
 @media (max-width: 599px) { .gs-option-box { padding: 14px; } .gs-option-price { font-size: 22px; } }
 .gs-option { position: relative; cursor: pointer; display: block; }
 .gs-option input { position: absolute; opacity: 0; width: 1px; height: 1px; }

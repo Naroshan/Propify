@@ -1074,6 +1074,8 @@ function getStartedBody() {
       </section>`;
   const blanks = /\[[^\]\n]+\]/.test(termsStrings(A).join('\n'));
   const draft = A.status !== 'final' || blanks ? `<p class="gs-draft" role="note">${ic('warning-circle')}<span><strong>Draft terms.</strong> Our Terms of Business are still being finalised, so online sign-up is closed for now. Please call us on ${CFG.contact.phone}.</span></p>` : '';
+  // Bank transfer is only offered once switched on (PFY.config.bankTransfers).
+  const bankOn = CFG.bankTransfers === true;
   const termsLink = `<a href="${u(FILE.terms)}" target="_blank" rel="noopener" data-gs-terms>${esc(A.title)}</a>`;
   const check = (name, c, tag) => `<label class="gs-check"><input type="checkbox" name="${name}"><span><span class="gs-check-head"><strong>${esc(c.label)}</strong> <em class="gs-tag">${tag}</em></span>${c.text.map((t) => `<span class="gs-check-more">${esc(t)}</span>`).join('')}</span></label>`;
   return `<section style="background:${bg(NEON[0], NEON[2])}">
@@ -1107,9 +1109,9 @@ function getStartedBody() {
         ${check('introductions', A.introductionsConsent, 'Optional')}
         ${check('earlyStart', A.earlyStartConsent, 'Optional')}
         <p class="gs-note" data-gs-start></p>`)}
-      ${step(4, NEON[4], 'Choose how to pay', '', `<fieldset class="gs-options gs-pay"><legend class="sr-only">Payment method</legend>
+      ${step(4, NEON[4], bankOn ? 'Choose how to pay' : 'How you’ll pay', '', `<fieldset class="gs-options gs-pay${bankOn ? '' : ' gs-pay-one'}"><legend class="sr-only">Payment method</legend>
           <label class="gs-option" style="--c:${NEON[2]}"><input type="radio" name="payment" value="card" checked><span class="gs-option-box">${ic('shield-check', `font-size:26px;color:${NEON[2]}`)}<span class="gs-option-label">Card</span><span class="gs-option-sub">Secure checkout by Stripe</span></span></label>
-          <label class="gs-option" style="--c:${NEON[1]}"><input type="radio" name="payment" value="bank"><span class="gs-option-box">${ic('bank', `font-size:26px;color:${NEON[1]}`)}<span class="gs-option-label">Bank transfer</span><span class="gs-option-sub">To our Starling account</span></span></label>
+          <label class="gs-option" style="--c:${NEON[1]}" data-gs-bank-only${bankOn ? '' : ' hidden'}><input type="radio" name="payment" value="bank"><span class="gs-option-box">${ic('bank', `font-size:26px;color:${NEON[1]}`)}<span class="gs-option-label">Bank transfer</span><span class="gs-option-sub">To our Starling account</span></span></label>
         </fieldset>
         <p class="gs-note" data-gs-bank-note hidden>Once you’ve accepted our terms, we’ll show you our Starling bank details and email them to you. Use your property’s postcode <strong data-gs-ref>as the reference</strong>. Your payment shows as pending until we’ve confirmed it.</p>`)}
     </form>
@@ -1143,7 +1145,7 @@ function getStartedBody() {
       </div>
       <div data-done-retry hidden style="display:flex;gap:10px;flex-wrap:wrap">
         <button type="button" class="btn btn-primary" style="height:44px;padding:0 18px" data-retry-card>Pay by card${ic('arrow-right')}</button>
-        <button type="button" class="btn btn-secondary" style="height:44px;padding:0 18px" data-retry-bank>Pay by bank transfer instead</button>
+        <button type="button" class="btn btn-secondary" style="height:44px;padding:0 18px" data-retry-bank data-gs-bank-only${bankOn ? '' : ' hidden'}>Pay by bank transfer instead</button>
       </div>
       <ul class="ul gs-done-list">
         <li data-done-emailed>${ic('envelope-simple', 'color:var(--color-accent)')}<span></span></li>

@@ -15,7 +15,7 @@ Nothing is publicly readable. Clients get their PDF by email. The download and c
 1. The client picks a transaction and gives their name, email, UK phone number, property address and postcode (England and Wales only). They tick to accept the Terms of Business, which are linked from the page, and can tick two optional boxes: to let Properfy share their details for other services they ask for, and to ask for work to start during the cooling-off period. There is no signature: the terms say a handwritten signature is not required.
 2. The page sends this to the Worker, which checks it all again. The Worker then builds the PDF, stores it, records the acceptance details, and emails the PDF to the client and to Properfy.
 3. **Card:** the client goes to Stripe Checkout. When Stripe sends `checkout.session.completed`, the Worker checks the webhook signature, the amount and the currency, marks the record paid and emails both sides.
-4. **Bank transfer:** the client sees the Starling details, with their property postcode as the reference. Properfy's email has a "Mark the bank transfer as received" link. It opens a page with a button rather than confirming straight away, so email link scanners can't mark a payment as received.
+4. **Bank transfer** (only once switched on, see "Switching bank transfer on" below): the client sees the Starling details, with their property postcode as the reference. Properfy's email has a "Mark the bank transfer as received" link. It opens a page with a button rather than confirming straight away, so email link scanners can't mark a payment as received.
 5. The page shows the thank-you message.
 
 **Start date.** The 14-day cooling-off period ends 14 days after the UK date the client accepts the terms. Without an early-start request, work may begin the day after; the record holds this as `services_may_start`.
@@ -51,7 +51,7 @@ You'll need three accounts:
 - **Resend:** the free plan sends 3,000 emails a month.
 
 1. **Terms.** The Terms of Business are in `agreement.json` (version `1.1`), followed by the right to cancel and the cancellation form. See "Changing the terms" below if they need changes.
-2. **Bank details.** `BANK_ACCOUNT_NAME` is in `wrangler.toml`; check it matches the Starling account name exactly. The sort code and account number are set as secrets in step 6, so they stay out of this public repository.
+2. **Bank details.** Bank transfer is switched off with `BANK_TRANSFERS = "off"` until the Starling account is live (see "Switching bank transfer on" below). `BANK_ACCOUNT_NAME` is in `wrangler.toml`; check it matches the Starling account name exactly. The sort code and account number are set as secrets in step 6, so they stay out of this public repository.
 3. **Database and storage**, both kept in the EU:
    ```bash
    npx wrangler login
@@ -79,7 +79,16 @@ You'll need three accounts:
    - Put the live secret key in `STRIPE_SECRET_KEY`.
    - Add the same webhook in live mode and save its new signing secret in `STRIPE_WEBHOOK_SECRET`.
 
-Sign-ups stay closed until every secret and bank detail is set. The Worker logs what's missing.
+Sign-ups stay closed until every secret is set (and, while bank transfer is on, the bank details). The Worker logs what's missing.
+
+## Switching bank transfer on
+
+Bank transfer is off until the Starling account is live, so clients can only pay by card. While it's off, the page shows card only and the Worker refuses bank transfers. To switch it on:
+
+1. Set `BANK_TRANSFERS = "on"` in `wrangler.toml`. Check the Starling secrets are set (step 6 above).
+2. Set `bankTransfers: true` in `assets/js/data.js`, then run `node tools/build.js` from the repo root.
+3. Run `npm test`.
+4. Publish the website and run `npx wrangler deploy` together. `GET /api/health` shows `"bankTransfers": true` once the Worker has it.
 
 ## Day to day
 
