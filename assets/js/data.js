@@ -401,10 +401,9 @@ window.PFY.config = {
   company: { name: "Properfy Ltd", number: "17499140", office: "16 Prescot Street, London E1 8AZ", ico: "C2073413" },
   site: "https://properfy.co.uk",
   // The onboarding API (Cloudflare Worker in onboarding-api/) behind
-  // /get-started/. Set to its address once deployed, e.g.
-  // "https://properfy-onboarding.<your-subdomain>.workers.dev". While null,
-  // the page shows but can't be submitted.
-  onboardingApi: null,
+  // /get-started/. Set to null to close online sign-up: the page then says
+  // it opens soon and gives the phone number.
+  onboardingApi: "https://properfy-onboarding.properfy.workers.dev",
   // Who reviewed the guides. Shown on every guide as "Reviewed by …" once set.
   reviewer: null,
   guidesUpdated: "September 2026",
